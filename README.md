@@ -2,7 +2,7 @@
 
 **Equipe**
 - Integrante 1: Vitor Hugo Viana Mondequi — RA 2024100142 — CEP extra 24100142
-- Integrante 2: NOME COMPLETO A PREENCHER — RA 2024100467 — CEP extra 24100467
+- Integrante 2: Matheus Dominguez Biesek — RA 2024100467 — CEP extra 24100467
 
 Projeto acadêmico em Python para gerar um plano de voo de drone por algoritmo genético.
 
