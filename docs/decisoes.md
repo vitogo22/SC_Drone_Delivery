@@ -5,7 +5,6 @@ Este arquivo registra a seção 2 do plano de desenvolvimento. As decisões abai
 ## Equipe e coordenadas extras
 - Integrante 1: RA `2024100142`; CEP extra `24100142`.
 - Integrante 2: RA `2024100467`; CEP extra `24100467`.
-- Nome completo do integrante 2: preencher antes da entrega final.
 - **D1:** como o RA do integrante 1 começa com 2, as regras condicionais do enunciado valem para a dupla até confirmação do professor, inclusive o caso de RAs diferentes.
 
 ## Regras fixas do enunciado
