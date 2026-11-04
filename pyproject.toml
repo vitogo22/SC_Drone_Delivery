@@ -1,0 +1,92 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "unibrasil-surveyor"
+dynamic = ["version"]
+description = "Plano de voo de drone para mapear Curitiba, otimizado por algoritmo genético."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    { name = "Vitor Hugo Viana Mondequi" },
+    { name = "Matheus Dominguez Biesek" },
+]
+# O núcleo roda só com a biblioteca padrão. Acrescente dependências apenas quando
+# uma etapa realmente precisar delas (ex.: matplotlib no gráfico de convergência).
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.6",
+    "mypy>=1.10",
+]
+
+[project.scripts]
+surveyor = "surveyor.interface.cli:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "surveyor.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# ---------------------------------------------------------------- testes
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = ["-ra", "--strict-markers", "--import-mode=importlib"]
+markers = [
+    "lento: testes demorados (ex.: GA completo); rode com `make testar-tudo`",
+]
+
+[tool.coverage.run]
+source = ["surveyor"]
+branch = true
+omit = ["*/surveyor/__main__.py"]  # testado por subprocesso em tests/integracao/
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true
+fail_under = 90
+exclude_also = [
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "class .*\\(Protocol\\):",
+]
+
+# ---------------------------------------------------------------- estilo
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W",   # pycodestyle
+    "F",        # pyflakes (imports e variáveis não usados)
+    "I",        # ordem dos imports
+    "B",        # bugs comuns
+    "UP",       # sintaxe moderna
+    "SIM",      # simplificações
+    "N",        # nomes PEP 8
+    "PT",       # estilo do pytest
+    "RUF",      # inclui caracteres ambíguos, como o travessão no lugar do hífen
+    "TID",      # imports: só absolutos (o teste de arquitetura depende disso)
+]
+ignore = [
+    "N818",     # exceções com nomes em português (Erro...) em vez do sufixo Error
+]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+# ---------------------------------------------------------------- tipos
+[tool.mypy]
+python_version = "3.10"
+files = ["src", "tests"]
+mypy_path = "src"
+explicit_package_bases = true
+strict = true

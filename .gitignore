@@ -1,0 +1,30 @@
+# Ambiente e pacotes
+.venv/
+*.egg-info/
+build/
+dist/
+
+# Caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Cobertura (o resumo em resultados/cobertura.txt é versionado como evidência)
+.coverage
+.coverage.*
+htmlcov/
+resultados/cobertura/
+
+# Logs de execução (um arquivo por execução; a evidência final vai para resultados/)
+logs/*.log
+
+# Editores e sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Configuração local do Claude Code
+.claude/settings.local.json
