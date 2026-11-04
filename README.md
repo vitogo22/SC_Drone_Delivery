@@ -1,33 +1,73 @@
 # UNIBRASIL Surveyor
 
-**Equipe**
-- Integrante 1: Vitor Hugo Viana Mondequi — RA 2024100142 — CEP extra 24100142
-- Integrante 2: Matheus Dominguez Biesek — RA 2024100467 — CEP extra 24100467
+Plano de voo de um drone que fotografa CEPs de Curitiba e volta ao campus UniBrasil, otimizado por **algoritmo genético** (Serviços Cognitivos, atividade discente supervisionada 2, Prof. Mozart Hasse).
 
-Projeto acadêmico em Python para gerar um plano de voo de drone por algoritmo genético.
+## Equipe
+
+| Nome completo | Matrícula | CEP da coordenada extra |
+|---|---|---|
+| Vitor Hugo Viana Mondequi | 2024100142 | 24100142 |
+| Matheus Dominguez Biesek | 2024100467 | 24100467 |
 
 ## Requisitos
-- Python 3.10 ou superior
+
+- Linux com Python **3.10 ou superior** (`python3 --version`).
+- Módulo `venv`. No Debian/Ubuntu, se `python3 -m venv` falhar: `sudo apt install python3-venv`.
+- O programa usa só a biblioteca padrão do Python. O `pip` instala apenas as ferramentas de teste.
 
 ## Instalação
+
 ```bash
-python -m venv .venv
-# Windows:
-.venv\\Scripts\\activate
-# Linux/macOS:
+python3 -m venv .venv
 source .venv/bin/activate
-
-pip install -r requirements.txt
+pip install -e ".[dev]"
 ```
 
-## Verificação inicial
+## Reproduzir o resultado entregue
+
 ```bash
-pytest
-python -m surveyor --help
+python -m surveyor otimizar --semente 42    # gera resultados/plano_de_voo.csv e resultados/progresso.csv
+python -m surveyor validar                  # confere o plano de forma independente (bateria, horários, CEPs)
 ```
+
+- **Reprodução parcial (1 a 2 minutos):** `python -m surveyor otimizar --rapido`.
+- **Sem instalar nada:** `PYTHONPATH=src python3 -m surveyor otimizar --rapido`.
+- **Todas as opções:** `python -m surveyor --help` e `python -m surveyor otimizar --help`.
+
+O resultado entregue, com o log da execução, o progresso por geração, os gráficos e a saída do validador, está em `resultados/`. Cada execução também grava um log em `logs/surveyor_<data>_<hora>.log`.
+
+## Testes e cobertura
+
+```bash
+python -m pytest                                        # todos os testes
+python -m pytest --cov --cov-report=term-missing        # com o percentual de cobertura
+```
+
+A evidência de cobertura da versão entregue está em `resultados/cobertura.txt`.
 
 ## Estrutura
-Consulte a estrutura de diretórios do projeto. Os módulos das próximas etapas estão criados como esqueleto e serão implementados conforme o plano, uma etapa por vez.
 
-## Decisões
-As decisões D1 a D8 estão registradas em `docs/decisoes.md` e centralizadas em `surveyor/config.py`.
+Clean Architecture em quatro camadas. A dependência sempre aponta para o domínio:
+
+```
+src/surveyor/
+├── dominio/          regras de negócio: regras do enunciado, modelos, cálculos, simulador, validação
+├── otimizacao/       algoritmo genético (parâmetros, cromossomo, operadores, fitness, laço)
+├── aplicacao/        casos de uso: otimizar_rota e validar_plano
+├── infraestrutura/   arquivos CSV e logs (política de logs e monitor de progresso)
+└── interface/        linha de comando
+tests/
+├── unidade/          espelha src/surveyor/
+├── integracao/       executa o programa de ponta a ponta
+└── test_arquitetura.py
+dados/                entradas (coordenadas do AVA, coordenadas extras, vento)
+docs/                 decisões, arquitetura, coordenadas extras, codificação, experimentos
+resultados/           plano de voo e evidências de execução e de cobertura
+```
+
+## Documentação
+
+- [`docs/decisoes.md`](docs/decisoes.md): regras do enunciado e interpretações adotadas.
+- [`docs/arquitetura.md`](docs/arquitetura.md): camadas, política de logs, convenções e testes.
+- [`docs/coordenadas_extras.md`](docs/coordenadas_extras.md): coordenadas extras da equipe.
+- [`docs/experimentos.md`](docs/experimentos.md): parâmetros testados no algoritmo genético.
