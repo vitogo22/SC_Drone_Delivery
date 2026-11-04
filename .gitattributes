@@ -1,0 +1,7 @@
+# Fim de linha LF em todos os textos (evita CRLF vindo do Windows quebrar CSVs e scripts)
+* text=auto eol=lf
+*.pdf binary
+*.png binary
+*.zip binary
+
+# O conteúdo do ZIP de entrega é uma lista fechada no Makefile (CONTEUDO_ENTREGA).
