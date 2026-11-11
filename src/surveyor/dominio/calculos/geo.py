@@ -7,6 +7,7 @@ API prevista:
 """
 
 import math
+from collections.abc import Sequence
 
 from surveyor.dominio.modelos import Coordenada
 from surveyor.dominio.regras import Regras
@@ -35,3 +36,17 @@ def rumo_graus(origem: Coordenada, destino: Coordenada) -> float:
         math.cos(phi1) * math.sin(phi2) - math.sin(phi1) * math.cos(phi2) * math.cos(delta_lambda),
     )
     return math.degrees(theta) % 360
+
+
+def matriz_distancias_km(
+    pontos: Sequence[Coordenada], regras: Regras
+) -> tuple[tuple[float, ...], ...]:
+    """Distância de `pontos[i]` a `pontos[j]` na posição [i][j], calculada uma única vez."""
+    return tuple(
+        tuple(distancia_km(origem, destino, regras) for destino in pontos) for origem in pontos
+    )
+
+
+def matriz_rumos_graus(pontos: Sequence[Coordenada]) -> tuple[tuple[float, ...], ...]:
+    """Rumo de `pontos[i]` para `pontos[j]` na posição [i][j], calculado uma única vez."""
+    return tuple(tuple(rumo_graus(origem, destino) for destino in pontos) for origem in pontos)

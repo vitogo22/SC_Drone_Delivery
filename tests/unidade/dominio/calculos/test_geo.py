@@ -2,7 +2,12 @@ import math
 
 import pytest
 
-from surveyor.dominio.calculos.geo import distancia_km, rumo_graus
+from surveyor.dominio.calculos.geo import (
+    distancia_km,
+    matriz_distancias_km,
+    matriz_rumos_graus,
+    rumo_graus,
+)
 from surveyor.dominio.modelos import Coordenada
 from surveyor.dominio.regras import Regras
 
@@ -59,3 +64,37 @@ def test_rumo_fica_entre_0_e_360() -> None:
     rumo = rumo_graus(CENTRO, destino)
 
     assert 180 < rumo < 270
+
+
+PONTOS = (CAMPUS, OUTRO_PONTO, CENTRO)
+
+
+def test_matriz_de_distancias_tem_cada_par_na_posicao_dos_pontos() -> None:
+    regras = Regras()
+
+    matriz = matriz_distancias_km(PONTOS, regras)
+
+    assert len(matriz) == len(PONTOS)
+    for i, origem in enumerate(PONTOS):
+        assert len(matriz[i]) == len(PONTOS)
+        for j, destino in enumerate(PONTOS):
+            assert matriz[i][j] == distancia_km(origem, destino, regras)
+
+
+def test_matriz_de_distancias_tem_diagonal_zero_e_e_simetrica() -> None:
+    matriz = matriz_distancias_km(PONTOS, Regras())
+
+    for i in range(len(PONTOS)):
+        assert matriz[i][i] == 0
+        for j in range(len(PONTOS)):
+            assert matriz[i][j] == matriz[j][i]
+
+
+def test_matriz_de_rumos_tem_cada_par_na_posicao_dos_pontos() -> None:
+    matriz = matriz_rumos_graus(PONTOS)
+
+    assert len(matriz) == len(PONTOS)
+    for i, origem in enumerate(PONTOS):
+        assert len(matriz[i]) == len(PONTOS)
+        for j, destino in enumerate(PONTOS):
+            assert matriz[i][j] == rumo_graus(origem, destino)

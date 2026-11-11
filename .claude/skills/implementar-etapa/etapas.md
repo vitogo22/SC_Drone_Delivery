@@ -77,7 +77,7 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 - [x] 3.2 Implementar Haversine: `a = sin²(Δφ/2) + cos φ1 · cos φ2 · sin²(Δλ/2)`; `d = 2 · R · atan2(√a, √(1 − a))`, com φ e λ **em radianos** e `R = regras.raio_terra_km` (6371).
 - [x] 3.3 Testes de `rumo_graus`: norte = 0, sul = 180, leste ≈ 90, oeste ≈ 270.
 - [x] 3.4 Implementar `θ = atan2(sin Δλ · cos φ2, cos φ1 · sin φ2 − sin φ1 · cos φ2 · cos Δλ)` em graus, módulo 360.
-- [ ] 3.5 Matrizes N×N pré-calculadas de distância e de rumo. Testar diagonal zero e simetria da distância.
+- [x] 3.5 Matrizes N×N pré-calculadas de distância e de rumo. Testar diagonal zero e simetria da distância.
 - [ ] 3.6 Fechamento.
 
 ## Etapa 4 — Vento
