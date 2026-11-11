@@ -1,9 +1,10 @@
 """Tempo e custo (Etapa 5).
 
-API prevista:
-- tempo_trecho_s(distancia_km, v_solo_kmh) -> int   # teto em segundos (tolerância de float)
-- taxa_pouso_reais(hora_final_s, regras) -> float   # R$ 80, + R$ 80 depois de 17:00:00 (A11)
-- custo_total(plano, regras, operacao) -> float     # horas x valor_hora + R$ dos pousos (A4)
+- `tempo_trecho_s`: segundos do trecho pela velocidade em solo, arredondados para cima;
+  `TOLERANCIA_S` impede que o ruído do float suba 1 s.
+- `taxa_pouso_reais`: R$ 80 por pouso, mais R$ 80 se a Hora final passar de 17:00:00;
+  17:00:00 em ponto não paga a taxa adicional (A11).
+- `custo_total`: horas no ar x valor da hora + R$ dos pousos (A4); a espera em solo não entra (A5).
 """
 
 import math

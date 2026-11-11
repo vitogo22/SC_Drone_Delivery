@@ -1,10 +1,12 @@
 """Bateria: autonomia e consumo (Etapa 5).
 
-API prevista:
-- autonomia_s(v_kmh, regras) -> float               # 5000 x fator x (36 / v)^2
-- consumo(duracao_s, v_kmh, regras) -> float        # fração da bateria, em trecho ou parada
-A parada gasta na taxa da velocidade do trecho que chega ao ponto (A1).
-A velocidade é sempre a ajustada (antes do vento), nunca a velocidade em solo.
+- `autonomia_s`: segundos de voo com a bateria cheia, 5000 x fator x (36 / v)^2 (A3), pela
+  fórmula exata, sem arredondar (A16).
+- `consumo`: fração da bateria (0 a 1) gasta numa duração. Vale para o trecho e para a parada,
+  que gasta na taxa da velocidade do trecho que chega ao ponto (A1).
+
+A velocidade é sempre a ajustada (36, 40, ..., 80 km/h, antes do vento), nunca a velocidade em
+solo; qualquer outra levanta ValueError (A7).
 """
 
 from surveyor.dominio.regras import Regras
