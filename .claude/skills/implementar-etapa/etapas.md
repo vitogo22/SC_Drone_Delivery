@@ -60,12 +60,12 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 
 - [x] 2.1 Testes de `validar_extra(extra, matricula, base, regras) -> list[str]`. Cada caso deve ser rejeitado: 12 casas, final diferente da matrícula, a 99 m de um ponto, a 1501 m do ponto mais próximo do professor, CEP diferente dos 8 últimos dígitos. E um caso válido deve passar.
 - [x] 2.2 Implementar `validar_extra` (usa `geo.distancia_km`).
-- [ ] 2.3 Cada integrante escolhe a sua coordenada (CEPs **24100142** e **24100467**):
+- [x] 2.3 Cada integrante escolhe a sua coordenada (CEPs **24100142** e **24100467**):
   1. no mapa, ache um local sem pontos, a 300–1000 m de algum ponto do professor (folga para as regras de 100 m e 1500 m);
   2. latitude com 13 casas = 5 casas livres + os 8 dígitos da matrícula (ex.: `-25.43871` + `24100142` = `-25.4387124100142`);
   3. longitude também com exatamente 13 casas;
   4. se o validador recusar, mova o ponto e repita.
-- [ ] 2.4 Gravar `dados/extras.csv` (`cep,longitude,latitude`) e validar as duas juntas: a distância entre elas também precisa ser de pelo menos 100 m.
+- [x] 2.4 Gravar `dados/extras.csv` (`cep,longitude,latitude`) e validar as duas juntas: a distância entre elas também precisa ser de pelo menos 100 m.
 - [ ] 2.5 Comando `python -m surveyor extras`: valida e imprime a tabela de `docs/coordenadas_extras.md` (integrante, matrícula, CEP, latitude, longitude, ponto mais próximo e distância em metros na base consolidada). Atualizar o documento com essa saída.
 - [ ] 2.6 Fechamento.
 
