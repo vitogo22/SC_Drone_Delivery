@@ -1,9 +1,10 @@
 """Geodésia: distância Haversine e rumo entre coordenadas (Etapa 3).
 
-API prevista:
-- distancia_km(origem, destino, regras) -> float   # Haversine, R = regras.raio_terra_km
-- rumo_graus(origem, destino) -> float             # 0 a 360, a partir do Norte, sentido horário
-- matrizes pré-calculadas de distância e rumo, indexadas pela posição do ponto
+- `distancia_km(origem, destino, regras)`: Haversine, graus em radianos, R = 6371 km (A19).
+- `rumo_graus(origem, destino)`: rumo inicial, 0 = Norte, sentido horário, de 0 a 360.
+  O vento (Etapa 4) usa o rumo para decompor a velocidade no triângulo (A2).
+- `matriz_distancias_km` e `matriz_rumos_graus`: os mesmos valores para todos os pares,
+  calculados uma vez e indexados pela posição do ponto na lista.
 """
 
 import math
