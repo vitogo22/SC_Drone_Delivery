@@ -88,7 +88,7 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 - [x] 4.3 `bloco_do_horario(hora_saida_s)` pela hora de **saída**. Testes: 08:59:00 → 6; 09:21:00 → 9; 18:59:59 → 18; antes de 06:00:00 → `ValueError`.
 - [x] 4.4 Soma vetorial: **não** vira função, porque nada a usaria (código sem uso é penalizado) e o modelo é o triângulo (A2). O valor do enunciado pela soma (`41.0026532396`) fica registrado no teste do triângulo como o que **não** deve sair.
 - [x] 4.5 `velocidade_solo_kmh` pelo triângulo (A2): `α = (dir + 180) − rumo`; `v_solo = w·cos α + √(v² − (w·sin α)²)`. Testes: o exemplo dá `39.3372461072`; vento 0 → `v`; a favor puro → `v + w`; contra puro → `v − w`.
-- [ ] 4.6 Fechamento.
+- [x] 4.6 Fechamento.
 
 ## Etapa 5 — Bateria, tempo e custo
 **Módulos:** `dominio/calculos/bateria.py`, `dominio/calculos/custo.py` · **Depende de:** 0
