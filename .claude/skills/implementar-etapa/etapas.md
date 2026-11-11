@@ -58,8 +58,8 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 ## Etapa 2 — Coordenadas extras da equipe
 **Módulos:** `dominio/validacao/extras.py`, `dados/extras.csv`, `docs/coordenadas_extras.md` · **Depende de:** 1, 3
 
-- [ ] 2.1 Testes de `validar_extra(extra, matricula, base, regras) -> list[str]`. Cada caso deve ser rejeitado: 12 casas, final diferente da matrícula, a 99 m de um ponto, a 1501 m do ponto mais próximo do professor, CEP diferente dos 8 últimos dígitos. E um caso válido deve passar.
-- [ ] 2.2 Implementar `validar_extra` (usa `geo.distancia_km`).
+- [x] 2.1 Testes de `validar_extra(extra, matricula, base, regras) -> list[str]`. Cada caso deve ser rejeitado: 12 casas, final diferente da matrícula, a 99 m de um ponto, a 1501 m do ponto mais próximo do professor, CEP diferente dos 8 últimos dígitos. E um caso válido deve passar.
+- [x] 2.2 Implementar `validar_extra` (usa `geo.distancia_km`).
 - [ ] 2.3 Cada integrante escolhe a sua coordenada (CEPs **24100142** e **24100467**):
   1. no mapa, ache um local sem pontos, a 300–1000 m de algum ponto do professor (folga para as regras de 100 m e 1500 m);
   2. latitude com 13 casas = 5 casas livres + os 8 dígitos da matrícula (ex.: `-25.43871` + `24100142` = `-25.4387124100142`);

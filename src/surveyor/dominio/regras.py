@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from surveyor.dominio.erros import ErroConfiguracao
 
 SEGUNDOS_POR_HORA = 3600
+METROS_POR_KM = 1000
 
 
 @dataclass(frozen=True)
@@ -35,6 +36,7 @@ class Regras:
     distancia_minima_extra_m: float = 100.0
     distancia_maxima_extra_m: float = 1500.0
     casas_decimais_coordenada: int = 13
+    digitos_finais_matricula: int = 8  # o CEP e o final da coordenada extra
 
 
 @dataclass(frozen=True)
