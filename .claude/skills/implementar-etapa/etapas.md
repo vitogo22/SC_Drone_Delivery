@@ -1,16 +1,15 @@
 # Etapas do projeto: passo a passo com micro passos
 
 Como usar:
-- Cada etapa é uma demanda, com o seu próprio ramo e PR (skill `desenvolver-demanda`).
-- Os micro passos são as caixas `- [ ]`. O PR da etapa marca `[x]` **só na seção da própria etapa**, para não gerar conflito com outros ramos.
-- O estado oficial é o da `origin/main`. Para ver o resumo, rode `.claude/skills/desenvolver-demanda/painel.sh`.
+- Fluxo solo, direto na `main` (skill `desenvolver-demanda`): um commit por micro passo, e cada commit marca o `[x]` do seu micro passo.
+- Os micro passos são as caixas `- [ ]`. Para ver o resumo, rode `.claude/skills/desenvolver-demanda/painel.sh`. A ordem das etapas está no `CLAUDE.md`.
 - Os caminhos são relativos a `src/surveyor/`, os códigos A# remetem a `docs/decisoes.md` e o contexto do trabalho está em [trabalho.md](trabalho.md).
 
 Todo micro passo de código segue a mesma ordem: **teste primeiro → implementação mínima → `make testar`**. O último micro passo de cada etapa é sempre o **fechamento**:
 1. trocar a "API prevista" da docstring do módulo pela descrição real;
 2. `make verificar` verde;
 3. revisar o diff com [armadilhas.md](armadilhas.md);
-4. abrir o PR pela skill `desenvolver-demanda`.
+4. commit do fechamento e resposta curta com a próxima etapa (skill `desenvolver-demanda`).
 
 | Etapa | Depende de | Pode andar junto com |
 |---|---|---|

@@ -50,17 +50,13 @@ O enunciado não informa a **data de entrega**. As decisões A1–A13 de `docs/d
 >
 > Obrigado!
 
-## Divisão sugerida da dupla
+## Ordem das etapas (fluxo solo)
 
-Proposta (confirmar entre vocês; ajuste aqui por PR se mudar):
+Desde 2026-11-10, o Matheus faz as etapas sozinho, direto na `main` (ver `CLAUDE.md`). O painel (`.claude/skills/desenvolver-demanda/painel.sh`) mostra o que já está feito.
 
-| Quem | Etapas, em ordem | Por quê |
-|---|---|---|
-| **Vitor** | 3 Geo → 5 Bateria e custo → 4 Vento → 9 CSV e validador | São funções puras com oráculos exatos, ótimas para praticar teste primeiro. O validador fica com quem não escreveu o simulador |
-| **Matheus** | 1 Dados → 7 Cromossomo → 6 Simulador → 8 GA → 10 Experimentos | O núcleo mais complexo e encadeado |
-| **Cada um** | 2.3 escolher a própria coordenada extra | Regra do enunciado: uma por integrante, com a própria matrícula |
-| **Juntos** | 11 Cobertura (contínua) e 12 Entrega | Responsabilidade da equipe |
+5 Bateria e custo → 2 Coordenadas extras → 7 Cromossomo → 6 Simulador → 9 CSV e validador → 8 Algoritmo genético → 10 Experimentos → 12 Entrega. A 11 (cobertura) é contínua.
 
-Todo código é revisado pelo outro integrante antes do merge (skill `revisar-pr`). Antes das etapas, cada um faz a própria fila de onboarding (`.claude/skills/proximo-passo/onboarding.md`).
+- A 2 vem cedo porque a 2.3 depende de escolher as coordenadas no mapa: uma por integrante, cada uma ligada à própria matrícula.
+- O validador (Etapa 9) continua **sem importar o simulador**, para conferir o plano de forma independente.
 
 O checklist final de entrega e a montagem do ZIP estão na skill `preparar-entrega`.

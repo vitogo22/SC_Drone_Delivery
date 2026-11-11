@@ -1,16 +1,16 @@
 ---
 name: implementar-etapa
-description: Guia técnico para implementar ou revisar o código de uma etapa do UNIBRASIL Surveyor (dados, coordenadas extras, geo, vento, bateria, custo, simulador, cromossomo, algoritmo genético, CSV, validador, experimentos, cobertura), micro passo por micro passo, com testes primeiro, camadas respeitadas e `make verificar` verde. É usada DENTRO da skill desenvolver-demanda, que cuida de ramo e PR. Aceita o número ou o nome da etapa (ex.: "3" ou "vento").
+description: Guia técnico para implementar ou revisar o código de uma etapa do UNIBRASIL Surveyor (dados, coordenadas extras, geo, vento, bateria, custo, simulador, cromossomo, algoritmo genético, CSV, validador, experimentos, cobertura), micro passo por micro passo, com testes primeiro, camadas respeitadas e `make verificar` verde. É usada DENTRO da skill desenvolver-demanda, que cuida dos commits na main (fluxo solo). Aceita o número ou o nome da etapa (ex.: "3" ou "vento").
 ---
 
 # Implementar uma etapa
 
-Objetivo: entregar cada micro passo correto pelo contrato, coberto por testes de comportamento e sem código irrelevante, que o professor penaliza. **Ramo, commits e PR são da skill `desenvolver-demanda`.** Se ninguém criou um ramo para a demanda, comece por ela.
+Objetivo: entregar cada micro passo correto pelo contrato, coberto por testes de comportamento e sem código irrelevante, que o professor penaliza. **Commits são da skill `desenvolver-demanda`** (fluxo solo: direto na `main`, sem ramo nem PR). Respostas curtas: não mostre o painel abaixo inteiro, só o micro passo atual e o próximo.
 
 ## Painel (mostrar ao começar, a cada micro passo concluído e ao terminar)
 
 ```
-PASSO ATUAL: Etapa 3 — Geodésia  (ramo etapa-03-geo)
+PASSO ATUAL: Etapa 3 — Geodésia
 Micro passos:
   [x] 3.1 Testes de distancia_km
   [>] 3.2 Implementar Haversine          <- agora
@@ -34,7 +34,7 @@ Os micro passos e os oráculos vêm de [etapas.md](etapas.md). `[>]` marca o que
 - [ ] 2.1 **Teste primeiro** em `tests/unidade/<mesmo caminho do módulo>/test_<modulo>.py` (arquivo `test_*.py`, funções `test_*`, que é como o pytest do pipeline os descobre), com os oráculos exatos de [etapas.md](etapas.md). Rode `make testar` e confira que ele falha pelo motivo certo. **Sem teste não há micro passo de código.**
 - [ ] 2.2 **Implementação mínima** no módulo indicado, respeitando as camadas.
 - [ ] 2.3 `make testar` verde.
-- [ ] 2.4 Commit do micro passo, com o código **e o teste juntos**, e `[x]` na seção da etapa (como manda a skill `desenvolver-demanda`). Atualize o painel.
+- [ ] 2.4 Commit do micro passo, com o código **e o teste juntos**, e `[x]` na seção da etapa (como manda a skill `desenvolver-demanda`).
 
 ## Passo 3 — Fechamento da etapa
 - [ ] 3.1 Trocar a "API prevista" da docstring do módulo pela descrição real.
@@ -42,13 +42,13 @@ Os micro passos e os oráculos vêm de [etapas.md](etapas.md). `[>]` marca o que
 - [ ] 3.3 Os testes da etapa rodam no pipeline:
   - estão em `tests/` com nome `test_*.py`;
   - nenhum `skip`/`xfail` sem motivo escrito;
-  - se a etapa trouxe dependência, marcador, arquivo de dados ou comando novo, `pyproject.toml` e/ou `.github/workflows/ci.yml` foram ajustados no mesmo PR (seção "Testes e pipeline" da skill `desenvolver-demanda`).
+  - se a etapa trouxe dependência, marcador, arquivo de dados ou comando novo, `pyproject.toml` e/ou `.github/workflows/ci.yml` foram ajustados no mesmo commit (seção "Pipeline do GitHub" da skill `desenvolver-demanda`).
 - [ ] 3.4 Revisar o diff com [armadilhas.md](armadilhas.md), item por item.
 - [ ] 3.5 Documentação:
   - hipótese nova → `docs/decisoes.md`;
   - comando novo → `README.md`;
   - dependência nova → `pyproject.toml`, com justificativa.
-- [ ] 3.6 Voltar à skill `desenvolver-demanda` (verificação final, PR e pipeline verde) e mostrar o painel com os próximos passos.
+- [ ] 3.6 Voltar à skill `desenvolver-demanda` (commit do fechamento e resposta curta com a próxima etapa).
 
 ## Regras de código (detalhes em docs/arquitetura.md)
 - `dominio/` só tem funções puras: sem I/O, CLI ou configuração de logging. A configuração chega por argumento (`regras`, `operacao`).
@@ -67,10 +67,6 @@ Os micro passos e os oráculos vêm de [etapas.md](etapas.md). `[>]` marca o que
 - Dados pequenos no próprio teste ou em `tmp_path`. Teste unitário nunca lê `dados/coordenadas.csv`; o que lê o arquivo real vai para `tests/integracao/`.
 - Teste demorado leva `@pytest.mark.lento`.
 - Fixture usada por um só arquivo fica nele. Só vai para um `tests/conftest.py` quando dois ou mais arquivos a usam.
-
-## Revisão de PR
-
-Para revisar o PR de alguém, use a skill `revisar-pr`. Ela traz o passo a passo, o checklist, o modelo de comentário e como aprovar.
 
 ## Arquivos desta skill
 - [etapas.md](etapas.md): etapas 0–12 com micro passos, oráculos e dependências.

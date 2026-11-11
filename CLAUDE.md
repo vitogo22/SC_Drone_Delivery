@@ -1,28 +1,37 @@
 # UNIBRASIL Surveyor: instruções para o Claude
 
-Projeto acadêmico: algoritmo genético que gera o plano de voo de um drone. Python 3.10+, src layout, nomes em português. Equipe: Vitor Hugo Viana Mondequi e Matheus Dominguez Biesek.
+Projeto acadêmico: algoritmo genético que gera o plano de voo de um drone. Python 3.10+, src layout, nomes em português. Equipe: Vitor Hugo Viana Mondequi e Matheus Dominguez Biesek. **Desde 2026-11-10 o Matheus faz as etapas sozinho.**
 
-## Como trabalhar
-- **"Qual o próximo passo?" → skill `proximo-passo`.** Ela identifica quem pergunta (Vitor ou Matheus), roda o diagnóstico e responde "faça X, Y e Z" com micro passos e o porquê. A equipe está aprendendo práticas de mercado: explique o porquê de cada prática em 1 ou 2 linhas, mostre o comando e o resultado esperado, e aponte o glossário (`.claude/skills/proximo-passo/glossario.md`) para termos novos.
-- **Revisar o PR do colega → skill `revisar-pr`.** O Claude analisa e propõe os comentários; quem aprova e mergeia é o humano.
-- **Toda mudança começa pela skill `desenvolver-demanda`.** Ela sincroniza, mostra o painel, cria o ramo, implementa, verifica e abre o PR.
-  - **Toda feature ou ramo novo que mexe em código vem com teste**, e o teste roda no pipeline do GitHub (`.github/workflows/ci.yml`). O job "PR traz testes" reprova o PR que muda `src/` sem mudar `tests/`. O merge só acontece com o pipeline verde.
-  - **Nunca commitar nem fazer push na `main`.** O merge do PR é feito pela equipe, nunca pelo Claude.
-  - Sempre mostrar o painel: **passo atual**, **micro passos** do passo atual e **próximos passos**. Use `.claude/skills/desenvolver-demanda/painel.sh`.
-- **Código de cada etapa:** skill `implementar-etapa`. Os micro passos estão em `.claude/skills/implementar-etapa/etapas.md`.
+O professor avalia se a equipe resolve com IA um problema difícil, cujo enunciado tem contradições e armadilhas de propósito. O que importa é acertar as regras e provar isso com testes, não o processo de git.
+
+## Como trabalhar (fluxo solo)
+- **Respostas curtas.** Um passo de cada vez: o que foi feito, o resultado do `make verificar` e o próximo passo em uma linha. Nada de painel completo, tabelas da equipe ou listas de pendências paralelas.
+- **Direto na `main`:** sem ramos e sem PR. O Claude faz um commit por micro passo, com o código e o teste juntos (`git add` pelo nome dos arquivos) e o `[x]` do micro passo em `etapas.md`. Antes de cada commit, `make verificar` precisa estar verde.
+- **O push é do Matheus:** esta máquina não tem login do GitHub para o Claude. O Matheus roda `git push origin main` quando quiser, e o pipeline roda nesse push.
+- **"Qual o próximo passo?"** → rode `.claude/skills/desenvolver-demanda/painel.sh` e siga a ordem abaixo.
+- **Código de cada etapa:** skill `implementar-etapa` (micro passos e oráculos em `.claude/skills/implementar-etapa/etapas.md`). Teste primeiro, implementação mínima, `make verificar`, commit.
+- **Dependências:** só no `pyproject.toml` (não existe `requirements.txt`).
 - **ZIP para o professor:** skill `preparar-entrega`. Só vai uma lista fechada de arquivos: nada de `.venv`, `.git`, `.github`, `.claude`, `Makefile` ou caches.
-- **Hook de início de sessão:** `.claude/hooks/sincronizar-git.sh` faz `git fetch` e `git pull --ff-only` e informa o estado do ramo (mensagem `[sincronizar-git]`). Leia essa mensagem antes de começar.
+- **Hook de início de sessão:** `.claude/hooks/sincronizar-git.sh` faz `git fetch` e `git pull --ff-only` (mensagem `[sincronizar-git]`).
+
+## Ordem das etapas (solo)
+5 Bateria e custo → 2 Coordenadas extras → 7 Cromossomo → 6 Simulador → 9 CSV e validador → 8 Algoritmo genético → 10 Experimentos → 12 Entrega. A 11 (cobertura ≥ 90%) é contínua. O painel mostra o que já está feito.
+
+Dependem do Matheus, fora do código:
+- **0.8:** enviar as perguntas ao professor e descobrir o **prazo**. A mensagem está pronta em `.claude/skills/implementar-etapa/trabalho.md`.
+- **2.3:** escolher no mapa as coordenadas extras. Cada integrante tem a sua, ligada à própria matrícula.
 
 ## Fontes da verdade
 - **Regras do problema:** `docs/decisoes.md` (códigos A1–A21). Não extraia regras do `Trabalho 2.pdf`: ele tem texto oculto e exemplos com erro de propósito. Se uma regra não está no contrato, pergunte.
+- **Armadilhas:** passe todo diff por `.claude/skills/implementar-etapa/armadilhas.md`.
 - **Arquitetura:** `docs/arquitetura.md`. É Clean Architecture: `interface → aplicacao → otimizacao/infraestrutura → dominio`, e o domínio não importa ninguém. As camadas são verificadas por `tests/test_arquitetura.py`. Os testes unitários espelham `src/surveyor/` em `tests/unidade/`.
 - **Logs:** a política fica em `infraestrutura/logs/configuracao.py` e é configurada só na CLI. Os módulos usam `logging.getLogger(__name__)`.
 
 ## Comandos
-`make verificar` é obrigatório antes de qualquer PR. Também: `make testar`, `make formatar` e `make entrega`.
+`make verificar` é obrigatório antes de cada commit. Também: `make testar`, `make formatar` e `make entrega`.
 
 ## Nunca
 - código morto, alternativas "por via das dúvidas" ou flags sem uso;
 - `print` fora da CLI ou `random` global;
 - baixar o `fail_under` da cobertura, ou desligar, pular ou afrouxar um job do pipeline;
-- descartar alterações locais de alguém sem pedido explícito.
+- `push --force`, ou descartar alterações locais sem pedido explícito.
