@@ -1,10 +1,13 @@
 """Leitura e validação dos CSVs de entrada (Etapas 1 e 4).
 
-API prevista:
-- ler_coordenadas(caminho, regras) -> list[Coordenada]  # cep, longitude, latitude (nesta ordem)
-- ler_extras(caminho) -> list[Coordenada]          # pode_pousar=False (A6)
-- ler_vento(caminho) -> tabela por (dia, bloco)
-Problemas de formato viram ErroDados com nome do arquivo e número da linha.
+- `ler_coordenadas(caminho, regras)`: arquivo do professor, com o campus obrigatório.
+- `ler_extras(caminho)`: coordenadas da equipe, todas com `pode_pousar=False` (A6).
+
+Os dois usam o formato `cep,longitude,latitude` (a longitude vem antes) e guardam CEP e
+coordenadas como texto, para saírem idênticos no CSV do plano. CEP repetido ou inválido,
+coluna ou valor faltando viram `ErroDados` com o arquivo e o número da linha.
+
+Prevista para a Etapa 4: `ler_vento(caminho)` -> tabela por (dia, bloco).
 """
 
 import csv
