@@ -19,13 +19,18 @@ COLUNAS_COORDENADAS = ("cep", "longitude", "latitude")
 
 def ler_coordenadas(caminho: Path, regras: Regras) -> list[Coordenada]:
     """Lê o CSV do professor; o campus precisa estar na lista."""
-    coordenadas = _ler_pontos(caminho)
+    coordenadas = _ler_pontos(caminho, pode_pousar=True)
     if all(coordenada.cep != regras.cep_campus for coordenada in coordenadas):
         raise ErroDados(f"{caminho}: campus {regras.cep_campus} ausente")
     return coordenadas
 
 
-def _ler_pontos(caminho: Path) -> list[Coordenada]:
+def ler_extras(caminho: Path) -> list[Coordenada]:
+    """Lê as coordenadas extras da equipe, no mesmo formato do CSV do professor."""
+    return _ler_pontos(caminho, pode_pousar=False)  # A6: nas extras o drone só fotografa
+
+
+def _ler_pontos(caminho: Path, *, pode_pousar: bool) -> list[Coordenada]:
     """Lê um CSV `cep,longitude,latitude` mantendo CEP e coordenadas como texto original."""
     pontos: list[Coordenada] = []
     linha_do_cep: dict[str, int] = {}
@@ -47,6 +52,7 @@ def _ler_pontos(caminho: Path) -> list[Coordenada]:
                     cep=linha["cep"],
                     latitude_texto=linha["latitude"],
                     longitude_texto=linha["longitude"],
+                    pode_pousar=pode_pousar,
                 )
             except ValueError as erro:
                 raise ErroDados(f"{onde}: {erro}") from erro

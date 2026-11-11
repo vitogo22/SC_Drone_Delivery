@@ -5,7 +5,7 @@ import pytest
 from surveyor.dominio.erros import ErroDados
 from surveyor.dominio.modelos import Coordenada
 from surveyor.dominio.regras import Regras
-from surveyor.infraestrutura.arquivos.leitor_csv import ler_coordenadas
+from surveyor.infraestrutura.arquivos.leitor_csv import ler_coordenadas, ler_extras
 
 CABECALHO = "cep,longitude,latitude\n"  # mesmo formato do arquivo do professor
 CAMPUS = "82821020,-49.2160678044742,-25.4233146347775\n"
@@ -87,3 +87,28 @@ def test_ler_coordenadas_rejeita_arquivo_com_problema_apontando_arquivo_e_linha(
     mensagem = str(erro.value)
     assert mensagem.startswith(str(caminho))  # o usuário sabe qual arquivo corrigir
     assert motivo in mensagem
+
+
+def test_ler_extras_marca_todos_os_pontos_como_sem_pouso(tmp_path: Path) -> None:
+    # Sem o campus: o arquivo de extras só tem as coordenadas da equipe.
+    caminho = _gravar_csv(
+        tmp_path,
+        CABECALHO
+        + "24100142,-49.2200000000000,-25.4387124100142\n"
+        + "24100467,-49.2400000000000,-25.4412324100467\n",
+    )
+
+    extras = ler_extras(caminho)
+
+    assert extras == [
+        Coordenada("24100142", "-25.4387124100142", "-49.2200000000000", pode_pousar=False),
+        Coordenada("24100467", "-25.4412324100467", "-49.2400000000000", pode_pousar=False),
+    ]  # A6: nas extras o drone só fotografa
+
+
+def test_ler_extras_rejeita_arquivo_com_problema(tmp_path: Path) -> None:
+    extra = "24100142,-49.2200000000000,-25.4387124100142\n"
+    caminho = _gravar_csv(tmp_path, CABECALHO + extra + extra)
+
+    with pytest.raises(ErroDados, match="linha 3: CEP 24100142 repetido"):
+        ler_extras(caminho)
