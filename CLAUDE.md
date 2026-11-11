@@ -5,6 +5,7 @@ Projeto acadêmico: algoritmo genético que gera o plano de voo de um drone. Pyt
 O professor avalia se a equipe resolve com IA um problema difícil, cujo enunciado tem contradições e armadilhas de propósito. O que importa é acertar as regras e provar isso com testes, não o processo de git.
 
 ## Como trabalhar (fluxo solo)
+- **O que depende do Matheus vem em destaque.** Abra a resposta com um bloco "⚠️ PRECISO DE VOCÊ" dizendo exatamente o que ele precisa mandar. Um "pode seguir" depois disso **não** é a resposta: ele responde no automático. Repita o pedido até ele responder e, enquanto isso, só avance no que não depende dele.
 - **Respostas curtas.** Um passo de cada vez: o que foi feito, o resultado do `make verificar` e o próximo passo em uma linha. Nada de painel completo, tabelas da equipe ou listas de pendências paralelas.
 - **Direto na `main`:** sem ramos e sem PR. O Claude faz um commit por micro passo, com o código e o teste juntos (`git add` pelo nome dos arquivos) e o `[x]` do micro passo em `etapas.md`. Antes de cada commit, `make verificar` precisa estar verde.
 - **O push é do Matheus:** esta máquina não tem login do GitHub para o Claude. O Matheus roda `git push origin main` quando quiser, e o pipeline roda nesse push.
