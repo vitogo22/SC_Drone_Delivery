@@ -8,6 +8,9 @@ A tabela vem de dados/vento.csv, lida por surveyor.infraestrutura.arquivos.leito
 
 from dataclasses import dataclass
 
+from surveyor.dominio.calculos.relogio import para_hhmmss
+from surveyor.dominio.regras import SEGUNDOS_POR_HORA, Regras
+
 # Rosa dos ventos de 16 pontos, a partir do Norte em sentido horário (como na tabela Climatempo).
 ROSA_DOS_VENTOS = (
     "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
@@ -33,3 +36,18 @@ class Vento:
     def sopra_para_graus(self) -> float:
         """Para onde o vento empurra o drone: o lado oposto de onde vem."""
         return (self.vem_de_graus + 180) % 360
+
+
+def blocos_de_vento(regras: Regras) -> tuple[int, ...]:
+    """Horas de início dos blocos da tabela que podem ser usados: 6, 9, 12, 15 e 18 (A15)."""
+    inicios_s = range(regras.inicio_voos_s, regras.limite_pouso_s, regras.duracao_bloco_vento_s)
+    return tuple(inicio_s // SEGUNDOS_POR_HORA for inicio_s in inicios_s)
+
+
+def bloco_do_horario(hora_saida_s: int, regras: Regras) -> int:
+    """Bloco da tabela pela hora de SAÍDA do trecho; o vento fica fixo até a chegada."""
+    if not regras.inicio_voos_s <= hora_saida_s < regras.limite_pouso_s:
+        raise ValueError(f"saída fora da janela de voo: {para_hhmmss(hora_saida_s)}")
+    blocos_completos = (hora_saida_s - regras.inicio_voos_s) // regras.duracao_bloco_vento_s
+    inicio_s = regras.inicio_voos_s + blocos_completos * regras.duracao_bloco_vento_s
+    return inicio_s // SEGUNDOS_POR_HORA

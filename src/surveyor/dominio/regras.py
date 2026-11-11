@@ -30,6 +30,7 @@ class Regras:
     taxa_pouso_reais: float = 80.0
     taxa_adicional_reais: float = 80.0
     prazo_dias: int = 7
+    duracao_bloco_vento_s: int = 3 * SEGUNDOS_POR_HORA  # previsão Climatempo em blocos de 3 h
     raio_terra_km: float = 6371.0  # A19
     distancia_minima_extra_m: float = 100.0
     distancia_maxima_extra_m: float = 1500.0
