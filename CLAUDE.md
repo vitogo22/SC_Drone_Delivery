@@ -19,7 +19,7 @@ O professor avalia se a equipe resolve com IA um problema difícil, cujo enuncia
 5 Bateria e custo → 2 Coordenadas extras → 7 Cromossomo → 6 Simulador → 9 CSV e validador → 8 Algoritmo genético → 10 Experimentos → 12 Entrega. A 11 (cobertura ≥ 90%) é contínua. O painel mostra o que já está feito.
 
 Dependem do Matheus, fora do código:
-- **0.8:** enviar as perguntas ao professor e descobrir o **prazo**. A mensagem está pronta em `.claude/skills/implementar-etapa/trabalho.md`.
+- **0.8:** o prazo é **24/11/2026**; falta enviar as perguntas ao professor. A mensagem está pronta em `.claude/skills/implementar-etapa/trabalho.md`.
 - **2.3:** escolher no mapa as coordenadas extras. Cada integrante tem a sua, ligada à própria matrícula.
 
 ## Fontes da verdade

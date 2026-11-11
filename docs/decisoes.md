@@ -52,7 +52,7 @@ Toda hipótese nova recebe um código novo aqui **antes** de virar código.
 | A10 | Bateria que paga os 172 s do pouso | A que chega; o drone decola com 100% | Opção mais segura, e coerente com a Hora final da linha que chega |
 | A11 | Instante do pouso para a taxa das 17h | A Hora final do trecho; 17:00:00 em ponto não paga taxa | "Após as 17:00:00" |
 | A12 | "Base" na regra dos 1500 m | Pontos do arquivo do professor | Leitura mais restrita, que atende às duas interpretações |
-| A13 | Data de entrega | — | Não consta no enunciado |
+| A13 | Data de entrega | **24/11/2026** (informada em 2026-11-11) | Não consta no enunciado |
 
 ## 3. Cuidados de implementação (não dependem do professor)
 
@@ -71,4 +71,4 @@ Toda hipótese nova recebe um código novo aqui **antes** de virar código.
 
 | Data | Pergunta (A#) | Resposta | Impacto no código |
 |---|---|---|---|
-| | | | |
+| 2026-11-11 | Prazo (A13) | Entrega em 24/11/2026 | Nenhum |

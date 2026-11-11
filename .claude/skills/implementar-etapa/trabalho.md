@@ -33,7 +33,7 @@ O professor penaliza **severamente** erros de interpretação típicos de IA e c
 
 ## Pendências com o professor
 
-O enunciado não informa a **data de entrega**. As decisões A1–A13 de `docs/decisoes.md` são provisórias. Quando o professor responder, registre a resposta na seção 4 de `docs/decisoes.md` e ajuste o código e os testes. Mensagem pronta para enviar:
+**Prazo de entrega: 24/11/2026** (A13). As decisões A1–A13 de `docs/decisoes.md` são provisórias. Quando o professor responder, registre a resposta na seção 4 de `docs/decisoes.md` e ajuste o código e os testes. Mensagem pronta para enviar:
 
 > Professor, boa noite. Somos a equipe Vitor Hugo Viana Mondequi e Matheus Dominguez Biesek. Estudando a especificação do Trabalho 2, encontramos pontos que precisam de esclarecimento:
 >
@@ -46,7 +46,6 @@ O enunciado não informa a **data de entrega**. As decisões A1–A13 de `docs/d
 > 7. **Pouso final no campus:** conta como pouso (172 s e R$ 80)? E os 172 s de um pouso saem inteiros da bateria que está chegando?
 > 8. **Velocidade:** a tabela do CSV diz "0 a 83", mas o mínimo é 10 m/s e só se aceitam múltiplos de 4. As velocidades válidas são 36, 40, …, 80 km/h?
 > 9. **Paradas:** no trecho "a cada troca de bateria [...] 60 s se não houver pouso", entendemos "a cada parada". Está correto?
-> 10. **Prazo:** qual é a data de entrega?
 >
 > Obrigado!
 
