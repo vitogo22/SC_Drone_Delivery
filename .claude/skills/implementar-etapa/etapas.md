@@ -46,8 +46,8 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 ## Etapa 1 — Leitura dos dados de entrada
 **Módulo:** `infraestrutura/arquivos/leitor_csv.py` · **Depende de:** 0
 
-- [ ] 1.1 Teste: um mini-CSV `cep,longitude,latitude` (3 linhas, em `tmp_path`) vira `list[Coordenada]`, com latitude e longitude nos campos certos e o texto preservado (inclusive o zero final de `-25.4387124100140`).
-- [ ] 1.2 Implementar `ler_coordenadas(caminho) -> list[Coordenada]`.
+- [x] 1.1 Teste: um mini-CSV `cep,longitude,latitude` (3 linhas, em `tmp_path`) vira `list[Coordenada]`, com latitude e longitude nos campos certos e o texto preservado (inclusive o zero final de `-25.4387124100140`).
+- [x] 1.2 Implementar `ler_coordenadas(caminho) -> list[Coordenada]`.
 - [ ] 1.3 Testes de erro: CEP duplicado, CEP inválido, coluna faltando e campus ausente viram `ErroDados("arquivo, linha N: motivo")`.
 - [ ] 1.4 Implementar as validações.
 - [ ] 1.5 `ler_extras(caminho)`: mesmo formato `cep,longitude,latitude`, mas com `pode_pousar=False` (A6). Inclui o teste.
