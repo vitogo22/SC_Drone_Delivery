@@ -51,7 +51,7 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 - [x] 1.3 Testes de erro: CEP duplicado, CEP inválido, coluna faltando e campus ausente viram `ErroDados("arquivo, linha N: motivo")`.
 - [x] 1.4 Implementar as validações.
 - [x] 1.5 `ler_extras(caminho)`: mesmo formato `cep,longitude,latitude`, mas com `pode_pousar=False` (A6). Inclui o teste.
-- [ ] 1.6 Teste de integração em `tests/integracao/`: o `dados/coordenadas.csv` real tem 374 pontos e o primeiro é o campus `82821020`.
+- [x] 1.6 Teste de integração em `tests/integracao/`: o `dados/coordenadas.csv` real tem 374 pontos e o primeiro é o campus `82821020`.
 - [ ] 1.7 Fechamento.
 
 **Já conferido no arquivo real:** cabeçalho `cep,longitude,latitude` (a longitude vem **antes**), 374 linhas, CEPs únicos de 8 dígitos, 13 casas decimais e nenhuma coordenada repetida.
