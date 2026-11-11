@@ -2,10 +2,11 @@ from pathlib import Path
 
 import pytest
 
+from surveyor.dominio.calculos.vento import Vento
 from surveyor.dominio.erros import ErroDados
 from surveyor.dominio.modelos import Coordenada
 from surveyor.dominio.regras import Regras
-from surveyor.infraestrutura.arquivos.leitor_csv import ler_coordenadas, ler_extras
+from surveyor.infraestrutura.arquivos.leitor_csv import ler_coordenadas, ler_extras, ler_vento
 
 CABECALHO = "cep,longitude,latitude\n"  # mesmo formato do arquivo do professor
 CAMPUS = "82821020,-49.2160678044742,-25.4233146347775\n"
@@ -112,3 +113,82 @@ def test_ler_extras_rejeita_arquivo_com_problema(tmp_path: Path) -> None:
 
     with pytest.raises(ErroDados, match="linha 3: CEP 24100142 repetido"):
         ler_extras(caminho)
+
+
+CABECALHO_VENTO = "dia,hora_bloco,velocidade_kmh,direcao\n"
+LINHAS_VENTO = [f"{dia},{bloco},5,E\n" for dia in range(1, 8) for bloco in (6, 9, 12, 15, 18)]
+
+
+def _vento_csv(pasta: Path, linhas: list[str], cabecalho: str = CABECALHO_VENTO) -> Path:
+    caminho = pasta / "vento.csv"
+    caminho.write_text(cabecalho + "".join(linhas), encoding="utf-8")
+    return caminho
+
+
+def _trocar(linhas: list[str], antiga: str, nova: str) -> list[str]:
+    return [nova if linha == antiga else linha for linha in linhas]
+
+
+def test_ler_vento_tem_um_vento_para_cada_dia_e_bloco(tmp_path: Path) -> None:
+    caminho = _vento_csv(tmp_path, _trocar(LINHAS_VENTO, "2,9,5,E\n", "2,9,19,ENE\n"))
+
+    tabela = ler_vento(caminho, Regras())
+
+    assert len(tabela) == 7 * 5
+    assert tabela[(2, 9)] == Vento(19.0, 67.5)
+    assert tabela[(1, 6)] == Vento(5.0, 90.0)
+
+
+@pytest.mark.parametrize(
+    ("linhas", "motivo"),
+    [
+        pytest.param(
+            _trocar(LINHAS_VENTO, "7,18,5,E\n", "8,18,5,E\n"),
+            "linha 36: dia 8 fora de 1 a 7",
+            id="dia-fora-do-prazo",
+        ),
+        pytest.param(
+            _trocar(LINHAS_VENTO, "1,18,5,E\n", "1,21,5,E\n"),
+            "linha 6: hora_bloco 21 não é um dos blocos usados (6, 9, 12, 15, 18)",
+            id="coluna-21h",
+        ),
+        pytest.param(
+            _trocar(LINHAS_VENTO, "1,6,5,E\n", "1,6,5,X\n"),
+            "linha 2: direção do vento desconhecida: 'X'",
+            id="direcao-invalida",
+        ),
+        pytest.param(
+            _trocar(LINHAS_VENTO, "1,6,5,E\n", "1,6,fraco,E\n"),
+            "linha 2: dia e hora_bloco devem ser inteiros e velocidade_kmh, um número",
+            id="velocidade-nao-numerica",
+        ),
+        pytest.param(
+            [*LINHAS_VENTO, "1,6,5,E\n"],
+            "linha 37: dia 1, bloco 6 repetido (já aparece na linha 2)",
+            id="dia-e-bloco-repetidos",
+        ),
+        pytest.param(
+            [linha for linha in LINHAS_VENTO if linha != "3,12,5,E\n"],
+            "faltam (dia, bloco): (3, 12)",
+            id="bloco-faltando",
+        ),
+    ],
+)
+def test_ler_vento_rejeita_tabela_com_problema(
+    tmp_path: Path, linhas: list[str], motivo: str
+) -> None:
+    caminho = _vento_csv(tmp_path, linhas)
+
+    with pytest.raises(ErroDados) as erro:
+        ler_vento(caminho, Regras())
+
+    mensagem = str(erro.value)
+    assert mensagem.startswith(str(caminho))
+    assert motivo in mensagem
+
+
+def test_ler_vento_exige_todas_as_colunas(tmp_path: Path) -> None:
+    caminho = _vento_csv(tmp_path, ["1,6,5\n"], cabecalho="dia,hora_bloco,velocidade_kmh\n")
+
+    with pytest.raises(ErroDados, match="linha 1: falta a coluna 'direcao'"):
+        ler_vento(caminho, Regras())
