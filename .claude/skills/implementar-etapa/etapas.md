@@ -99,7 +99,7 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 - [x] 5.2 `consumo(duracao_s, v, regras) = duracao_s / A(v)`, uma função só para o trecho e a parada (as duas contas são iguais); na parada, `v` é a do trecho que chega (A1). Com testes.
 - [x] 5.3 `tempo_trecho_s = ceil(d / v_solo × 3600 − 1e-9)`. Testes: 120.4 → 121; 120.0 → 120; 120.00000000000001 → 120.
 - [x] 5.4 `taxa_pouso_reais(hora_final_s, regras)` (A11). Testes: 17:00:00 → R$ 80; 17:00:01 → R$ 160.
-- [ ] 5.5 `custo_total(plano, regras, operacao)` (A4). Teste com um plano de 2 trechos calculado à mão.
+- [x] 5.5 `custo_total(plano, regras, operacao)` (A4). Teste com um plano de 2 trechos calculado à mão.
 - [ ] 5.6 Fechamento.
 
 ## Etapa 6 — Simulador (decodificador)

@@ -7,18 +7,6 @@ from surveyor.dominio.modelos import Coordenada, PlanoDeVoo, Trecho
 SEIS_HORAS = 6 * 3600
 
 
-@pytest.fixture
-def campus() -> Coordenada:
-    """Campus com coordenadas fictícias (os testes não dependem do arquivo do AVA)."""
-    return Coordenada("82821020", "-25.4000000000000", "-49.2000000000000")
-
-
-@pytest.fixture
-def ponto() -> Coordenada:
-    """Um ponto qualquer da lista, com coordenadas fictícias."""
-    return Coordenada("80000000", "-25.4100000000000", "-49.2100000000000")
-
-
 def test_coordenada_preserva_o_texto_original_inclusive_zero_final() -> None:
     coordenada = Coordenada("24100140", "-25.4387124100140", "-49.2000000000000")
 
