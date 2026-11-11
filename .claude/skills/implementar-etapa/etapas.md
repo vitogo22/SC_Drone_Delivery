@@ -86,8 +86,8 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 - [x] 4.1 `ler_vento(caminho)`: 35 linhas, dias de 1 a 7, blocos 6/9/12/15/18 e direções válidas. Inclui os testes.
 - [x] 4.2 Direção em graus (rosa dos ventos de 16 pontos: N = 0, NE = 45, ENE = 67,5, E = 90, SSE = 157,5, SSW = 202,5, WSW = 247,5). O vento sopra para `dir + 180`. Teste: vento de SSE aponta para 337,5°.
 - [x] 4.3 `bloco_do_horario(hora_saida_s)` pela hora de **saída**. Testes: 08:59:00 → 6; 09:21:00 → 9; 18:59:59 → 18; antes de 06:00:00 → `ValueError`.
-- [ ] 4.4 Soma vetorial (função auxiliar usada dentro do triângulo). Teste com o exemplo do enunciado (v = 36, rumo 39,5°, SSE a 9 km/h) = `41.0026532396`.
-- [ ] 4.5 `velocidade_solo_kmh` pelo triângulo (A2): `α = (dir + 180) − rumo`; `v_solo = w·cos α + √(v² − (w·sin α)²)`. Testes: o exemplo dá `39.3372461072`; vento 0 → `v`; a favor puro → `v + w`; contra puro → `v − w`.
+- [x] 4.4 Soma vetorial: **não** vira função, porque nada a usaria (código sem uso é penalizado) e o modelo é o triângulo (A2). O valor do enunciado pela soma (`41.0026532396`) fica registrado no teste do triângulo como o que **não** deve sair.
+- [x] 4.5 `velocidade_solo_kmh` pelo triângulo (A2): `α = (dir + 180) − rumo`; `v_solo = w·cos α + √(v² − (w·sin α)²)`. Testes: o exemplo dá `39.3372461072`; vento 0 → `v`; a favor puro → `v + w`; contra puro → `v − w`.
 - [ ] 4.6 Fechamento.
 
 ## Etapa 5 — Bateria, tempo e custo

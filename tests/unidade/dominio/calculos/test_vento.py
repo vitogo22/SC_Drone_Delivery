@@ -6,6 +6,7 @@ from surveyor.dominio.calculos.vento import (
     bloco_do_horario,
     blocos_de_vento,
     direcao_em_graus,
+    velocidade_solo_kmh,
 )
 from surveyor.dominio.regras import Regras
 
@@ -72,3 +73,30 @@ def test_bloco_do_vento_e_o_da_hora_de_saida(hora_saida: str, bloco: int) -> Non
 def test_saida_fora_da_janela_de_voo_nao_tem_bloco(hora_saida: str) -> None:
     with pytest.raises(ValueError, match="fora da janela de voo"):
         bloco_do_horario(para_segundos(hora_saida), Regras())
+
+
+def test_exemplo_do_enunciado_pelo_triangulo_de_velocidades() -> None:
+    vento_sse = Vento(9.0, direcao_em_graus("SSE"))
+
+    v_solo = velocidade_solo_kmh(36, 39.5, vento_sse)
+
+    # A soma vetorial do enunciado daria 41,0026532396 km/h e desviaria o drone do destino (A2).
+    assert v_solo == pytest.approx(39.3372461072, abs=1e-9)
+
+
+@pytest.mark.parametrize(
+    ("vento", "v_solo_esperada"),
+    [
+        pytest.param(Vento(0.0, 0.0), 36.0, id="sem-vento"),
+        pytest.param(Vento(9.0, 180.0), 45.0, id="a-favor"),  # vem do sul, empurra para o norte
+        pytest.param(Vento(9.0, 0.0), 27.0, id="contra"),  # vem do norte, segura o drone
+        pytest.param(Vento(9.0, 90.0), (36**2 - 9**2) ** 0.5, id="de-lado"),  # gasta para corrigir
+    ],
+)
+def test_velocidade_em_solo_voando_para_o_norte(vento: Vento, v_solo_esperada: float) -> None:
+    assert velocidade_solo_kmh(36, 0.0, vento) == pytest.approx(v_solo_esperada)
+
+
+def test_vento_tao_forte_quanto_o_drone_e_rejeitado() -> None:
+    with pytest.raises(ValueError, match="não deixa o drone"):
+        velocidade_solo_kmh(36, 0.0, Vento(36.0, 0.0))
