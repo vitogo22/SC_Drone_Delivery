@@ -33,19 +33,17 @@ O professor penaliza **severamente** erros de interpretação típicos de IA e c
 
 ## Pendências com o professor
 
-**Prazo de entrega: 24/11/2026** (A13). As decisões A1–A13 de `docs/decisoes.md` são provisórias. Quando o professor responder, registre a resposta na seção 4 de `docs/decisoes.md` e ajuste o código e os testes. Mensagem pronta para enviar:
+**Prazo de entrega: 24/11/2026** (A13).
 
-> Professor, boa noite. Somos a equipe Vitor Hugo Viana Mondequi e Matheus Dominguez Biesek. Estudando a especificação do Trabalho 2, encontramos pontos que precisam de esclarecimento:
+O enunciado diz que é **dever da equipe** esclarecer com o professor toda falha conceitual, instrução sem sentido ou informação contraditória. A mensagem abaixo **informa** só as falhas reais e o que adotamos, então ela vale mesmo sem resposta. Os pontos em que o enunciado só é omisso (A1, A3, A5, A6, A9, A10) não vão na mensagem: foram decididos pela leitura mais segura em `docs/decisoes.md`. Se o professor responder, registre a resposta na seção 4 de `docs/decisoes.md` e ajuste o código e os testes. Mensagem pronta para enviar:
+
+> Professor, boa noite. Somos a equipe Vitor Hugo Viana Mondequi (2024100142) e Matheus Dominguez Biesek (2024100467). Como pede a especificação, registramos os pontos que nos pareceram falhas ou contradições e a interpretação que adotamos. Se alguma estiver errada, por favor nos avise.
 >
-> 1. **Consumo nas paradas (60 s / 172 s):** a bateria deve ser descontada na taxa da velocidade de referência (36 km/h) ou na taxa da velocidade do trecho? Pretendemos usar a do trecho, por ser mais segura.
-> 2. **Vento:** o exemplo soma o vetor do drone, apontado para o destino, com o vetor do vento. O vetor resultante aponta para 28,3° em vez de 39,5°, ou seja, o drone não chegaria ao destino. Podemos usar o triângulo de velocidades, com correção de rumo? No exemplo, ele dá 39,34 km/h em vez de 41,00 km/h.
-> 3. **Fator 1,14:** ele multiplica a autonomia (5000 s → 5700 s) ou divide?
-> 4. **Função de custo:** como combinar tempo de voo (segundos) com pousos (R$)? Propomos que 1 h de voo equivalha a R$ 80.
-> 5. **Tempo total de voo:** é a soma do tempo no ar, sem contar a espera em solo entre os dias?
-> 6. **Recarga nas coordenadas extras:** o drone pode pousar nelas, ou apenas nas coordenadas do seu arquivo?
-> 7. **Pouso final no campus:** conta como pouso (172 s e R$ 80)? E os 172 s de um pouso saem inteiros da bateria que está chegando?
-> 8. **Velocidade:** a tabela do CSV diz "0 a 83", mas o mínimo é 10 m/s e só se aceitam múltiplos de 4. As velocidades válidas são 36, 40, …, 80 km/h?
-> 9. **Paradas:** no trecho "a cada troca de bateria [...] 60 s se não houver pouso", entendemos "a cada parada". Está correto?
+> 1. **Vento:** no exemplo, a soma do vetor do drone (apontado para o destino) com o vetor do vento resulta num rumo de 28,3° em vez de 39,5°, ou seja, o drone não chegaria ao destino. Usamos o triângulo de velocidades, com correção de rumo: 39,34 km/h em vez de 41,00 km/h no exemplo.
+> 2. **Velocidade:** a coluna do CSV diz "0 a 83", mas o mínimo é 10 m/s e só valem múltiplos de 4. Usamos 36, 40, …, 80 km/h.
+> 3. **Paradas:** "a cada troca de bateria [...] 60 s se não houver pouso" não faz sentido, porque sem pouso não há troca de bateria. Lemos como "a cada parada".
+> 4. **Custo:** o custo é medido pelo tempo de voo e pelos pousos, mas não há conversão entre segundos e reais. Usamos 1 h de voo = R$ 80 e comparamos 40, 80 e 160 nos experimentos.
+> 5. **Tabela de vento:** a linha em nós não corresponde à linha em km/h. Usamos a linha em km/h.
 >
 > Obrigado!
 
