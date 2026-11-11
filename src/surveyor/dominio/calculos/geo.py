@@ -23,3 +23,15 @@ def distancia_km(origem: Coordenada, destino: Coordenada, regras: Regras) -> flo
         + math.cos(phi1) * math.cos(phi2) * math.sin(delta_lambda / 2) ** 2
     )
     return 2 * regras.raio_terra_km * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+
+def rumo_graus(origem: Coordenada, destino: Coordenada) -> float:
+    """Rumo inicial de `origem` para `destino`: 0 = Norte, 90 = Leste, de 0 a 360."""
+    phi1 = math.radians(origem.latitude)
+    phi2 = math.radians(destino.latitude)
+    delta_lambda = math.radians(destino.longitude - origem.longitude)
+    theta = math.atan2(
+        math.sin(delta_lambda) * math.cos(phi2),
+        math.cos(phi1) * math.sin(phi2) - math.sin(phi1) * math.cos(phi2) * math.cos(delta_lambda),
+    )
+    return math.degrees(theta) % 360

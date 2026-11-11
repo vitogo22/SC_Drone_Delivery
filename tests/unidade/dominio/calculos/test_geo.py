@@ -2,7 +2,7 @@ import math
 
 import pytest
 
-from surveyor.dominio.calculos.geo import distancia_km
+from surveyor.dominio.calculos.geo import distancia_km, rumo_graus
 from surveyor.dominio.modelos import Coordenada
 from surveyor.dominio.regras import Regras
 
@@ -32,3 +32,30 @@ def test_distancia_e_a_mesma_nos_dois_sentidos() -> None:
     regras = Regras()
 
     assert distancia_km(CAMPUS, OUTRO_PONTO, regras) == distancia_km(OUTRO_PONTO, CAMPUS, regras)
+
+
+@pytest.mark.parametrize(
+    ("latitude", "longitude", "rumo_esperado"),
+    [
+        pytest.param("-24.9000000000000", "-49.0000000000000", 0.0, id="norte"),
+        pytest.param("-25.1000000000000", "-49.0000000000000", 180.0, id="sul"),
+        pytest.param("-25.0000000000000", "-48.9000000000000", 90.0, id="leste"),
+        pytest.param("-25.0000000000000", "-49.1000000000000", 270.0, id="oeste"),
+    ],
+)
+def test_rumo_a_partir_do_norte_em_sentido_horario(
+    latitude: str, longitude: str, rumo_esperado: float
+) -> None:
+    destino = Coordenada("30000000", latitude, longitude)
+
+    # Leste e oeste não dão exatamente 90 e 270: o caminho mais curto na esfera é um arco.
+    assert rumo_graus(CENTRO, destino) == pytest.approx(rumo_esperado, abs=0.05)
+
+
+def test_rumo_fica_entre_0_e_360() -> None:
+    # Para sudoeste, atan2 devolve um ângulo negativo, que precisa virar o equivalente em 0..360.
+    destino = Coordenada("30000000", "-25.1000000000000", "-49.1000000000000")
+
+    rumo = rumo_graus(CENTRO, destino)
+
+    assert 180 < rumo < 270
