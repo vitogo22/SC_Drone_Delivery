@@ -48,8 +48,8 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 
 - [x] 1.1 Teste: um mini-CSV `cep,longitude,latitude` (3 linhas, em `tmp_path`) vira `list[Coordenada]`, com latitude e longitude nos campos certos e o texto preservado (inclusive o zero final de `-25.4387124100140`).
 - [x] 1.2 Implementar `ler_coordenadas(caminho) -> list[Coordenada]`.
-- [ ] 1.3 Testes de erro: CEP duplicado, CEP inválido, coluna faltando e campus ausente viram `ErroDados("arquivo, linha N: motivo")`.
-- [ ] 1.4 Implementar as validações.
+- [x] 1.3 Testes de erro: CEP duplicado, CEP inválido, coluna faltando e campus ausente viram `ErroDados("arquivo, linha N: motivo")`.
+- [x] 1.4 Implementar as validações.
 - [ ] 1.5 `ler_extras(caminho)`: mesmo formato `cep,longitude,latitude`, mas com `pode_pousar=False` (A6). Inclui o teste.
 - [ ] 1.6 Teste de integração em `tests/integracao/`: o `dados/coordenadas.csv` real tem 374 pontos e o primeiro é o campus `82821020`.
 - [ ] 1.7 Fechamento.
