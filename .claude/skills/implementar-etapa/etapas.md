@@ -92,7 +92,7 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 ## Etapa 5 — Bateria, tempo e custo
 **Módulos:** `dominio/calculos/bateria.py`, `dominio/calculos/custo.py` · **Depende de:** 0
 
-- [ ] 5.1 `autonomia_s(v, regras)` com a velocidade **ajustada**. Oráculos:
+- [x] 5.1 `autonomia_s(v, regras)` com a velocidade **ajustada**. Oráculos:
   - com `Regras(fator_autonomia=1.0)`: A(36) = 5000, A(48) = 2812.5, A(60) = 1800, A(72) = 1250;
   - no padrão: A(36) = 5700, A(80) ≈ 1154.25;
   - velocidades 0, 32, 83 e 84 → `ValueError`.
