@@ -73,8 +73,8 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 ## Etapa 3 — Geodésia
 **Módulo:** `dominio/calculos/geo.py` · **Depende de:** 0
 
-- [ ] 3.1 Testes de `distancia_km`: 1° de latitude = `111.19492664455873` km (`approx`), o mesmo ponto dá 0 e `d(a,b) == d(b,a)`.
-- [ ] 3.2 Implementar Haversine: `a = sin²(Δφ/2) + cos φ1 · cos φ2 · sin²(Δλ/2)`; `d = 2 · R · atan2(√a, √(1 − a))`, com φ e λ **em radianos** e `R = regras.raio_terra_km` (6371).
+- [x] 3.1 Testes de `distancia_km`: 1° de latitude = `111.19492664455873` km (`approx`), o mesmo ponto dá 0 e `d(a,b) == d(b,a)`.
+- [x] 3.2 Implementar Haversine: `a = sin²(Δφ/2) + cos φ1 · cos φ2 · sin²(Δλ/2)`; `d = 2 · R · atan2(√a, √(1 − a))`, com φ e λ **em radianos** e `R = regras.raio_terra_km` (6371).
 - [ ] 3.3 Testes de `rumo_graus`: norte = 0, sul = 180, leste ≈ 90, oeste ≈ 270.
 - [ ] 3.4 Implementar `θ = atan2(sin Δλ · cos φ2, cos φ1 · sin φ2 − sin φ1 · cos φ2 · cos Δλ)` em graus, módulo 360.
 - [ ] 3.5 Matrizes N×N pré-calculadas de distância e de rumo. Testar diagonal zero e simetria da distância.
