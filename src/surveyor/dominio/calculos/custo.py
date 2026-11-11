@@ -8,7 +8,7 @@ API prevista:
 
 import math
 
-from surveyor.dominio.regras import SEGUNDOS_POR_HORA
+from surveyor.dominio.regras import SEGUNDOS_POR_HORA, Regras
 
 # Desconta o ruído do float (ex.: 120,00000000000003 s) antes do teto, para não ganhar 1 s à toa.
 TOLERANCIA_S = 1e-9
@@ -17,3 +17,10 @@ TOLERANCIA_S = 1e-9
 def tempo_trecho_s(distancia_km: float, v_solo_kmh: float) -> int:
     """Segundos para voar `distancia_km` na velocidade em solo, arredondados para cima."""
     return math.ceil(distancia_km / v_solo_kmh * SEGUNDOS_POR_HORA - TOLERANCIA_S)
+
+
+def taxa_pouso_reais(hora_final_s: int, regras: Regras) -> float:
+    """R$ de um pouso pela Hora final do trecho; a taxa adicional só DEPOIS de 17:00:00 (A11)."""
+    if hora_final_s > regras.inicio_taxa_adicional_s:
+        return regras.taxa_pouso_reais + regras.taxa_adicional_reais
+    return regras.taxa_pouso_reais
