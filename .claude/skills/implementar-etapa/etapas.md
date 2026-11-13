@@ -117,7 +117,7 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 ## Etapa 7 — Cromossomo
 **Módulos:** `otimizacao/cromossomo.py`, `docs/codificacao.md` · **Depende de:** 0
 
-- [ ] 7.1 `Cromossomo` com três partes: **ordem** (permutação dos pontos, sem o campus), **velocidade** (índice de 0 a 11 por ponto de destino, `36 + 4·i`, N + 1 genes) e **calendário** (7 bits: voar ou não em cada dia). Incluir validação, cópia independente e testes.
+- [x] 7.1 `Cromossomo` com três partes: **ordem** (permutação dos pontos, sem o campus), **velocidade** (índice de 0 a 11 por ponto de destino, `36 + 4·i`, N + 1 genes) e **calendário** (7 bits: voar ou não em cada dia). Incluir validação, cópia independente e testes. A cópia **não** virou função: o cromossomo é imutável (tuplas, `frozen`), então o filho nunca altera o pai. O limite superior dos índices (11) e os 7 bits são conferidos na conversão da 7.2, que recebe as `Regras`.
 - [ ] 7.2 Conversão do cromossomo na entrada do simulador, com teste.
 - [ ] 7.3 Escrever `docs/codificacao.md`:
   - comparar com as 7 codificações sugeridas no enunciado;
