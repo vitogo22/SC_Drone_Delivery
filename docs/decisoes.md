@@ -74,6 +74,7 @@ A equipe decidiu fechar as decisões da seção 2 por conta própria, lendo o en
 | Data | Ponto (A#) | Quem confirmou | Resposta | Impacto no código |
 |---|---|---|---|---|
 | 2026-11-11 | Prazo (A13) | Professor | Entrega em 24/11/2026 | Nenhum |
+| 2026-11-12 | Consumo na parada (A1) | Equipe | Taxa da velocidade do trecho: gasta um pouco mais na conta para o drone nunca ficar sem carga no ar | Nenhum |
 | 2026-11-12 | Vento (A2) | Equipe | Triângulo de velocidades: o drone corrige o rumo, como um avião | Nenhum |
 | 2026-11-12 | Fator 1,14 (A3) | Equipe | Multiplica: em Curitiba o drone faz menos esforço no mesmo trajeto | Nenhum |
 | 2026-11-12 | Tempo de voo (A5) | Equipe | Só conta quando o drone sai do chão; em solo ele está em repouso | Nenhum |
