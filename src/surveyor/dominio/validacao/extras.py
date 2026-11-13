@@ -1,9 +1,11 @@
-"""Regras das coordenadas extras da equipe (Etapa 2).
+"""Regras das coordenadas extras da equipe (Etapa 2, A12).
 
-API prevista:
-- validar_extra(extra, matricula, base, regras) -> list[str]   # violações; vazia = válida
-13 casas na latitude e na longitude; uma delas termina com os 8 últimos dígitos da matrícula;
->= 100 m de qualquer ponto; < 1500 m de algum ponto do arquivo do professor.
+- `validar_extra(extra, matricula, base, regras)`: violações (lista vazia = válida). Confere
+  13 casas na latitude e na longitude, uma delas terminando com os 8 últimos dígitos da
+  matrícula, CEP igual a esses dígitos, >= 100 m de qualquer ponto e < 1500 m de algum ponto
+  do arquivo do professor.
+- `ponto_mais_proximo(extra, base, regras)`: ponto da base mais perto e a distância em metros,
+  para a tabela de `docs/coordenadas_extras.md`.
 """
 
 import math
