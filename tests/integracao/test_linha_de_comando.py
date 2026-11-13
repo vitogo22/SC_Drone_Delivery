@@ -7,7 +7,8 @@ from pathlib import Path
 
 from surveyor import __version__
 
-SRC = Path(__file__).resolve().parents[2] / "src"
+RAIZ = Path(__file__).resolve().parents[2]
+SRC = RAIZ / "src"
 
 
 def _rodar(*argumentos: str) -> subprocess.CompletedProcess[str]:
@@ -33,3 +34,22 @@ def test_ajuda_lista_os_comandos() -> None:
     assert resultado.returncode == 0
     assert "otimizar" in resultado.stdout
     assert "validar" in resultado.stdout
+    assert "extras" in resultado.stdout
+
+
+def test_extras_reais_sao_validas_e_saem_na_tabela(tmp_path: Path) -> None:
+    resultado = _rodar(
+        "--log-arquivo",
+        str(tmp_path / "extras.log"),
+        "extras",
+        "--coordenadas",
+        str(RAIZ / "dados" / "coordenadas.csv"),
+        "--extras",
+        str(RAIZ / "dados" / "extras.csv"),
+    )
+
+    assert resultado.returncode == 0, resultado.stderr
+    linhas = resultado.stdout.splitlines()
+    assert len(linhas) == 4  # cabeçalho, separador e um integrante por linha
+    assert "| 2024100142 | 24100142 |" in linhas[2]
+    assert "| 2024100467 | 24100467 |" in linhas[3]

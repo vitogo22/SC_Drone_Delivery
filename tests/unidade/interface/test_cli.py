@@ -6,10 +6,10 @@ from typing import Any
 import pytest
 
 from surveyor import __version__
-from surveyor.aplicacao import otimizar_rota, validar_plano
-from surveyor.aplicacao.configuracao import ArquivosDeEntrada, Configuracao
+from surveyor.aplicacao import conferir_extras, otimizar_rota, validar_plano
+from surveyor.aplicacao.configuracao import ArquivosDeEntrada, Configuracao, Integrante
 from surveyor.dominio.erros import ErroDados
-from surveyor.dominio.modelos import PlanoDeVoo
+from surveyor.dominio.modelos import Coordenada, PlanoDeVoo
 from surveyor.interface import cli
 
 
@@ -129,3 +129,46 @@ def test_erro_inesperado_nao_e_engolido(monkeypatch: pytest.MonkeyPatch) -> None
 
     with pytest.raises(ZeroDivisionError):
         cli.main(["otimizar"])
+
+
+def _conferencia(*violacoes: str) -> conferir_extras.ConferenciaExtra:
+    return conferir_extras.ConferenciaExtra(
+        integrante=Integrante("Ana Souza", "2011111111"),
+        extra=Coordenada("11111111", "-25.4050011111111", "-49.2000000000000", pode_pousar=False),
+        mais_proximo=Coordenada("82821020", "-25.4000000000000", "-49.2000000000000"),
+        distancia_m=556.0849,
+        violacoes=violacoes,
+    )
+
+
+def test_extras_imprime_a_tabela_do_documento_e_usa_as_entradas_padrao(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    recebido: list[ArquivosDeEntrada] = []
+
+    def conferir(entrada: ArquivosDeEntrada, _: Configuracao) -> list[Any]:
+        recebido.append(entrada)
+        return [_conferencia()]
+
+    monkeypatch.setattr(conferir_extras, "executar", conferir)
+
+    assert cli.main(["extras"]) == cli.SAIDA_OK
+    assert recebido == [ArquivosDeEntrada()]
+    assert capsys.readouterr().out.splitlines() == [
+        "| Integrante | Matrícula | CEP | Latitude | Longitude "
+        "| Ponto mais próximo (CEP) | Distância (m) |",
+        "|---|---|---|---|---|---|---|",
+        "| Ana Souza | 2011111111 | 11111111 | -25.4050011111111 | -49.2000000000000 "
+        "| 82821020 | 556.1 |",
+    ]
+
+
+def test_extras_com_violacao_retorna_erro_e_aponta_o_cep(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    monkeypatch.setattr(
+        conferir_extras, "executar", lambda *_: [_conferencia("a 99.0 m do CEP 80000000")]
+    )
+
+    assert cli.main(["extras"]) == cli.SAIDA_ERRO
+    assert "CEP 11111111 (Ana Souza): a 99.0 m do CEP 80000000" in caplog.text

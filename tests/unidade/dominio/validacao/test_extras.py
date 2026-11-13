@@ -4,7 +4,7 @@ import pytest
 
 from surveyor.dominio.modelos import Coordenada
 from surveyor.dominio.regras import Regras
-from surveyor.dominio.validacao.extras import validar_extra
+from surveyor.dominio.validacao.extras import ponto_mais_proximo, validar_extra
 
 MATRICULA = "2024100467"
 LATITUDE = "-25.4387124100467"  # 13 casas, terminando com os 8 últimos dígitos da matrícula
@@ -90,3 +90,18 @@ def test_todas_as_violacoes_sao_listadas_juntas() -> None:
     extra = _extra(cep="24100468", latitude="-25.438724100467")
 
     assert len(validar_extra(extra, MATRICULA, [_ao_norte(1501)], Regras())) == 3
+
+
+def test_ponto_mais_proximo_considera_professor_e_outras_extras() -> None:
+    outra_extra = _ao_norte(300, do_professor=False)
+    base = [_ao_norte(800), outra_extra, _ao_norte(500)]
+
+    ponto, distancia_m = ponto_mais_proximo(_extra(), base, Regras())
+
+    assert ponto is outra_extra
+    assert distancia_m == pytest.approx(300)
+
+
+def test_ponto_mais_proximo_sem_base_e_erro() -> None:
+    with pytest.raises(ValueError, match="base vazia"):
+        ponto_mais_proximo(_extra(), [], Regras())

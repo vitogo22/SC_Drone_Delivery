@@ -28,6 +28,7 @@ pip install -e ".[dev]"
 ```bash
 python -m surveyor otimizar --semente 42    # gera resultados/plano_de_voo.csv e resultados/progresso.csv
 python -m surveyor validar                  # confere o plano de forma independente (bateria, horários, CEPs)
+python -m surveyor extras                   # valida as coordenadas extras e imprime a tabela de docs/coordenadas_extras.md
 ```
 
 - **Reprodução parcial (1 a 2 minutos):** `python -m surveyor otimizar --rapido`.
@@ -53,7 +54,7 @@ Clean Architecture em quatro camadas. A dependência sempre aponta para o domín
 src/surveyor/
 ├── dominio/          regras de negócio: regras do enunciado, modelos, cálculos, simulador, validação
 ├── otimizacao/       algoritmo genético (parâmetros, cromossomo, operadores, fitness, laço)
-├── aplicacao/        casos de uso: otimizar_rota e validar_plano
+├── aplicacao/        casos de uso: otimizar_rota, validar_plano e conferir_extras
 ├── infraestrutura/   arquivos CSV e logs (política de logs e monitor de progresso)
 └── interface/        linha de comando
 tests/

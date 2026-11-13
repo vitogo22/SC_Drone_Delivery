@@ -18,3 +18,10 @@ def test_execucao_completa_usa_o_ga_padrao_com_a_semente() -> None:
 
 def test_execucao_rapida_usa_o_ga_reduzido_com_a_semente() -> None:
     assert Configuracao.para_execucao(rapido=True, semente=7).ga == ParametrosGA.rapido(7)
+
+
+def test_equipe_padrao_segue_a_ordem_de_dados_extras() -> None:
+    assert [integrante.matricula for integrante in Configuracao().equipe] == [
+        "2024100142",
+        "2024100467",
+    ]

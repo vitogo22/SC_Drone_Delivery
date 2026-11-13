@@ -53,3 +53,13 @@ def validar_extra(
             f"e precisa ficar a menos de {regras.distancia_maxima_extra_m:.0f} m (A12)"
         )
     return violacoes
+
+
+def ponto_mais_proximo(
+    extra: Coordenada, base: Sequence[Coordenada], regras: Regras
+) -> tuple[Coordenada, float]:
+    """Ponto de `base` mais perto de `extra` e a distância até ele, em metros."""
+    if not base:
+        raise ValueError("base vazia: não há ponto mais próximo")
+    distancias_m = ((ponto, distancia_km(extra, ponto, regras) * METROS_POR_KM) for ponto in base)
+    return min(distancias_m, key=lambda par: par[1])

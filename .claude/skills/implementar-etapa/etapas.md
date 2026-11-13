@@ -66,7 +66,7 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
   3. longitude também com exatamente 13 casas;
   4. se o validador recusar, mova o ponto e repita.
 - [x] 2.4 Gravar `dados/extras.csv` (`cep,longitude,latitude`) e validar as duas juntas: a distância entre elas também precisa ser de pelo menos 100 m.
-- [ ] 2.5 Comando `python -m surveyor extras`: valida e imprime a tabela de `docs/coordenadas_extras.md` (integrante, matrícula, CEP, latitude, longitude, ponto mais próximo e distância em metros na base consolidada). Atualizar o documento com essa saída.
+- [x] 2.5 Comando `python -m surveyor extras`: valida e imprime a tabela de `docs/coordenadas_extras.md` (integrante, matrícula, CEP, latitude, longitude, ponto mais próximo e distância em metros na base consolidada). Atualizar o documento com essa saída.
 - [ ] 2.6 Fechamento.
 
 ## Etapa 3 — Geodésia

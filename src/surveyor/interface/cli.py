@@ -11,7 +11,7 @@ from datetime import datetime
 from pathlib import Path
 
 from surveyor import __version__
-from surveyor.aplicacao import otimizar_rota, validar_plano
+from surveyor.aplicacao import conferir_extras, otimizar_rota, validar_plano
 from surveyor.aplicacao.configuracao import ArquivosDeEntrada, Configuracao
 from surveyor.dominio.erros import ErroSurveyor
 from surveyor.infraestrutura.logs.configuracao import (
@@ -30,7 +30,7 @@ Comando = Callable[[argparse.Namespace], int]
 
 
 def criar_parser() -> argparse.ArgumentParser:
-    """Monta o parser com os comandos `otimizar` e `validar`."""
+    """Monta o parser com os comandos `otimizar`, `validar` e `extras`."""
     parser = argparse.ArgumentParser(
         prog="surveyor",
         description="UNIBRASIL Surveyor: plano de voo de drone por algoritmo genético.",
@@ -56,6 +56,12 @@ def criar_parser() -> argparse.ArgumentParser:
     validar.add_argument("plano", type=Path, nargs="?", default=PLANO_PADRAO)
     _adicionar_entradas(validar)
     validar.set_defaults(executar=_executar_validar)
+
+    extras = comandos.add_parser("extras", help="confere as coordenadas extras da equipe")
+    padrao = ArquivosDeEntrada()
+    extras.add_argument("--coordenadas", type=Path, default=padrao.coordenadas)
+    extras.add_argument("--extras", type=Path, default=padrao.extras)
+    extras.set_defaults(executar=_executar_extras)
 
     return parser
 
@@ -106,3 +112,36 @@ def _executar_validar(args: argparse.Namespace) -> int:
         return SAIDA_ERRO
     logger.info("Plano válido: %s", args.plano)
     return SAIDA_OK
+
+
+def _executar_extras(args: argparse.Namespace) -> int:
+    entrada = ArquivosDeEntrada(coordenadas=args.coordenadas, extras=args.extras)
+    conferencias = conferir_extras.executar(entrada, Configuracao())
+    print(_tabela_extras(conferencias))
+    violacoes = [
+        f"CEP {c.extra.cep} ({c.integrante.nome}): {violacao}"
+        for c in conferencias
+        for violacao in c.violacoes
+    ]
+    for violacao in violacoes:
+        logger.error("Violação: %s", violacao)
+    if violacoes:
+        return SAIDA_ERRO
+    logger.info("Coordenadas extras válidas: %s", args.extras)
+    return SAIDA_OK
+
+
+def _tabela_extras(conferencias: list[conferir_extras.ConferenciaExtra]) -> str:
+    """Tabela Markdown de docs/coordenadas_extras.md."""
+    linhas = [
+        "| Integrante | Matrícula | CEP | Latitude | Longitude "
+        "| Ponto mais próximo (CEP) | Distância (m) |",
+        "|---|---|---|---|---|---|---|",
+    ]
+    linhas += [
+        f"| {c.integrante.nome} | {c.integrante.matricula} | {c.extra.cep} "
+        f"| {c.extra.latitude_texto} | {c.extra.longitude_texto} "
+        f"| {c.mais_proximo.cep} | {c.distancia_m:.1f} |"
+        for c in conferencias
+    ]
+    return "\n".join(linhas)

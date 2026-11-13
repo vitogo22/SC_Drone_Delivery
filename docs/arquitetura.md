@@ -30,9 +30,10 @@ SC_Drone_Delivery/
 │   │   ├── progresso.py        contrato ObservadorDeProgresso + EstatisticasDaGeracao
 │   │   └── cromossomo.py, operadores.py, fitness.py, algoritmo.py
 │   ├── aplicacao/              CASOS DE USO (orquestram as outras camadas)
-│   │   ├── configuracao.py     ArquivosDeEntrada, Configuracao
+│   │   ├── configuracao.py     ArquivosDeEntrada, Configuracao, Integrante
 │   │   ├── otimizar_rota.py    executar(): ler -> otimizar -> validar -> gravar
-│   │   └── validar_plano.py    executar(): conferir um CSV
+│   │   ├── validar_plano.py    executar(): conferir um CSV
+│   │   └── conferir_extras.py  executar(): validar as extras e achar o ponto mais próximo
 │   ├── infraestrutura/         DETALHES TÉCNICOS (implementam contratos internos)
 │   │   ├── arquivos/           leitor_csv.py, escritor_csv.py
 │   │   └── logs/               configuracao.py (política de logs), monitor_progresso.py
