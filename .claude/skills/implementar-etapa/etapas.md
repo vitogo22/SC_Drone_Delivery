@@ -119,7 +119,7 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 
 - [x] 7.1 `Cromossomo` com três partes: **ordem** (permutação dos pontos, sem o campus), **velocidade** (índice de 0 a 11 por ponto de destino, `36 + 4·i`, N + 1 genes) e **calendário** (7 bits: voar ou não em cada dia). Incluir validação, cópia independente e testes. A cópia **não** virou função: o cromossomo é imutável (tuplas, `frozen`), então o filho nunca altera o pai. O limite superior dos índices (11) e os 7 bits são conferidos na conversão da 7.2, que recebe as `Regras`.
 - [ ] 7.2 Conversão do cromossomo na entrada do simulador, com teste.
-- [ ] 7.3 Escrever `docs/codificacao.md`:
+- [x] 7.3 Escrever `docs/codificacao.md`:
   - comparar com as 7 codificações sugeridas no enunciado;
   - explicar a hipótese dos blocos construtivos (a velocidade viaja junto com o ponto);
   - explicar por que os cruzamentos clássicos citados no enunciado (um ponto, múltiplos pontos, uniforme) **não** servem para a permutação, porque geram CEP repetido e CEP faltando, e por que usamos OX/PMX/ERX na ordem e o uniforme só no calendário e nas velocidades;

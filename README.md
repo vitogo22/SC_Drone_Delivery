@@ -71,4 +71,5 @@ resultados/           plano de voo e evidências de execução e de cobertura
 - [`docs/decisoes.md`](docs/decisoes.md): regras do enunciado e interpretações adotadas.
 - [`docs/arquitetura.md`](docs/arquitetura.md): camadas, política de logs, convenções e testes.
 - [`docs/coordenadas_extras.md`](docs/coordenadas_extras.md): coordenadas extras da equipe.
+- [`docs/codificacao.md`](docs/codificacao.md): cromossomo, comparação com as codificações sugeridas e blocos construtivos.
 - [`docs/experimentos.md`](docs/experimentos.md): parâmetros testados no algoritmo genético.
