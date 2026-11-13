@@ -175,3 +175,55 @@ def test_sem_nenhum_dia_habilitado_o_plano_e_invalido(campus: Coordenada) -> Non
 
     assert not resultado.valido
     assert resultado.plano.trechos == ()
+
+
+def test_antes_de_voar_para_uma_extra_garante_bateria_ate_o_proximo_pouso(
+    campus: Coordenada,
+) -> None:
+    # 80 km/h sem vento (autonomia 1154,25 s): campus -> P1 (251 s) -> E, extra (251 s)
+    # -> campus (0,10° = 11,119 km = 501 s). Se E aceitasse pouso, o drone pousaria em E.
+    # Como não aceita, antes de sair de P1 ele precisa de P1 -> E -> campus inteiro:
+    #   0,7306 - 311/1154,25 - 673/1154,25 = -0,12 -> pousa em P1, bateria 100%
+    #   1 - 311/1154,25 - 673/1154,25 = 0,147 ok
+    p1 = _ao_norte(0.05, "80000011")
+    extra = Coordenada("80000012", "-25.3000000000000", "-49.2000000000000", pode_pousar=False)
+    cenario = Cenario.montar(
+        campus, (p1, extra), _vento_constante(0, 0), Regras(), ParametrosOperacao()
+    )
+
+    resultado = simular(
+        DecisoesDeVoo(rota=(0, 1), velocidades_kmh=(80, 80, 80), dias=(1,)), cenario
+    )
+
+    assert resultado.plano.trechos == (
+        Trecho(campus, p1, dia=1, hora_inicial_s=21600, velocidade_kmh=80, pouso=True,
+               hora_final_s=22023),  # 251 + 172: pousa em P1, antes da extra
+        Trecho(p1, extra, dia=1, hora_inicial_s=22023, velocidade_kmh=80, pouso=False,
+               hora_final_s=22334),  # só a foto: 251 + 60
+        Trecho(extra, campus, dia=1, hora_inicial_s=22334, velocidade_kmh=80, pouso=True,
+               hora_final_s=23007),
+    )  # fmt: skip
+
+
+def test_antes_de_voar_para_uma_extra_garante_horario_para_o_proximo_pouso(
+    campus: Coordenada,
+) -> None:
+    # O cenário do fim de expediente (limite 06:15:00), agora com C como extra. Sem poder
+    # pousar em C, o drone precisa sair de B já com tempo para B -> C -> campus:
+    #   06:04:51 + 76 + 60 + 445 + 172 = 06:17:24 > 06:15:00 -> pousa em B (06:06:43)
+    #   06:06:43 + 753 s = 06:19:16, ainda não cabe -> dia 3, saindo de B às 06:00:00
+    extra_c = Coordenada(C.cep, C.latitude_texto, C.longitude_texto, pode_pousar=False)
+    operacao = ParametrosOperacao(limite_operacional_s=22500)
+    cenario = Cenario.montar(campus, (B, extra_c, A), _vento_constante(9, 180), Regras(), operacao)
+
+    resultado = simular(DecisoesDeVoo(**DECISOES_DO_CASO_FELIZ, dias=(1, 3)), cenario)
+
+    assert resultado.valido
+    assert resultado.plano.trechos[1:] == (
+        Trecho(A, B, dia=1, hora_inicial_s=21749, velocidade_kmh=40, pouso=True,
+               hora_final_s=22003),  # 21891 + 112: pouso de fim de dia em B
+        Trecho(B, extra_c, dia=3, hora_inicial_s=21600, velocidade_kmh=44, pouso=False,
+               hora_final_s=21736),  # 76 + 60
+        Trecho(extra_c, campus, dia=3, hora_inicial_s=21736, velocidade_kmh=36, pouso=True,
+               hora_final_s=22353),  # 445 + 172
+    )  # fmt: skip
