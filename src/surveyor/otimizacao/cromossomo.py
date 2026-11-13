@@ -7,6 +7,9 @@ nunca mudam e não é preciso copiar nada.
 
 from dataclasses import dataclass
 
+from surveyor.dominio.regras import Regras
+from surveyor.dominio.simulador import DecisoesDeVoo
+
 
 @dataclass(frozen=True, slots=True)
 class Cromossomo:
@@ -31,3 +34,24 @@ class Cromossomo:
             raise ValueError(f"índice de velocidade negativo: {self.velocidades}")
         if not self.calendario:
             raise ValueError("calendário vazio")
+
+
+def decisoes_de_voo(cromossomo: Cromossomo, regras: Regras) -> DecisoesDeVoo:
+    """Traduz os genes para a entrada do simulador: km/h por trecho, na ordem, e dias de 1 a 7."""
+    ultimo = len(regras.velocidades_kmh) - 1
+    if max(cromossomo.velocidades) > ultimo:
+        raise ValueError(f"índice de velocidade fora de 0 a {ultimo}: {cromossomo.velocidades}")
+    if len(cromossomo.calendario) != regras.prazo_dias:
+        raise ValueError(
+            f"calendário precisa de um bit para cada um dos {regras.prazo_dias} dias, "
+            f"e tem {len(cromossomo.calendario)}"
+        )
+    por_trecho = (
+        *(cromossomo.velocidades[ponto] for ponto in cromossomo.ordem),
+        cromossomo.velocidades[-1],
+    )
+    return DecisoesDeVoo(
+        rota=cromossomo.ordem,
+        velocidades_kmh=tuple(regras.velocidades_kmh[indice] for indice in por_trecho),
+        dias=tuple(dia for dia, voa in enumerate(cromossomo.calendario, start=1) if voa),
+    )
