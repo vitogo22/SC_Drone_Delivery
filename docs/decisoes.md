@@ -36,7 +36,7 @@ Toda hipótese nova recebe um código novo aqui **antes** de virar código.
 - Latitude **e** longitude com exatamente 13 casas decimais. A latitude **ou** a longitude termina com os 8 últimos dígitos da matrícula.
 - Pelo menos 100 m de qualquer outro ponto. Menos de 1500 m de algum ponto do arquivo do professor (A12).
 
-## 2. Decisões provisórias (pendentes de confirmação do professor)
+## 2. Decisões da equipe (todas confirmadas em 2026-11-12; ver seção 4)
 
 | # | Ponto | Decisão adotada | Por quê |
 |---|---|---|---|
@@ -69,14 +69,25 @@ Toda hipótese nova recebe um código novo aqui **antes** de virar código.
 
 ## 4. Confirmações
 
-A equipe decidiu fechar as decisões da seção 2 por conta própria, lendo o enunciado, em vez de esperar o professor. Os erros do enunciado ficam registrados neste documento.
+A equipe decidiu fechar as decisões da seção 2 por conta própria, lendo o enunciado, em vez de esperar o professor.
+
+Erros encontrados no enunciado, registrados como a especificação pede:
+- o exemplo do vento soma os vetores e o drone não chegaria ao destino (A2);
+- a coluna Velocidade diz "0 a 83", mas o mínimo é 10 m/s e só valem múltiplos de 4 (A7);
+- fala em "troca de bateria" numa parada sem pouso (A8);
+- mede o custo por tempo e por pousos sem dizer como somar segundos e reais (A4);
+- na tabela de vento, a linha em nós não bate com a linha em km/h (A14);
+- a tabela de exemplos arredonda a autonomia: 2813 s em vez de 2812,5 s (A16);
+- o exemplo "chega 9:20, parte 9:21" contradiz a Hora final, que já inclui a parada (A17).
 
 | Data | Ponto (A#) | Quem confirmou | Resposta | Impacto no código |
 |---|---|---|---|---|
 | 2026-11-11 | Prazo (A13) | Professor | Entrega em 24/11/2026 | Nenhum |
 | 2026-11-12 | Consumo na parada (A1) | Equipe | Taxa da velocidade do trecho: gasta um pouco mais na conta para o drone nunca ficar sem carga no ar | Nenhum |
+| 2026-11-12 | Custo (A4) | Equipe | 1 h de voo = R$ 80, o único preço do enunciado; os R$ 80 do pouso pagam o tempo da equipe, que também trabalha durante o voo. Os experimentos comparam R$ 40 e R$ 160 | Nenhum |
 | 2026-11-12 | Vento (A2) | Equipe | Triângulo de velocidades: o drone corrige o rumo, como um avião | Nenhum |
 | 2026-11-12 | Fator 1,14 (A3) | Equipe | Multiplica: em Curitiba o drone faz menos esforço no mesmo trajeto | Nenhum |
 | 2026-11-12 | Tempo de voo (A5) | Equipe | Só conta quando o drone sai do chão; em solo ele está em repouso | Nenhum |
 | 2026-11-12 | Pouso final e 172 s (A9, A10) | Equipe | O pouso final no campus conta como pouso, e os 172 s saem da bateria que chega | Nenhum |
 | 2026-11-12 | Taxa das 17h (A11) | Equipe | "Após as 17:00:00": 17:00:00 não paga; a partir de 17:00:01, paga | Nenhum |
+| 2026-11-12 | A6, A7, A8 e A12 | Enunciado | Resolvidas pelo próprio texto: recarga só nos pontos do professor; velocidades de 36 a 80, de 4 em 4; "troca de bateria" = parada; 1500 m contados até os pontos do professor (as extras ficam a 390 m e 432 m) | Nenhum |
