@@ -67,8 +67,15 @@ Toda hipótese nova recebe um código novo aqui **antes** de virar código.
 | A20 | O campus pode ser revisitado | Não usamos isso: o campus fica só no início e no fim |
 | A21 | Pairar "um minuto **ou mais**" | Permitido, mas opcional |
 
-## 4. Respostas do professor
+## 4. Confirmações
 
-| Data | Pergunta (A#) | Resposta | Impacto no código |
-|---|---|---|---|
-| 2026-11-11 | Prazo (A13) | Entrega em 24/11/2026 | Nenhum |
+A equipe decidiu fechar as decisões da seção 2 por conta própria, lendo o enunciado, em vez de esperar o professor. Os erros do enunciado ficam registrados neste documento.
+
+| Data | Ponto (A#) | Quem confirmou | Resposta | Impacto no código |
+|---|---|---|---|---|
+| 2026-11-11 | Prazo (A13) | Professor | Entrega em 24/11/2026 | Nenhum |
+| 2026-11-12 | Vento (A2) | Equipe | Triângulo de velocidades: o drone corrige o rumo, como um avião | Nenhum |
+| 2026-11-12 | Fator 1,14 (A3) | Equipe | Multiplica: em Curitiba o drone faz menos esforço no mesmo trajeto | Nenhum |
+| 2026-11-12 | Tempo de voo (A5) | Equipe | Só conta quando o drone sai do chão; em solo ele está em repouso | Nenhum |
+| 2026-11-12 | Pouso final e 172 s (A9, A10) | Equipe | O pouso final no campus conta como pouso, e os 172 s saem da bateria que chega | Nenhum |
+| 2026-11-12 | Taxa das 17h (A11) | Equipe | "Após as 17:00:00": 17:00:00 não paga; a partir de 17:00:01, paga | Nenhum |
