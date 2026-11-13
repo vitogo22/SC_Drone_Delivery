@@ -2,7 +2,7 @@ import pytest
 
 from surveyor.dominio.calculos.vento import Vento, blocos_de_vento
 from surveyor.dominio.modelos import Coordenada, PlanoDeVoo, Trecho
-from surveyor.dominio.regras import Regras
+from surveyor.dominio.regras import ParametrosOperacao, Regras
 from surveyor.dominio.simulador import Cenario, DecisoesDeVoo, ResultadoSimulacao, simular
 
 # Três pontos ao norte do campus (-25.40), no mesmo meridiano, a 0,01° = 1,111949 km um do outro.
@@ -61,7 +61,9 @@ def test_caso_feliz_tres_pontos_sem_pouso_intermediario_calculado_a_mao(
     #   B -> C       44 km/h, solo 53:                          75,53 -> 76 s  + 60 s
     #   C -> campus  36 km/h, solo 27: 3,335848 km / 27 x 3600 = 444,78 -> 445 s + 172 s de pouso
     # A bateria termina em ~80%: nenhum pouso no meio do caminho.
-    cenario = Cenario.montar(campus, (B, C, A), _vento_constante(9, 180), Regras())
+    cenario = Cenario.montar(
+        campus, (B, C, A), _vento_constante(9, 180), Regras(), ParametrosOperacao()
+    )
     decisoes = DecisoesDeVoo(rota=(2, 0, 1), velocidades_kmh=(36, 40, 44, 36), dias=(1,))
 
     resultado = simular(decisoes, cenario)
@@ -76,4 +78,38 @@ def test_caso_feliz_tres_pontos_sem_pouso_intermediario_calculado_a_mao(
                hora_final_s=22027),  # 06:07:07
         Trecho(C, campus, dia=1, hora_inicial_s=22027, velocidade_kmh=36, pouso=True,
                hora_final_s=22644),  # 06:17:24, pouso final no campus (A9)
+    )  # fmt: skip
+
+
+def _ao_norte(graus: float, cep: str) -> Coordenada:
+    return Coordenada(cep, f"{-25.40 + graus:.13f}", "-49.2000000000000")
+
+
+def test_sem_bateria_para_pousar_no_destino_a_linha_anterior_vira_pouso(
+    campus: Coordenada,
+) -> None:
+    # 80 km/h sem vento: autonomia de 1154,25 s. Pontos a cada 0,05° (5,5597 km = 251 s).
+    # Antes de cada trecho, a bateria precisa cobrir o voo + 172 s de pouso no destino.
+    #   campus -> P1: 1 - 423/1154,25 = 0,63 ok;  fica 1 - 311/1154,25 = 0,7306
+    #   P1 -> P2:     0,7306 - 0,3665 = 0,36 ok;  fica 0,4611
+    #   P2 -> P3:     0,4611 - 0,3665 = 0,09 ok;  fica 0,1917
+    #   P3 -> campus: 16,679 km = 751 s; 0,1917 - 923/1154,25 < 0 -> pousa em P3, bateria 100%
+    p1, p2, p3 = (_ao_norte(0.05 * i, f"8000001{i}") for i in (1, 2, 3))
+    cenario = Cenario.montar(
+        campus, (p1, p2, p3), _vento_constante(0, 0), Regras(), ParametrosOperacao()
+    )
+    decisoes = DecisoesDeVoo(rota=(0, 1, 2), velocidades_kmh=(80, 80, 80, 80), dias=(1,))
+
+    resultado = simular(decisoes, cenario)
+
+    assert resultado.valido
+    assert resultado.plano.trechos == (
+        Trecho(campus, p1, dia=1, hora_inicial_s=21600, velocidade_kmh=80, pouso=False,
+               hora_final_s=21911),  # 251 + 60
+        Trecho(p1, p2, dia=1, hora_inicial_s=21911, velocidade_kmh=80, pouso=False,
+               hora_final_s=22222),
+        Trecho(p2, p3, dia=1, hora_inicial_s=22222, velocidade_kmh=80, pouso=True,
+               hora_final_s=22645),  # 251 + 172: a parada virou pouso
+        Trecho(p3, campus, dia=1, hora_inicial_s=22645, velocidade_kmh=80, pouso=True,
+               hora_final_s=23568),  # 751 + 172
     )  # fmt: skip

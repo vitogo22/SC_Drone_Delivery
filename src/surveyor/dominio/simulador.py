@@ -8,13 +8,14 @@ Invariante: ao chegar a um ponto, o drone sempre tem bateria e horário para pou
 """
 
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
+from surveyor.dominio.calculos.bateria import consumo
 from surveyor.dominio.calculos.custo import tempo_trecho_s
 from surveyor.dominio.calculos.geo import matriz_distancias_km, matriz_rumos_graus
 from surveyor.dominio.calculos.vento import Vento, bloco_do_horario, velocidade_solo_kmh
 from surveyor.dominio.modelos import Coordenada, PlanoDeVoo, Trecho
-from surveyor.dominio.regras import Regras
+from surveyor.dominio.regras import ParametrosOperacao, Regras
 
 
 @dataclass(frozen=True, slots=True)
@@ -26,6 +27,7 @@ class Cenario:
     rumos_graus: tuple[tuple[float, ...], ...]
     vento: Mapping[tuple[int, int], Vento]  # (dia, hora de início do bloco) -> previsão
     regras: Regras
+    operacao: ParametrosOperacao
 
     @classmethod
     def montar(
@@ -34,12 +36,12 @@ class Cenario:
         pontos: Sequence[Coordenada],
         vento: Mapping[tuple[int, int], Vento],
         regras: Regras,
+        operacao: ParametrosOperacao,
     ) -> "Cenario":
         """Põe o campus depois dos pontos a visitar e pré-calcula distâncias e rumos."""
         todos = (*pontos, campus)
-        return cls(
-            todos, matriz_distancias_km(todos, regras), matriz_rumos_graus(todos), vento, regras
-        )
+        distancias_km = matriz_distancias_km(todos, regras)
+        return cls(todos, distancias_km, matriz_rumos_graus(todos), vento, regras, operacao)
 
     @property
     def indice_campus(self) -> int:
@@ -81,34 +83,60 @@ class ResultadoSimulacao:
 
 
 def simular(decisoes: DecisoesDeVoo, cenario: Cenario) -> ResultadoSimulacao:
-    """Voa a rota na ordem e nas velocidades decididas, do campus de volta ao campus."""
+    """Voa a rota na ordem e nas velocidades decididas, do campus de volta ao campus.
+
+    Antes de cada trecho, confere se a bateria cobre o voo E um pouso de 172 s no destino. Se
+    não cobre, o drone pousa no ponto onde está: a linha anterior vira pouso e a bateria volta
+    a 100% (A10: os 172 s saem da bateria que chegou).
+    """
+    regras = cenario.regras
     campus = cenario.indice_campus
     dia = decisoes.dias[0]
-    saida_s = cenario.regras.inicio_voos_s
+    saida_s = regras.inicio_voos_s
+    bateria = 1.0
     origem = campus
     trechos: list[Trecho] = []
     for destino, v_kmh in zip((*decisoes.rota, campus), decisoes.velocidades_kmh, strict=True):
-        trecho = _voar(origem, destino, v_kmh, dia, saida_s, destino == campus, cenario)
-        trechos.append(trecho)
-        origem, saida_s = destino, trecho.hora_final_s
+        voo_s = _tempo_de_voo_s(origem, destino, v_kmh, dia, saida_s, cenario)
+        if not _cobre_voo_e_pouso(bateria, voo_s, v_kmh, cenario):
+            trechos[-1] = _com_pouso(trechos[-1], regras)
+            bateria = 1.0
+            saida_s = trechos[-1].hora_final_s
+            voo_s = _tempo_de_voo_s(origem, destino, v_kmh, dia, saida_s, cenario)
+        pouso = destino == campus  # A9: o pouso final no campus conta como pouso
+        parada_s = regras.parada_com_pouso_s if pouso else regras.parada_sem_pouso_s
+        trechos.append(
+            Trecho(
+                origem=cenario.pontos[origem],
+                destino=cenario.pontos[destino],
+                dia=dia,
+                hora_inicial_s=saida_s,
+                velocidade_kmh=v_kmh,
+                pouso=pouso,
+                hora_final_s=saida_s + voo_s + parada_s,
+            )
+        )
+        bateria -= consumo(voo_s + parada_s, v_kmh, regras)  # A1: a parada na taxa do trecho
+        origem, saida_s = destino, trechos[-1].hora_final_s
     return ResultadoSimulacao(PlanoDeVoo(tuple(trechos)))
 
 
-def _voar(
-    origem: int, destino: int, v_kmh: int, dia: int, saida_s: int, pouso: bool, cenario: Cenario
-) -> Trecho:
-    """Um trecho: vento pelo bloco da SAÍDA, tempo com teto e a parada no destino (A17)."""
-    regras = cenario.regras
-    vento = cenario.vento[(dia, bloco_do_horario(saida_s, regras))]
+def _tempo_de_voo_s(
+    origem: int, destino: int, v_kmh: int, dia: int, saida_s: int, cenario: Cenario
+) -> int:
+    """Segundos no ar de `origem` a `destino`, com o vento do bloco da SAÍDA."""
+    vento = cenario.vento[(dia, bloco_do_horario(saida_s, cenario.regras))]
     v_solo_kmh = velocidade_solo_kmh(v_kmh, cenario.rumos_graus[origem][destino], vento)
-    voo_s = tempo_trecho_s(cenario.distancias_km[origem][destino], v_solo_kmh)
-    parada_s = regras.parada_com_pouso_s if pouso else regras.parada_sem_pouso_s
-    return Trecho(
-        origem=cenario.pontos[origem],
-        destino=cenario.pontos[destino],
-        dia=dia,
-        hora_inicial_s=saida_s,
-        velocidade_kmh=v_kmh,
-        pouso=pouso,
-        hora_final_s=saida_s + voo_s + parada_s,
-    )
+    return tempo_trecho_s(cenario.distancias_km[origem][destino], v_solo_kmh)
+
+
+def _cobre_voo_e_pouso(bateria: float, voo_s: int, v_kmh: int, cenario: Cenario) -> bool:
+    """Invariante: depois do voo, ainda sobra bateria para pousar no destino, acima da reserva."""
+    gasto = consumo(voo_s + cenario.regras.parada_com_pouso_s, v_kmh, cenario.regras)
+    return bateria - gasto >= cenario.operacao.reserva_bateria
+
+
+def _com_pouso(trecho: Trecho, regras: Regras) -> Trecho:
+    """A parada de foto no destino vira pouso com troca de bateria (60 s -> 172 s)."""
+    acrescimo_s = regras.parada_com_pouso_s - regras.parada_sem_pouso_s
+    return replace(trecho, pouso=True, hora_final_s=trecho.hora_final_s + acrescimo_s)
