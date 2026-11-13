@@ -108,7 +108,7 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 - [x] 6.1 Definir a entrada (ordem dos pontos, velocidade por ponto, dias habilitados: tipos simples, sem o Cromossomo) e a saída (`PlanoDeVoo`, se é válido e o motivo quando não é).
 - [x] 6.2 Caso feliz: 3 pontos, sem pouso intermediário, resultado calculado à mão.
 - [x] 6.3 Pouso por bateria. Invariante: ao chegar a um ponto, sempre há bateria para pousar ali. Se faltar para o próximo trecho, a linha anterior vira Pouso = SIM, a parada passa de 60 para 172 s e a bateria vai a 100%.
-- [ ] 6.4 Fim de expediente (`operacao.limite_operacional_s`, 17:00:00; o teto é 19:00:00): seguir para o próximo dia habilitado às 06:00:00. Depois do dia 7, o plano é inválido.
+- [x] 6.4 Fim de expediente (`operacao.limite_operacional_s`, 17:00:00; o teto é 19:00:00): seguir para o próximo dia habilitado às 06:00:00. Depois do dia 7, o plano é inválido.
 - [ ] 6.5 Extras: nunca pousar nelas. Antes de voar para uma extra, garantir bateria para chegar ao próximo ponto que pode pousar e pousar lá.
 - [ ] 6.6 Trecho impossível: tentar outras velocidades (a mais próxima primeiro), depois esperar o próximo bloco ou dia; se nada servir, o plano é inválido. Com vento contra de 21 km/h, o alcance fica em torno de 24 km.
 - [ ] 6.7 Teste de propriedade com 1.000 permutações do arquivo real: a bateria nunca fica abaixo da reserva, nenhum horário passa de 19:00:00 e nenhuma extra recebe pouso (`@pytest.mark.lento`).

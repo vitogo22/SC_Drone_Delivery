@@ -85,24 +85,41 @@ class ResultadoSimulacao:
 def simular(decisoes: DecisoesDeVoo, cenario: Cenario) -> ResultadoSimulacao:
     """Voa a rota na ordem e nas velocidades decididas, do campus de volta ao campus.
 
-    Antes de cada trecho, confere se a bateria cobre o voo E um pouso de 172 s no destino. Se
-    não cobre, o drone pousa no ponto onde está: a linha anterior vira pouso e a bateria volta
-    a 100% (A10: os 172 s saem da bateria que chegou).
+    Antes de cada trecho, confere se depois dele o drone ainda consegue pousar no destino:
+    com bateria acima da reserva e terminando o pouso até o limite de operação. Se não
+    consegue, ele pousa no ponto onde está (a linha anterior vira pouso e a bateria volta a
+    100%; A10: os 172 s saem da bateria que chegou). Se mesmo assim o horário não dá, o voo
+    segue às 06:00:00 do próximo dia habilitado; sem próximo dia, o plano é inválido.
     """
     regras = cenario.regras
     campus = cenario.indice_campus
-    dia = decisoes.dias[0]
+    dias = iter(decisoes.dias)
+    dia = next(dias, None)
+    if dia is None:
+        return ResultadoSimulacao(PlanoDeVoo(()), "nenhum dia habilitado para voar")
     saida_s = regras.inicio_voos_s
     bateria = 1.0
     origem = campus
     trechos: list[Trecho] = []
     for destino, v_kmh in zip((*decisoes.rota, campus), decisoes.velocidades_kmh, strict=True):
         voo_s = _tempo_de_voo_s(origem, destino, v_kmh, dia, saida_s, cenario)
-        if not _cobre_voo_e_pouso(bateria, voo_s, v_kmh, cenario):
+        if not (
+            _cobre_voo_e_pouso(bateria, voo_s, v_kmh, cenario)
+            and _pouso_no_horario(saida_s, voo_s, cenario)
+        ):
             trechos[-1] = _com_pouso(trechos[-1], regras)
             bateria = 1.0
             saida_s = trechos[-1].hora_final_s
             voo_s = _tempo_de_voo_s(origem, destino, v_kmh, dia, saida_s, cenario)
+            if not _pouso_no_horario(saida_s, voo_s, cenario):
+                dia = next(dias, None)
+                if dia is None:
+                    motivo = (
+                        f"a rota não termina: não há dia habilitado depois do dia {trechos[-1].dia}"
+                    )
+                    return ResultadoSimulacao(PlanoDeVoo(tuple(trechos)), motivo)
+                saida_s = regras.inicio_voos_s
+                voo_s = _tempo_de_voo_s(origem, destino, v_kmh, dia, saida_s, cenario)
         pouso = destino == campus  # A9: o pouso final no campus conta como pouso
         parada_s = regras.parada_com_pouso_s if pouso else regras.parada_sem_pouso_s
         trechos.append(
@@ -134,6 +151,12 @@ def _cobre_voo_e_pouso(bateria: float, voo_s: int, v_kmh: int, cenario: Cenario)
     """Invariante: depois do voo, ainda sobra bateria para pousar no destino, acima da reserva."""
     gasto = consumo(voo_s + cenario.regras.parada_com_pouso_s, v_kmh, cenario.regras)
     return bateria - gasto >= cenario.operacao.reserva_bateria
+
+
+def _pouso_no_horario(saida_s: int, voo_s: int, cenario: Cenario) -> bool:
+    """O pouso no destino termina até o limite de operação (17:00:00 em ponto não paga; A11)."""
+    fim_do_pouso_s = saida_s + voo_s + cenario.regras.parada_com_pouso_s
+    return fim_do_pouso_s <= cenario.operacao.limite_operacional_s
 
 
 def _com_pouso(trecho: Trecho, regras: Regras) -> Trecho:

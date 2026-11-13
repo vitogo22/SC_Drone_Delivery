@@ -113,3 +113,65 @@ def test_sem_bateria_para_pousar_no_destino_a_linha_anterior_vira_pouso(
         Trecho(p3, campus, dia=1, hora_inicial_s=22645, velocidade_kmh=80, pouso=True,
                hora_final_s=23568),  # 751 + 172
     )  # fmt: skip
+
+
+def _cenario_do_caso_feliz(campus: Coordenada, limite_operacional_s: int) -> Cenario:
+    operacao = ParametrosOperacao(limite_operacional_s=limite_operacional_s)
+    return Cenario.montar(campus, (B, C, A), _vento_constante(9, 180), Regras(), operacao)
+
+
+DECISOES_DO_CASO_FELIZ = {"rota": (2, 0, 1), "velocidades_kmh": (36, 40, 44, 36)}
+
+
+def test_pouso_que_termina_exatamente_no_limite_de_operacao_e_permitido(
+    campus: Coordenada,
+) -> None:
+    cenario = _cenario_do_caso_feliz(campus, limite_operacional_s=22644)  # 06:17:24
+    decisoes = DecisoesDeVoo(**DECISOES_DO_CASO_FELIZ, dias=(1, 3))
+
+    resultado = simular(decisoes, cenario)
+
+    assert [trecho.dia for trecho in resultado.plano.trechos] == [1, 1, 1, 1]
+    assert resultado.plano.trechos[-1].hora_final_s == 22644
+
+
+def test_fim_de_expediente_pousa_e_segue_no_proximo_dia_habilitado_as_6h(
+    campus: Coordenada,
+) -> None:
+    # Limite de 06:15:00 (22500). Voltar ao campus saindo de C às 06:07:07 terminaria o pouso
+    # às 06:17:24: não cabe. O drone pousa em C (06:07:07 + 112 s = 06:08:59), e mesmo assim
+    # não cabe (06:08:59 + 617 s = 06:19:16). Segue no dia 3 (o 2 está desabilitado), às
+    # 06:00:00, com a bateria nova: 445 s + 172 s -> 06:10:17.
+    cenario = _cenario_do_caso_feliz(campus, limite_operacional_s=22500)
+    decisoes = DecisoesDeVoo(**DECISOES_DO_CASO_FELIZ, dias=(1, 3))
+
+    resultado = simular(decisoes, cenario)
+
+    assert resultado.valido
+    assert resultado.plano.trechos[2:] == (
+        Trecho(B, C, dia=1, hora_inicial_s=21891, velocidade_kmh=44, pouso=True,
+               hora_final_s=22139),  # pouso de fim de dia em C
+        Trecho(C, campus, dia=3, hora_inicial_s=21600, velocidade_kmh=36, pouso=True,
+               hora_final_s=22217),
+    )  # fmt: skip
+
+
+def test_sem_proximo_dia_habilitado_o_plano_e_invalido(campus: Coordenada) -> None:
+    cenario = _cenario_do_caso_feliz(campus, limite_operacional_s=22500)
+    decisoes = DecisoesDeVoo(**DECISOES_DO_CASO_FELIZ, dias=(1,))
+
+    resultado = simular(decisoes, cenario)
+
+    assert not resultado.valido
+    assert "dia 1" in (resultado.motivo_invalido or "")
+    assert len(resultado.plano.trechos) == 3  # o plano parcial termina com o pouso em C
+    assert resultado.plano.trechos[-1].pouso
+
+
+def test_sem_nenhum_dia_habilitado_o_plano_e_invalido(campus: Coordenada) -> None:
+    cenario = _cenario_do_caso_feliz(campus, limite_operacional_s=22500)
+
+    resultado = simular(DecisoesDeVoo(**DECISOES_DO_CASO_FELIZ, dias=()), cenario)
+
+    assert not resultado.valido
+    assert resultado.plano.trechos == ()
