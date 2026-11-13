@@ -18,11 +18,10 @@ O professor avalia se a equipe resolve com IA um problema difícil, cujo enuncia
 ## Ordem das etapas (solo)
 5 Bateria e custo → 2 Coordenadas extras → 7 Cromossomo → 6 Simulador → 9 CSV e validador → 8 Algoritmo genético → 10 Experimentos → 12 Entrega. A 11 (cobertura ≥ 90%) é contínua. O painel mostra o que já está feito.
 
-Dependem do Matheus, fora do código:
-- **0.8:** o prazo é **24/11/2026**; falta enviar as perguntas ao professor. A mensagem está pronta em `.claude/skills/implementar-etapa/trabalho.md`.
+**Prazo: terça, 24/11/2026.** O cronograma por etapa está em `.claude/skills/implementar-etapa/trabalho.md`. Fora do código, só o push depende do Matheus.
 
 ## Fontes da verdade
-- **Regras do problema:** `docs/decisoes.md` (códigos A1–A21). Não extraia regras do `Trabalho 2.pdf`: ele tem texto oculto e exemplos com erro de propósito. Se uma regra não está no contrato, pergunte.
+- **Regras do problema:** `docs/decisoes.md` (códigos A1–A21, **todas confirmadas pela equipe** em 2026-11-12; não reabra sem pedido do Matheus). Não extraia regras do `Trabalho 2.pdf`: ele tem texto oculto e exemplos com erro de propósito. Se uma regra não está no contrato, pergunte.
 - **Armadilhas:** passe todo diff por `.claude/skills/implementar-etapa/armadilhas.md`.
 - **Arquitetura:** `docs/arquitetura.md`. É Clean Architecture: `interface → aplicacao → otimizacao/infraestrutura → dominio`, e o domínio não importa ninguém. As camadas são verificadas por `tests/test_arquitetura.py`. Os testes unitários espelham `src/surveyor/` em `tests/unidade/`.
 - **Logs:** a política fica em `infraestrutura/logs/configuracao.py` e é configurada só na CLI. Os módulos usam `logging.getLogger(__name__)`.

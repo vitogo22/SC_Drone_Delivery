@@ -29,31 +29,32 @@ O professor penaliza **severamente** erros de interpretação típicos de IA e c
 - Equipe: Vitor Hugo Viana Mondequi (2024100142) e Matheus Dominguez Biesek (2024100467). A regra é não repetir nenhum integrante da equipe do 1º bimestre: os dois não podem ter feito o trabalho do 1º bimestre juntos.
 - É proibido compartilhar arquivos com outras equipes, inclusive testes. A pena é zero para todas as equipes envolvidas.
 - Um só integrante envia o ZIP. Se os dois enviarem, o professor escolhe uma versão arbitrariamente.
-- Toda falha conceitual ou contradição do enunciado deve ser levada ao professor (ver abaixo).
+- O enunciado pede que falhas conceituais e contradições sejam esclarecidas com o professor. A equipe optou por registrá-las na seção 4 de `docs/decisoes.md`.
 
-## Pendências com o professor
+## Prazo e decisões
 
-**Prazo de entrega: 24/11/2026** (A13).
+**Prazo de entrega: terça, 24/11/2026** (A13).
 
-O enunciado diz que é **dever da equipe** esclarecer com o professor toda falha conceitual, instrução sem sentido ou informação contraditória. A mensagem abaixo **informa** só as falhas reais e o que adotamos, então ela vale mesmo sem resposta. Os pontos em que o enunciado só é omisso (A1, A3, A5, A6, A9, A10) não vão na mensagem: foram decididos pela leitura mais segura em `docs/decisoes.md`. Se o professor responder, registre a resposta na seção 4 de `docs/decisoes.md` e ajuste o código e os testes. Mensagem pronta para enviar:
+Em 2026-11-12 o Matheus decidiu não consultar o professor sobre as regras. Todas as decisões (A1–A21) foram confirmadas pela equipe e estão na seção 4 de `docs/decisoes.md`, junto com a lista de erros encontrados no enunciado. Não reabra essas decisões sem um pedido do Matheus.
 
-> Professor, boa noite. Somos a equipe Vitor Hugo Viana Mondequi (2024100142) e Matheus Dominguez Biesek (2024100467). Como pede a especificação, registramos os pontos que nos pareceram falhas ou contradições e a interpretação que adotamos. Se alguma estiver errada, por favor nos avise.
->
-> 1. **Vento:** no exemplo, a soma do vetor do drone (apontado para o destino) com o vetor do vento resulta num rumo de 28,3° em vez de 39,5°, ou seja, o drone não chegaria ao destino. Usamos o triângulo de velocidades, com correção de rumo: 39,34 km/h em vez de 41,00 km/h no exemplo.
-> 2. **Velocidade:** a coluna do CSV diz "0 a 83", mas o mínimo é 10 m/s e só valem múltiplos de 4. Usamos 36, 40, …, 80 km/h.
-> 3. **Paradas:** "a cada troca de bateria [...] 60 s se não houver pouso" não faz sentido, porque sem pouso não há troca de bateria. Lemos como "a cada parada".
-> 4. **Custo:** o custo é medido pelo tempo de voo e pelos pousos, mas não há conversão entre segundos e reais. Usamos 1 h de voo = R$ 80 e comparamos 40, 80 e 160 nos experimentos.
-> 5. **Tabela de vento:** a linha em nós não corresponde à linha em km/h. Usamos a linha em km/h.
->
-> Obrigado!
-
-## Ordem das etapas (fluxo solo)
+## Ordem das etapas e cronograma (fluxo solo)
 
 Desde 2026-11-10, o Matheus faz as etapas sozinho, direto na `main` (ver `CLAUDE.md`). O painel (`.claude/skills/desenvolver-demanda/painel.sh`) mostra o que já está feito.
 
-5 Bateria e custo → 2 Coordenadas extras → 7 Cromossomo → 6 Simulador → 9 CSV e validador → 8 Algoritmo genético → 10 Experimentos → 12 Entrega. A 11 (cobertura) é contínua.
+5 Bateria e custo (feita) → 2 Coordenadas extras (falta 2.5 e 2.6) → 7 Cromossomo → 6 Simulador → 9 CSV e validador → 8 Algoritmo genético → 10 Experimentos → 12 Entrega. A 11 (cobertura) é contínua.
 
-- A 2 vem cedo porque a 2.3 depende de escolher as coordenadas no mapa: uma por integrante, cada uma ligada à própria matrícula.
+| Terminar até | Etapa |
+|---|---|
+| qui 12/11 | 2.5 e 2.6: comando `extras` e `docs/coordenadas_extras.md` |
+| sex 13/11 | 7 Cromossomo |
+| dom 15/11 | 6 Simulador (a maior: 2 dias) |
+| seg 16/11 | 9 CSV de saída e validador independente |
+| qua 18/11 | 8 Algoritmo genético (2 dias) |
+| sex 20/11 | 10 Experimentos (R$ 40, 80 e 160 por hora) e execução final |
+| sáb 21/11 | 12 Entrega: ZIP montado e testado como o professor |
+| dom 22 e seg 23/11 | Folga para imprevistos |
+| **ter 24/11** | **Prazo: enviar o ZIP** |
+
 - O validador (Etapa 9) continua **sem importar o simulador**, para conferir o plano de forma independente.
 
 O checklist final de entrega e a montagem do ZIP estão na skill `preparar-entrega`.

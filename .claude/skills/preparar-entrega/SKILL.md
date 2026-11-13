@@ -43,16 +43,16 @@ PASSO ATUAL: Entrega · Passo 3 de 6 (conferir documentos)
 Micro passos:
   [x] 3.1 README: equipe e reprodução
   [>] 3.2 Coordenadas extras                   <- agora
-  [ ] 3.3 Decisões e respostas do professor
+  [ ] 3.3 Decisões confirmadas e erros do enunciado
   ...
 PRÓXIMOS PASSOS: Passo 4 (gerar o ZIP) → Passo 5 (testar como o professor) → Passo 6 (enviar)
 ```
 
-Os passos 1 a 3 mudam arquivos. Faça-os num ramo `entrega-final`, pela skill `desenvolver-demanda`. Os passos 4 a 6 são feitos na `main`, depois do merge.
+Os passos 1 a 3 mudam arquivos: faça-os direto na `main`, pela skill `desenvolver-demanda`. Os passos 4 a 6 também são na `main`, depois do `git push` do Matheus.
 
 ## Passo 1 — Pré-requisitos
-- [ ] 1.1 Painel (`.claude/skills/desenvolver-demanda/painel.sh`): Etapas 0 a 11 concluídas na `origin/main`, sem PR aberto.
-- [ ] 1.2 Respostas do professor registradas na seção 4 de `docs/decisoes.md` e refletidas no código.
+- [ ] 1.1 Painel (`.claude/skills/desenvolver-demanda/painel.sh`): Etapas 0 a 11 concluídas e enviadas (`git push`).
+- [ ] 1.2 Decisões confirmadas na seção 4 de `docs/decisoes.md` e refletidas no código (feito em 2026-11-12).
 - [ ] 1.3 `make verificar` verde na `main` atualizada.
 
 ## Passo 2 — Evidências finais em `resultados/`
@@ -73,7 +73,7 @@ Os passos 1 a 3 mudam arquivos. Faça-os num ramo `entrega-final`, pela skill `d
 - [ ] 3.2 `docs/coordenadas_extras.md` preenchido (saída de `python -m surveyor extras`).
 - [ ] 3.3 `docs/decisoes.md`, `docs/codificacao.md` e `docs/experimentos.md` completos.
 - [ ] 3.4 Nenhuma menção a regras "condicionais por matrícula" em lugar nenhum: `grep -rni "matr[ií]cula come" src tests docs README.md` deve voltar vazio.
-- [ ] 3.5 PR `entrega-final` revisado e mergeado pela equipe.
+- [ ] 3.5 Commits da entrega na `main` e enviados pelo Matheus (`git push`).
 
 ## Passo 4 — Gerar o ZIP (na `main` atualizada, sem alterações pendentes)
 - [ ] 4.1 `git switch main && git pull --ff-only && git status` (limpo).

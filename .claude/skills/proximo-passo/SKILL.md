@@ -13,13 +13,14 @@ O Matheus faz o trabalho sozinho desde 2026-11-10, direto na `main`. Ele pediu *
 
 ## 2 — Responder (no máximo uns 8 linhas)
 ```
-Feito: Etapas 1, 3 e 4 (179 testes, cobertura 100%). 14 commits ainda não enviados.
-Próximo: Etapa 5 — Bateria, tempo e custo (5.1 autonomia_s pela velocidade ajustada).
-Pendente com você: 0.8 perguntar ao professor o prazo (mensagem pronta em trabalho.md).
+Feito: Etapas 1, 3, 4 e 5; Etapa 2 até a 2.4 (224 testes, cobertura 100%). 12 commits ainda não enviados.
+Próximo: 2.5 — comando `python -m surveyor extras` (no cronograma: até qui 12/11).
+Prazo: ter 24/11.
 Sigo?
 ```
 - Um passo de cada vez. Não liste todas as etapas, nem tabelas ou pendências que não bloqueiam.
-- Mencione o 0.8 (prazo com o professor) enquanto ele não estiver feito, porque o prazo é desconhecido.
+- Compare com o cronograma de [trabalho.md](../implementar-etapa/trabalho.md) e diga em meia linha se o projeto está em dia ou atrasado (prazo: 24/11/2026).
+- Se algo depender do Matheus, abra com o bloco "⚠️ PRECISO DE VOCÊ" (ver `CLAUDE.md`).
 - Explique termos novos em meia linha, ou aponte o [glossario.md](glossario.md).
 
 ## 3 — Encaminhar

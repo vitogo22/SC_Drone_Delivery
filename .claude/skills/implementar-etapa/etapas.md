@@ -39,8 +39,8 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 - [x] 0.5 `dados/coordenadas.csv` (do AVA, conferido) e `dados/vento.csv` (35 células conferidas).
 - [x] 0.6 Skills (`desenvolver-demanda`, `implementar-etapa`, `preparar-entrega`) e o hook que roda `git pull` ao abrir o projeto.
 - [x] 0.7 Publicar a base na `main` (PR do ramo `arquitetura-base`, revisado pelo outro integrante).
-- [ ] 0.8 Enviar ao professor as perguntas de [trabalho.md](trabalho.md) e descobrir o prazo.
-- [ ] 0.9 Registrar as respostas na seção 4 de `docs/decisoes.md` e ajustar as decisões afetadas (A1–A13).
+- [x] 0.8 Prazo: **24/11/2026** (A13). Em 2026-11-12 a equipe decidiu não consultar o professor sobre as regras.
+- [x] 0.9 Decisões A1–A13 confirmadas pela equipe na seção 4 de `docs/decisoes.md`, sem mudança no código.
 
 ## Etapa 1 — Leitura dos dados de entrada
 **Módulo:** `infraestrutura/arquivos/leitor_csv.py` · **Depende de:** 0
@@ -193,7 +193,7 @@ Bastam 1 ou 2 dias de voo. Um resultado muito fora dessas faixas indica bug.
 ## Etapa 12 — Entrega
 **Skill:** `preparar-entrega` (os micro passos detalhados estão lá) · **Depende de:** todas
 
-- [ ] 12.1 Pré-requisitos: todas as etapas na `main` e as respostas do professor registradas.
+- [ ] 12.1 Pré-requisitos: todas as etapas na `main` e enviadas (`git push`). As decisões já estão confirmadas (seção 4 de `docs/decisoes.md`).
 - [ ] 12.2 Evidências finais em `resultados/`.
 - [ ] 12.3 Documentos conferidos (README de reprodução, nomes, matrículas, extras).
 - [ ] 12.4 `make entrega` gera o ZIP só com o conteúdo permitido.

@@ -28,7 +28,7 @@ Os micro passos e os oráculos vêm de [etapas.md](etapas.md). `[>]` marca o que
 - [ ] 1.2 Ler a seção da etapa em [etapas.md](etapas.md) e montar o painel.
 - [ ] 1.3 Listar as assinaturas que a etapa **usa** das etapas anteriores. Não reimplemente nada.
 - [ ] 1.4 Regra ausente no contrato? **Pare e pergunte.** Nunca tire regras do `Trabalho 2.pdf`: ele tem texto oculto e exemplos com erro de propósito. Quando a regra for decidida, ela vira um `A<n>` novo em `docs/decisoes.md` antes do código.
-- [ ] 1.5 Decisão pendente (A1–A13)? Implemente a provisória do contrato. **Não** crie uma alternativa "por via das dúvidas".
+- [ ] 1.5 As decisões A1–A21 estão fechadas (seção 4 de `docs/decisoes.md`). Implemente exatamente o que o contrato diz e **não** crie uma alternativa "por via das dúvidas". Só reabra uma decisão se o Matheus pedir.
 
 ## Passo 2 — Executar cada micro passo (repetir até o fechamento)
 - [ ] 2.1 **Teste primeiro** em `tests/unidade/<mesmo caminho do módulo>/test_<modulo>.py` (arquivo `test_*.py`, funções `test_*`, que é como o pytest do pipeline os descobre), com os oráculos exatos de [etapas.md](etapas.md). Rode `make testar` e confira que ele falha pelo motivo certo. **Sem teste não há micro passo de código.**
@@ -70,5 +70,5 @@ Os micro passos e os oráculos vêm de [etapas.md](etapas.md). `[>]` marca o que
 
 ## Arquivos desta skill
 - [etapas.md](etapas.md): etapas 0–12 com micro passos, oráculos e dependências.
-- [trabalho.md](trabalho.md): o que o trabalho pede, a nota, as regras da equipe e as perguntas ao professor.
+- [trabalho.md](trabalho.md): o que o trabalho pede, a nota, as regras da equipe, o prazo e o cronograma.
 - [armadilhas.md](armadilhas.md): checklist de revisão.
