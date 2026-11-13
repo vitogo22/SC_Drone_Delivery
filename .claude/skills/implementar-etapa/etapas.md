@@ -105,7 +105,7 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 ## Etapa 6 — Simulador (decodificador)
 **Módulo:** `dominio/simulador.py` · **Depende de:** 1, 3, 4, 5
 
-- [ ] 6.1 Definir a entrada (ordem dos pontos, velocidade por ponto, dias habilitados: tipos simples, sem o Cromossomo) e a saída (`PlanoDeVoo`, se é válido e o motivo quando não é).
+- [x] 6.1 Definir a entrada (ordem dos pontos, velocidade por ponto, dias habilitados: tipos simples, sem o Cromossomo) e a saída (`PlanoDeVoo`, se é válido e o motivo quando não é).
 - [ ] 6.2 Caso feliz: 3 pontos, sem pouso intermediário, resultado calculado à mão.
 - [ ] 6.3 Pouso por bateria. Invariante: ao chegar a um ponto, sempre há bateria para pousar ali. Se faltar para o próximo trecho, a linha anterior vira Pouso = SIM, a parada passa de 60 para 172 s e a bateria vai a 100%.
 - [ ] 6.4 Fim de expediente (`operacao.limite_operacional_s`, 17:00:00; o teto é 19:00:00): seguir para o próximo dia habilitado às 06:00:00. Depois do dia 7, o plano é inválido.
