@@ -41,7 +41,7 @@ Em 2026-11-12 o Matheus decidiu não consultar o professor sobre as regras. Toda
 
 Vitor e Matheus trabalham juntos neste terminal, direto na `main` (ver `CLAUDE.md`). O painel (`.claude/skills/desenvolver-demanda/painel.sh`) mostra o que já está feito.
 
-5 Bateria e custo (feita) → 2 Coordenadas extras (feita) → 7 Cromossomo → 6 Simulador → 9 CSV e validador → 8 Algoritmo genético → 10 Experimentos → 12 Entrega. A 11 (cobertura) é contínua.
+5 Bateria e custo (feita) → 2 Coordenadas extras (feita) → 7 Cromossomo (feita) → 6 Simulador → 9 CSV e validador → 8 Algoritmo genético → 10 Experimentos → 12 Entrega. A 11 (cobertura) é contínua.
 
 | Terminar até | Etapa |
 |---|---|

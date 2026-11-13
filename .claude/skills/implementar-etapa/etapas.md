@@ -124,7 +124,7 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
   - explicar a hipótese dos blocos construtivos (a velocidade viaja junto com o ponto);
   - explicar por que os cruzamentos clássicos citados no enunciado (um ponto, múltiplos pontos, uniforme) **não** servem para a permutação, porque geram CEP repetido e CEP faltando, e por que usamos OX/PMX/ERX na ordem e o uniforme só no calendário e nas velocidades;
   - justificar o calendário: os dias 1 e 6 têm vento de 3 a 8 km/h e os dias 2 e 5, de 16 a 21 km/h; vento constante nunca reduz o tempo de uma rota fechada (+0% a +40% em 2.000 rotas simuladas); a espera em solo não conta (A5).
-- [ ] 7.4 Fechamento.
+- [x] 7.4 Fechamento.
 
 ## Etapa 8 — Algoritmo genético
 **Módulos:** `otimizacao/operadores.py`, `fitness.py`, `algoritmo.py`; `aplicacao/otimizar_rota.py` · **Depende de:** 6, 7
