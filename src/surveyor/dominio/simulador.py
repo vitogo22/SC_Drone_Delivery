@@ -7,15 +7,16 @@ Invariante: ao chegar a um ponto, o drone sempre tem bateria e horário para pou
 (ou, se for coordenada extra, para seguir até o próximo ponto onde pode pousar).
 """
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterable, Iterator, Mapping, Sequence
 from dataclasses import dataclass, replace
+from enum import Enum
 
 from surveyor.dominio.calculos.bateria import consumo
 from surveyor.dominio.calculos.custo import tempo_trecho_s
 from surveyor.dominio.calculos.geo import matriz_distancias_km, matriz_rumos_graus
 from surveyor.dominio.calculos.vento import Vento, bloco_do_horario, velocidade_solo_kmh
 from surveyor.dominio.modelos import Coordenada, PlanoDeVoo, Trecho
-from surveyor.dominio.regras import ParametrosOperacao, Regras
+from surveyor.dominio.regras import SEGUNDOS_POR_HORA, ParametrosOperacao, Regras
 
 
 @dataclass(frozen=True, slots=True)
@@ -86,6 +87,13 @@ class ResultadoSimulacao:
 Passo = tuple[int, int, int]
 
 
+class _Falta(Enum):
+    """O que impede o drone de chegar ao próximo pouso."""
+
+    BATERIA = "bateria"
+    HORARIO = "horário"
+
+
 def simular(decisoes: DecisoesDeVoo, cenario: Cenario) -> ResultadoSimulacao:
     """Voa a rota na ordem e nas velocidades decididas, do campus de volta ao campus.
 
@@ -93,8 +101,8 @@ def simular(decisoes: DecisoesDeVoo, cenario: Cenario) -> ResultadoSimulacao:
     (o próprio destino ou, se ele for coordenada extra, o primeiro ponto do professor depois
     dela; A6) e pousar lá, com bateria acima da reserva e até o limite de operação. Se não
     consegue, ele pousa no ponto onde está: a linha anterior vira pouso e a bateria volta a
-    100% (A10: os 172 s saem da bateria que chegou). Se mesmo assim o horário não dá, o voo
-    segue às 06:00:00 do próximo dia habilitado; sem próximo dia, o plano é inválido.
+    100% (A10: os 172 s saem da bateria que chegou). Com a bateria cheia, `_decolagem` escolhe
+    quando e a que velocidade sair; se não houver como, o plano é inválido.
     """
     regras = cenario.regras
     campus = cenario.indice_campus
@@ -107,20 +115,22 @@ def simular(decisoes: DecisoesDeVoo, cenario: Cenario) -> ResultadoSimulacao:
     saida_s = regras.inicio_voos_s
     bateria = 1.0
     trechos: list[Trecho] = []
-    for posicao, (origem, destino, v_kmh) in enumerate(trajeto):
+    for posicao in range(len(trajeto)):
         caminho = _ate_o_proximo_pouso(trajeto, posicao, cenario)
-        if not _alcanca_pouso(bateria, saida_s, dia, caminho, cenario):
-            trechos[-1] = _com_pouso(trechos[-1], regras)
+        if _falta_no_caminho(bateria, saida_s, dia, caminho, cenario) is not None:
+            if trechos and not trechos[-1].pouso:
+                trechos[-1] = _com_pouso(trechos[-1], regras)
+                saida_s = trechos[-1].hora_final_s
             bateria = 1.0
-            saida_s = trechos[-1].hora_final_s
-            if not _alcanca_pouso(bateria, saida_s, dia, caminho, cenario):
-                dia = next(dias, None)
-                if dia is None:
-                    motivo = (
-                        f"a rota não termina: não há dia habilitado depois do dia {trechos[-1].dia}"
-                    )
-                    return ResultadoSimulacao(PlanoDeVoo(tuple(trechos)), motivo)
-                saida_s = regras.inicio_voos_s
+            dia, saida_s, possivel = _decolagem(caminho, dia, saida_s, dias, cenario)
+            if possivel is None:
+                cep_origem, cep_destino = (cenario.pontos[i].cep for i in caminho[0][:2])
+                motivo = (
+                    f"sem decolagem possível de {cep_origem} para {cep_destino} até o dia {dia}"
+                )
+                return ResultadoSimulacao(PlanoDeVoo(tuple(trechos)), motivo)
+            caminho = possivel
+        origem, destino, v_kmh = caminho[0]
         voo_s = _tempo_de_voo_s(origem, destino, v_kmh, dia, saida_s, cenario)
         pouso = destino == campus  # A9: o pouso final no campus conta como pouso
         parada_s = regras.parada_com_pouso_s if pouso else regras.parada_sem_pouso_s
@@ -140,6 +150,46 @@ def simular(decisoes: DecisoesDeVoo, cenario: Cenario) -> ResultadoSimulacao:
     return ResultadoSimulacao(PlanoDeVoo(tuple(trechos)))
 
 
+def _decolagem(
+    caminho: Sequence[Passo], dia: int, saida_s: int, dias: Iterator[int], cenario: Cenario
+) -> tuple[int, int, Sequence[Passo] | None]:
+    """Com a bateria cheia, a primeira decolagem possível a partir de `saida_s` do `dia`.
+
+    Se falta horário, o voo segue às 06:00:00 do próximo dia habilitado, na velocidade
+    decidida. Se falta bateria, tenta as outras velocidades (da mais próxima da decidida para
+    a mais distante), depois espera o próximo bloco de vento e, por fim, o próximo dia.
+    Devolve (dia, saída, caminho), com o caminho None quando nada serve.
+    """
+    regras = cenario.regras
+    while True:
+        falta = _falta_no_caminho(1.0, saida_s, dia, caminho, cenario)
+        if falta is None:
+            return dia, saida_s, caminho
+        if falta is _Falta.BATERIA:
+            for alternativo in _com_outras_velocidades(caminho, regras):
+                if _falta_no_caminho(1.0, saida_s, dia, alternativo, cenario) is None:
+                    return dia, saida_s, alternativo
+            bloco_atual_s = bloco_do_horario(saida_s, regras) * SEGUNDOS_POR_HORA
+            proximo_bloco_s = bloco_atual_s + regras.duracao_bloco_vento_s
+            if proximo_bloco_s < cenario.operacao.limite_operacional_s:
+                saida_s = proximo_bloco_s
+                continue
+        proximo_dia = next(dias, None)
+        if proximo_dia is None:
+            return dia, saida_s, None
+        dia, saida_s = proximo_dia, regras.inicio_voos_s
+
+
+def _com_outras_velocidades(caminho: Sequence[Passo], regras: Regras) -> Iterable[Sequence[Passo]]:
+    """O caminho com o primeiro passo em cada outra velocidade, da mais próxima da decidida."""
+    origem, destino, decidida = caminho[0]
+    outras = sorted(
+        (v for v in regras.velocidades_kmh if v != decidida),
+        key=lambda v: (abs(v - decidida), v),  # empate: a mais lenta, que gasta menos bateria
+    )
+    return (((origem, destino, v), *caminho[1:]) for v in outras)
+
+
 def _ate_o_proximo_pouso(
     trajeto: Sequence[Passo], posicao: int, cenario: Cenario
 ) -> Sequence[Passo]:
@@ -150,10 +200,10 @@ def _ate_o_proximo_pouso(
     return trajeto[posicao : fim + 1]
 
 
-def _alcanca_pouso(
+def _falta_no_caminho(
     bateria: float, saida_s: int, dia: int, caminho: Sequence[Passo], cenario: Cenario
-) -> bool:
-    """Voa o caminho (foto nas extras, pouso no último) sem passar da reserva nem do horário."""
+) -> _Falta | None:
+    """Voa o caminho (foto nas extras, pouso no último): o que falta, ou None se dá."""
     regras = cenario.regras
     for numero, (origem, destino, v_kmh) in enumerate(caminho, start=1):
         voo_s = _tempo_de_voo_s(origem, destino, v_kmh, dia, saida_s, cenario)
@@ -162,10 +212,10 @@ def _alcanca_pouso(
         bateria -= consumo(voo_s + parada_s, v_kmh, regras)
         saida_s += voo_s + parada_s
         if bateria < cenario.operacao.reserva_bateria:
-            return False
+            return _Falta.BATERIA
         if saida_s > cenario.operacao.limite_operacional_s:  # 17:00:00 em ponto não paga (A11)
-            return False
-    return True
+            return _Falta.HORARIO
+    return None
 
 
 def _tempo_de_voo_s(

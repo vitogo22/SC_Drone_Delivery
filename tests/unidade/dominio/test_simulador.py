@@ -227,3 +227,57 @@ def test_antes_de_voar_para_uma_extra_garante_horario_para_o_proximo_pouso(
         Trecho(extra_c, campus, dia=3, hora_inicial_s=21736, velocidade_kmh=36, pouso=True,
                hora_final_s=22353),  # 445 + 172
     )  # fmt: skip
+
+
+def test_trecho_impossivel_na_velocidade_decidida_usa_a_possivel_mais_proxima(
+    campus: Coordenada,
+) -> None:
+    # P a 0,20° (22,239 km), sem vento. A 80 km/h: 1001 s + 172 s de pouso passam da bateria
+    # cheia (sobra -1,6%). A 76 km/h, a mais próxima: 1054 s + 172 s, sobram 4,1%.
+    # Na volta, a 36 km/h decidida cabe depois do pouso em P.
+    longe = _ao_norte(0.20, "80000020")
+    cenario = Cenario.montar(
+        campus, (longe,), _vento_constante(0, 0), Regras(), ParametrosOperacao()
+    )
+
+    resultado = simular(DecisoesDeVoo(rota=(0,), velocidades_kmh=(80, 36), dias=(1,)), cenario)
+
+    assert resultado.plano.trechos == (
+        Trecho(campus, longe, dia=1, hora_inicial_s=21600, velocidade_kmh=76, pouso=True,
+               hora_final_s=22826),  # 1054 + 172
+        Trecho(longe, campus, dia=1, hora_inicial_s=22826, velocidade_kmh=36, pouso=True,
+               hora_final_s=25222),  # 2224 + 172
+    )  # fmt: skip
+
+
+def test_trecho_impossivel_em_todas_as_velocidades_espera_o_proximo_bloco_de_vento(
+    campus: Coordenada,
+) -> None:
+    # P a 0,25° (27,8 km) ao norte. Das 06h às 09h do dia 1, vento contra de 21 km/h: o
+    # alcance máximo cai para 23,2 km (a 40 km/h), então nenhuma velocidade serve. Às 09h o
+    # vento para, e a 36 km/h decidida cabe: 2780 s + 60 s de foto.
+    longe = _ao_norte(0.25, "80000025")
+    vento = _vento_constante(0, 0) | {(1, 6): Vento(21, 0)}
+    cenario = Cenario.montar(campus, (longe,), vento, Regras(), ParametrosOperacao())
+
+    resultado = simular(DecisoesDeVoo(rota=(0,), velocidades_kmh=(36, 36), dias=(1,)), cenario)
+
+    assert resultado.valido
+    primeiro = resultado.plano.trechos[0]
+    assert (primeiro.dia, primeiro.hora_inicial_s, primeiro.velocidade_kmh) == (1, 32400, 36)
+
+
+def test_trecho_impossivel_em_qualquer_velocidade_bloco_e_dia_invalida_o_plano(
+    campus: Coordenada,
+) -> None:
+    # P a 0,60° (66,7 km): nem a 36 km/h sem vento, a de maior alcance, a bateria cheia chega.
+    longe = _ao_norte(0.60, "80000060")
+    cenario = Cenario.montar(
+        campus, (longe,), _vento_constante(0, 0), Regras(), ParametrosOperacao()
+    )
+
+    resultado = simular(DecisoesDeVoo(rota=(0,), velocidades_kmh=(36, 36), dias=(1, 2)), cenario)
+
+    assert not resultado.valido
+    assert "80000060" in (resultado.motivo_invalido or "")
+    assert resultado.plano.trechos == ()
