@@ -1,10 +1,10 @@
 # UNIBRASIL Surveyor: instruções para o Claude
 
-Projeto acadêmico: algoritmo genético que gera o plano de voo de um drone. Python 3.10+, src layout, nomes em português. Equipe: Vitor Hugo Viana Mondequi e Matheus Dominguez Biesek. **Desde 2026-11-10 o Matheus faz as etapas sozinho.**
+Projeto acadêmico: algoritmo genético que gera o plano de voo de um drone. Python 3.10+, src layout, nomes em português. Equipe: Vitor Hugo Viana Mondequi e Matheus Dominguez Biesek. **Os dois trabalham juntos neste terminal**: só esta máquina tem o Claude Code, por isso todo o trabalho sai daqui. Vale a regra de equipe do enunciado (uma coordenada extra por integrante), e não a do aluno individual.
 
 O professor avalia se a equipe resolve com IA um problema difícil, cujo enunciado tem contradições e armadilhas de propósito. O que importa é acertar as regras e provar isso com testes, não o processo de git.
 
-## Como trabalhar (fluxo solo)
+## Como trabalhar (fluxo de um terminal)
 - **O que depende do Matheus vem em destaque.** Abra a resposta com um bloco "⚠️ PRECISO DE VOCÊ" dizendo exatamente o que ele precisa mandar. Um "pode seguir" depois disso **não** é a resposta: ele responde no automático. Repita o pedido até ele responder e, enquanto isso, só avance no que não depende dele.
 - **Respostas curtas.** Um passo de cada vez: o que foi feito, o resultado do `make verificar` e o próximo passo em uma linha. Nada de painel completo, tabelas da equipe ou listas de pendências paralelas.
 - **Direto na `main`:** sem ramos e sem PR. O Claude faz um commit por micro passo, com o código e o teste juntos (`git add` pelo nome dos arquivos) e o `[x]` do micro passo em `etapas.md`. Antes de cada commit, `make verificar` precisa estar verde.
@@ -15,7 +15,7 @@ O professor avalia se a equipe resolve com IA um problema difícil, cujo enuncia
 - **ZIP para o professor:** skill `preparar-entrega`. Só vai uma lista fechada de arquivos: nada de `.venv`, `.git`, `.github`, `.claude`, `Makefile` ou caches.
 - **Hook de início de sessão:** `.claude/hooks/sincronizar-git.sh` faz `git fetch` e `git pull --ff-only` (mensagem `[sincronizar-git]`).
 
-## Ordem das etapas (solo)
+## Ordem das etapas
 5 Bateria e custo → 2 Coordenadas extras → 7 Cromossomo → 6 Simulador → 9 CSV e validador → 8 Algoritmo genético → 10 Experimentos → 12 Entrega. A 11 (cobertura ≥ 90%) é contínua. O painel mostra o que já está feito.
 
 **Prazo: terça, 24/11/2026.** O cronograma por etapa está em `.claude/skills/implementar-etapa/trabalho.md`. Fora do código, só o push depende do Matheus.

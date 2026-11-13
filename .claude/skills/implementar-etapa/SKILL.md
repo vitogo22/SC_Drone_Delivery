@@ -1,11 +1,11 @@
 ---
 name: implementar-etapa
-description: Guia técnico para implementar ou revisar o código de uma etapa do UNIBRASIL Surveyor (dados, coordenadas extras, geo, vento, bateria, custo, simulador, cromossomo, algoritmo genético, CSV, validador, experimentos, cobertura), micro passo por micro passo, com testes primeiro, camadas respeitadas e `make verificar` verde. É usada DENTRO da skill desenvolver-demanda, que cuida dos commits na main (fluxo solo). Aceita o número ou o nome da etapa (ex.: "3" ou "vento").
+description: Guia técnico para implementar ou revisar o código de uma etapa do UNIBRASIL Surveyor (dados, coordenadas extras, geo, vento, bateria, custo, simulador, cromossomo, algoritmo genético, CSV, validador, experimentos, cobertura), micro passo por micro passo, com testes primeiro, camadas respeitadas e `make verificar` verde. É usada DENTRO da skill desenvolver-demanda, que cuida dos commits na main (fluxo de um terminal). Aceita o número ou o nome da etapa (ex.: "3" ou "vento").
 ---
 
 # Implementar uma etapa
 
-Objetivo: entregar cada micro passo correto pelo contrato, coberto por testes de comportamento e sem código irrelevante, que o professor penaliza. **Commits são da skill `desenvolver-demanda`** (fluxo solo: direto na `main`, sem ramo nem PR). Respostas curtas: não mostre o painel abaixo inteiro, só o micro passo atual e o próximo.
+Objetivo: entregar cada micro passo correto pelo contrato, coberto por testes de comportamento e sem código irrelevante, que o professor penaliza. **Commits são da skill `desenvolver-demanda`** (fluxo de um terminal: direto na `main`, sem ramo nem PR). Respostas curtas: não mostre o painel abaixo inteiro, só o micro passo atual e o próximo.
 
 ## Painel (mostrar ao começar, a cada micro passo concluído e ao terminar)
 

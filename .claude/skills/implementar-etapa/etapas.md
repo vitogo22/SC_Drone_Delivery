@@ -1,7 +1,7 @@
 # Etapas do projeto: passo a passo com micro passos
 
 Como usar:
-- Fluxo solo, direto na `main` (skill `desenvolver-demanda`): um commit por micro passo, e cada commit marca o `[x]` do seu micro passo.
+- Fluxo de um terminal, direto na `main` (skill `desenvolver-demanda`): um commit por micro passo, e cada commit marca o `[x]` do seu micro passo.
 - Os micro passos são as caixas `- [ ]`. Para ver o resumo, rode `.claude/skills/desenvolver-demanda/painel.sh`. A ordem das etapas está no `CLAUDE.md`.
 - Os caminhos são relativos a `src/surveyor/`, os códigos A# remetem a `docs/decisoes.md` e o contexto do trabalho está em [trabalho.md](trabalho.md).
 

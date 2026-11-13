@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Painel do projeto (fluxo solo, direto na main): micro passos concluídos por etapa na main
+# Painel do projeto (fluxo de um terminal, direto na main): micro passos concluídos por etapa na main
 # local e quantos commits ainda faltam enviar ao GitHub. Uso: .claude/skills/desenvolver-demanda/painel.sh
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"

@@ -37,9 +37,9 @@ O professor penaliza **severamente** erros de interpretação típicos de IA e c
 
 Em 2026-11-12 o Matheus decidiu não consultar o professor sobre as regras. Todas as decisões (A1–A21) foram confirmadas pela equipe e estão na seção 4 de `docs/decisoes.md`, junto com a lista de erros encontrados no enunciado. Não reabra essas decisões sem um pedido do Matheus.
 
-## Ordem das etapas e cronograma (fluxo solo)
+## Ordem das etapas e cronograma (fluxo de um terminal)
 
-Desde 2026-11-10, o Matheus faz as etapas sozinho, direto na `main` (ver `CLAUDE.md`). O painel (`.claude/skills/desenvolver-demanda/painel.sh`) mostra o que já está feito.
+Vitor e Matheus trabalham juntos neste terminal, direto na `main` (ver `CLAUDE.md`). O painel (`.claude/skills/desenvolver-demanda/painel.sh`) mostra o que já está feito.
 
 5 Bateria e custo (feita) → 2 Coordenadas extras (feita) → 7 Cromossomo → 6 Simulador → 9 CSV e validador → 8 Algoritmo genético → 10 Experimentos → 12 Entrega. A 11 (cobertura) é contínua.
 

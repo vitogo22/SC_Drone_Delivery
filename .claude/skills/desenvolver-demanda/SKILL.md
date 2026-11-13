@@ -1,17 +1,17 @@
 ---
 name: desenvolver-demanda
-description: Ponto de partida de QUALQUER mudança no UNIBRASIL Surveyor (código, testes, docs ou skills), no fluxo solo direto na main. Mostra onde o projeto está, implementa COM TESTES (com a skill implementar-etapa), verifica e faz um commit por micro passo na main. Não cria ramo, não abre PR e não faz push (o push é do Matheus). Use quando pedirem para fazer, continuar, corrigir ou ajustar algo, ou para seguir para o próximo passo.
+description: Ponto de partida de QUALQUER mudança no UNIBRASIL Surveyor (código, testes, docs ou skills), no fluxo de um terminal, direto na main. Mostra onde o projeto está, implementa COM TESTES (com a skill implementar-etapa), verifica e faz um commit por micro passo na main. Não cria ramo, não abre PR e não faz push (o push é do Matheus). Use quando pedirem para fazer, continuar, corrigir ou ajustar algo, ou para seguir para o próximo passo.
 ---
 
-# Desenvolver uma demanda (fluxo solo, direto na `main`)
+# Desenvolver uma demanda (fluxo de um terminal, direto na `main`)
 
-Desde 2026-11-10 o Matheus faz o trabalho sozinho e decidiu trabalhar direto na `main`, sem ramos nem PR. **Respostas curtas:** o que foi feito, o resultado do `make verificar` e o próximo passo em uma linha.
+Vitor e Matheus trabalham juntos neste terminal (só ele tem o Claude Code) e decidiram trabalhar direto na `main`, sem ramos nem PR. **Respostas curtas:** o que foi feito, o resultado do `make verificar` e o próximo passo em uma linha.
 
 ## 1 — Situar
 - [ ] 1.1 Leia a mensagem `[sincronizar-git]` do hook de início de sessão.
 - [ ] 1.2 `git status`. Se houver alteração que não é desta demanda, **pare e pergunte**. Nunca descarte trabalho.
 - [ ] 1.3 `.claude/skills/desenvolver-demanda/painel.sh`: etapas feitas e commits ainda não enviados.
-- [ ] 1.4 Se o usuário não disse a demanda, siga a "Ordem das etapas (solo)" do `CLAUDE.md`.
+- [ ] 1.4 Se o usuário não disse a demanda, siga a "Ordem das etapas" do `CLAUDE.md`.
 
 ## 2 — Implementar, sempre com teste
 - [ ] 2.1 Siga a skill `implementar-etapa`, micro passo por micro passo: **o teste vem antes do código** e deve falhar pelo motivo certo.
