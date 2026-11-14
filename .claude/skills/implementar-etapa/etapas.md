@@ -146,7 +146,7 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 ## Etapa 9 — CSV de saída e validador independente
 **Módulos:** `infraestrutura/arquivos/escritor_csv.py`, `dominio/validacao/plano.py`, `aplicacao/validar_plano.py` · **Depende de:** 1, 3, 4, 5
 
-- [ ] 9.1 `escrever_plano`. Teste do cabeçalho exato: `CEP inicial,Latitude inicial,Longitude inicial,Dia do vôo,Hora inicial,Velocidade,CEP final,Latitude final,Longitude final,Pouso,Hora final`. Coordenadas como texto, `HH:MM:SS`, `SIM`/`NÃO`, UTF-8 e hífen ASCII.
+- [x] 9.1 `escrever_plano`. Teste do cabeçalho exato: `CEP inicial,Latitude inicial,Longitude inicial,Dia do vôo,Hora inicial,Velocidade,CEP final,Latitude final,Longitude final,Pouso,Hora final`. Coordenadas como texto, `HH:MM:SS`, `SIM`/`NÃO`, UTF-8 e hífen ASCII.
 - [ ] 9.2 Leitura de um CSV de plano (para o validador), com testes.
 - [ ] 9.3 Regras do validador, **sem usar o simulador**, cada uma com um teste de CSV adulterado:
   - campus no início e no fim, e a última linha com Pouso = SIM;
