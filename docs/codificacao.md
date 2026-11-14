@@ -21,7 +21,7 @@ velocidades = (0, 5, 11, 2, 1)           chega ao 2 a 80 km/h (índice 11), ao 0
 calendario  = (T, F, T, T, F, T, T)      não voa nos dias 2 e 5
 ```
 
-O cromossomo **não** diz onde pousar, quando trocar a bateria nem quando esperar. Quem decide isso é o simulador (`dominio/simulador.py`), que funciona como um **decodificador**. Ele percorre a ordem com as velocidades escolhidas, pousa sempre que a bateria não daria para o próximo trecho, encerra o dia no limite de operação e retoma às 06:00:00 do próximo dia habilitado. Por isso qualquer cromossomo bem formado vira um plano seguro, ou um plano marcado como inválido, que a fitness penaliza. O GA nunca precisa "consertar" pousos ou horários.
+O cromossomo **não** diz onde pousar, quando trocar a bateria nem quando esperar. Quem decide isso é o simulador (`dominio/simulador.py`), que funciona como um **decodificador**. Ele percorre a ordem com as velocidades escolhidas, pousa sempre que a bateria não daria para o próximo trecho, encerra o dia no limite de operação e retoma às 06:00:00 do próximo dia habilitado. Se um trecho não dá nem com a bateria cheia, ele troca a velocidade desse trecho (a mais próxima da escolhida primeiro) ou espera o próximo bloco de vento. Por isso qualquer cromossomo bem formado vira um plano seguro, ou um plano marcado como inválido, que a fitness penaliza. O GA nunca precisa "consertar" pousos ou horários.
 
 O cromossomo é imutável (tuplas). Os operadores sempre criam um filho novo, então os pais nunca são alterados.
 

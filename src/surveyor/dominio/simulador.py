@@ -1,7 +1,10 @@
 """Decodificador: decisões de voo -> PlanoDeVoo sempre seguro (Etapa 6).
 
-Recebe tipos simples (ordem dos pontos, velocidade por ponto, dias habilitados), nunca o
-Cromossomo de surveyor.otimizacao: o domínio não depende do algoritmo genético.
+`simular(decisoes, cenario)` recebe tipos simples (`DecisoesDeVoo`: ordem dos pontos,
+velocidade de cada trecho e dias habilitados), nunca o Cromossomo de surveyor.otimizacao: o
+domínio não depende do algoritmo genético. Devolve um `ResultadoSimulacao`, com o plano e, se
+ele não fecha no prazo, o motivo. `Cenario.montar` prepara uma vez os dados fixos (pontos,
+distâncias, rumos e vento) usados em todas as simulações.
 
 Invariante: ao chegar a um ponto, o drone sempre tem bateria e horário para pousar ali
 (ou, se for coordenada extra, para seguir até o próximo ponto onde pode pousar).

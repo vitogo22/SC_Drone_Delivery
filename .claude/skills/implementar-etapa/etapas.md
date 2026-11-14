@@ -112,7 +112,7 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 - [x] 6.5 Extras: nunca pousar nelas. Antes de voar para uma extra, garantir bateria para chegar ao próximo ponto que pode pousar e pousar lá.
 - [x] 6.6 Trecho impossível: tentar outras velocidades (a mais próxima primeiro), depois esperar o próximo bloco ou dia; se nada servir, o plano é inválido. Com vento contra de 21 km/h, o alcance fica em torno de 24 km (medido: 23,2 km a 40 km/h, contando o pouso e a reserva). Só a falta de **bateria** troca a velocidade; a falta de **horário** espera o próximo dia na velocidade decidida (6.4).
 - [x] 6.7 Teste de propriedade com 1.000 permutações do arquivo real: a bateria nunca fica abaixo da reserva, nenhum horário passa de 19:00:00 e nenhuma extra recebe pouso (`@pytest.mark.lento`). Medido: nenhuma rota sorteada fecha em 7 dias (param, em média, no trecho 326 de 376), então a população inicial da Etapa 8 será toda inválida e a fitness precisa diferenciar planos inválidos.
-- [ ] 6.8 Fechamento.
+- [x] 6.8 Fechamento.
 
 ## Etapa 7 — Cromossomo
 **Módulos:** `otimizacao/cromossomo.py`, `docs/codificacao.md` · **Depende de:** 0
