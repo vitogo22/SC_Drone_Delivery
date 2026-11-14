@@ -1,8 +1,9 @@
-"""Leitura e validação dos CSVs de entrada (Etapas 1 e 4).
+"""Leitura e validação dos CSVs de entrada (Etapas 1 e 4) e do CSV do plano (Etapa 9).
 
 - `ler_coordenadas(caminho, regras)`: arquivo do professor, com o campus obrigatório.
 - `ler_extras(caminho)`: coordenadas da equipe, todas com `pode_pousar=False` (A6).
 - `ler_vento(caminho, regras)`: previsão por (dia, bloco), um registro para cada par.
+- `ler_plano(caminho)`: plano no formato de `escrever_plano`, para o validador conferir.
 
 Coordenadas usam o formato `cep,longitude,latitude` (a longitude vem antes) e guardam CEP e
 coordenadas como texto, para saírem idênticos no CSV do plano. Qualquer problema no arquivo
@@ -13,13 +14,16 @@ import csv
 from collections.abc import Iterator
 from pathlib import Path
 
+from surveyor.dominio.calculos.relogio import para_segundos
 from surveyor.dominio.calculos.vento import Vento, blocos_de_vento, direcao_em_graus
 from surveyor.dominio.erros import ErroDados
-from surveyor.dominio.modelos import Coordenada
+from surveyor.dominio.modelos import Coordenada, PlanoDeVoo, Trecho
 from surveyor.dominio.regras import Regras
+from surveyor.infraestrutura.arquivos.escritor_csv import COLUNAS_PLANO, TEXTO_POUSO
 
 COLUNAS_COORDENADAS = ("cep", "longitude", "latitude")
 COLUNAS_VENTO = ("dia", "hora_bloco", "velocidade_kmh", "direcao")
+POUSO_DO_TEXTO = {texto: pouso for pouso, texto in TEXTO_POUSO.items()}
 
 
 def ler_coordenadas(caminho: Path, regras: Regras) -> list[Coordenada]:
@@ -70,6 +74,48 @@ def ler_vento(caminho: Path, regras: Regras) -> dict[tuple[int, int], Vento]:
     if faltando:
         raise ErroDados(f"{caminho}: faltam (dia, bloco): {', '.join(faltando)}")
     return tabela
+
+
+def ler_plano(caminho: Path) -> PlanoDeVoo:
+    """Lê um CSV de plano de voo, conferindo só o formato de cada valor.
+
+    As regras do plano (velocidades, dias, horários, bateria) ficam com o validador, que precisa
+    receber o plano errado para apontar o erro. O CSV não diz quais pontos são extras: todas as
+    coordenadas saem com `pode_pousar=True`, e o validador confere CEPs, coordenadas e pousos
+    contra os arquivos de entrada.
+    """
+    trechos: list[Trecho] = []
+    for numero, linha in _linhas_csv(caminho, COLUNAS_PLANO):
+        try:
+            trechos.append(_trecho(linha))
+        except ValueError as erro:
+            raise _erro(caminho, numero, str(erro)) from erro
+    return PlanoDeVoo(tuple(trechos))
+
+
+def _trecho(linha: dict[str, str]) -> Trecho:
+    """Uma linha do CSV do plano; levanta ValueError com o motivo se um valor está mal escrito."""
+    pouso = POUSO_DO_TEXTO.get(linha["Pouso"])
+    if pouso is None:
+        raise ValueError(f"Pouso deve ser {' ou '.join(POUSO_DO_TEXTO)}: {linha['Pouso']!r}")
+    return Trecho(
+        origem=Coordenada(
+            linha["CEP inicial"], linha["Latitude inicial"], linha["Longitude inicial"]
+        ),
+        destino=Coordenada(linha["CEP final"], linha["Latitude final"], linha["Longitude final"]),
+        dia=_inteiro(linha, "Dia do vôo"),
+        hora_inicial_s=para_segundos(linha["Hora inicial"]),
+        velocidade_kmh=_inteiro(linha, "Velocidade"),
+        pouso=pouso,
+        hora_final_s=para_segundos(linha["Hora final"]),
+    )
+
+
+def _inteiro(linha: dict[str, str], coluna: str) -> int:
+    try:
+        return int(linha[coluna])
+    except ValueError as erro:
+        raise ValueError(f"{coluna} deve ser um número inteiro: {linha[coluna]!r}") from erro
 
 
 def _ler_pontos(caminho: Path, *, pode_pousar: bool) -> list[Coordenada]:

@@ -25,6 +25,7 @@ COLUNAS_PLANO = (
     "Pouso",
     "Hora final",
 )
+TEXTO_POUSO = {True: "SIM", False: "NÃO"}
 
 
 def escrever_plano(plano: PlanoDeVoo, caminho: Path) -> None:
@@ -46,6 +47,6 @@ def _linha(trecho: Trecho) -> tuple[str, ...]:
         trecho.destino.cep,
         trecho.destino.latitude_texto,
         trecho.destino.longitude_texto,
-        "SIM" if trecho.pouso else "NÃO",
+        TEXTO_POUSO[trecho.pouso],
         para_hhmmss(trecho.hora_final_s),
     )

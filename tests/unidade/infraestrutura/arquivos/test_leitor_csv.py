@@ -4,9 +4,15 @@ import pytest
 
 from surveyor.dominio.calculos.vento import Vento
 from surveyor.dominio.erros import ErroDados
-from surveyor.dominio.modelos import Coordenada
+from surveyor.dominio.modelos import Coordenada, PlanoDeVoo, Trecho
 from surveyor.dominio.regras import Regras
-from surveyor.infraestrutura.arquivos.leitor_csv import ler_coordenadas, ler_extras, ler_vento
+from surveyor.infraestrutura.arquivos.escritor_csv import COLUNAS_PLANO, escrever_plano
+from surveyor.infraestrutura.arquivos.leitor_csv import (
+    ler_coordenadas,
+    ler_extras,
+    ler_plano,
+    ler_vento,
+)
 
 CABECALHO = "cep,longitude,latitude\n"  # mesmo formato do arquivo do professor
 CAMPUS = "82821020,-49.2160678044742,-25.4233146347775\n"
@@ -192,3 +198,95 @@ def test_ler_vento_exige_todas_as_colunas(tmp_path: Path) -> None:
 
     with pytest.raises(ErroDados, match="linha 1: falta a coluna 'direcao'"):
         ler_vento(caminho, Regras())
+
+
+CABECALHO_PLANO = ",".join(COLUNAS_PLANO) + "\n"
+LINHA_PLANO = (
+    "82821020,-25.4233146347775,-49.2160678044742,1,06:00:00,40,"
+    "81350686,-25.4936598469491,-49.3400481020638,SIM,06:02:29\n"
+)
+
+
+def _plano_csv(pasta: Path, conteudo: str) -> Path:
+    caminho = pasta / "plano.csv"
+    caminho.write_text(conteudo, encoding="utf-8")
+    return caminho
+
+
+def test_ler_plano_devolve_o_plano_gravado_por_escrever_plano(tmp_path: Path) -> None:
+    campus = Coordenada("82821020", "-25.4233146347775", "-49.2160678044742")
+    ponto = Coordenada("01001000", "-25.4300000000000", "-49.2000000000000")  # zeros no fim
+    plano = PlanoDeVoo(
+        (
+            Trecho(campus, ponto, 1, 6 * 3600, 40, False, 6 * 3600 + 149),
+            Trecho(ponto, campus, 2, 6 * 3600, 80, True, 6 * 3600 + 300),
+        )
+    )
+    caminho = tmp_path / "plano.csv"
+    escrever_plano(plano, caminho)
+
+    assert ler_plano(caminho) == plano
+
+
+def test_ler_plano_nao_aplica_as_regras_do_plano(tmp_path: Path) -> None:
+    # Velocidade 83, dia 9 e Hora final antes da inicial: quem aponta isso é o validador.
+    linha = "82821020,-25.4,-49.2,9,10:00:00,83,81350686,-25.5,-49.3,NÃO,09:00:00\n"
+    caminho = _plano_csv(tmp_path, CABECALHO_PLANO + linha)
+
+    (trecho,) = ler_plano(caminho).trechos
+
+    assert (trecho.dia, trecho.velocidade_kmh) == (9, 83)
+    assert (trecho.hora_inicial_s, trecho.hora_final_s) == (10 * 3600, 9 * 3600)
+
+
+@pytest.mark.parametrize(
+    ("conteudo", "motivo"),
+    [
+        pytest.param(
+            CABECALHO_PLANO + LINHA_PLANO.replace("SIM", "Sim"),
+            "linha 2: Pouso deve ser SIM ou NÃO: 'Sim'",
+            id="pouso-invalido",
+        ),
+        pytest.param(
+            CABECALHO_PLANO + LINHA_PLANO.replace("06:00:00", "6:00:00"),
+            "linha 2: horário fora do formato HH:MM:SS: '6:00:00'",
+            id="hora-invalida",
+        ),
+        pytest.param(
+            CABECALHO_PLANO + LINHA_PLANO.replace(",1,", ",um,"),
+            "linha 2: Dia do vôo deve ser um número inteiro: 'um'",
+            id="dia-nao-inteiro",
+        ),
+        pytest.param(
+            CABECALHO_PLANO + LINHA_PLANO.replace(",40,", ",40.5,"),
+            "linha 2: Velocidade deve ser um número inteiro: '40.5'",
+            id="velocidade-nao-inteira",
+        ),
+        pytest.param(
+            CABECALHO_PLANO + LINHA_PLANO.replace("82821020,", "8282102,"),
+            "linha 2: CEP deve ter 8 dígitos",
+            id="cep-invalido",
+        ),
+        pytest.param(
+            CABECALHO_PLANO.replace(",Hora final", "") + LINHA_PLANO,
+            "linha 1: falta a coluna 'Hora final'",
+            id="coluna-faltando",
+        ),
+        pytest.param(
+            CABECALHO_PLANO + LINHA_PLANO.replace(",06:02:29", ""),
+            "linha 2: esperava 11 valores",
+            id="valor-faltando-na-linha",
+        ),
+    ],
+)
+def test_ler_plano_rejeita_arquivo_com_problema_apontando_arquivo_e_linha(
+    tmp_path: Path, conteudo: str, motivo: str
+) -> None:
+    caminho = _plano_csv(tmp_path, conteudo)
+
+    with pytest.raises(ErroDados) as erro:
+        ler_plano(caminho)
+
+    mensagem = str(erro.value)
+    assert mensagem.startswith(str(caminho))
+    assert motivo in mensagem
