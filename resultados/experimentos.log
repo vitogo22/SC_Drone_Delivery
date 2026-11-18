@@ -1,0 +1,62 @@
+2026-11-18 08:50:58 | INFO     | surveyor.aplicacao.experimentar | 60 execuções em 11 processo(s)
+2026-11-18 08:56:21 | INFO     | surveyor.aplicacao.experimentar | [1/60] base = padrão, semente 1: R$ 2208.76 (válido), 320 s
+2026-11-18 08:56:24 | INFO     | surveyor.aplicacao.experimentar | [2/60] base = padrão, semente 2: R$ 2208.22 (válido), 323 s
+2026-11-18 08:56:24 | INFO     | surveyor.aplicacao.experimentar | [3/60] base = padrão, semente 3: R$ 2177.31 (válido), 322 s
+2026-11-18 08:56:24 | INFO     | surveyor.aplicacao.experimentar | [4/60] população = 100, semente 1: R$ 2221.93 (válido), 203 s
+2026-11-18 08:56:24 | INFO     | surveyor.aplicacao.experimentar | [5/60] população = 100, semente 2: R$ 2266.67 (válido), 158 s
+2026-11-18 08:56:24 | INFO     | surveyor.aplicacao.experimentar | [6/60] população = 100, semente 3: R$ 2275.93 (válido), 201 s
+2026-11-18 08:56:32 | INFO     | surveyor.aplicacao.experimentar | [7/60] população = 400, semente 1: R$ 2315.38 (válido), 331 s
+2026-11-18 08:58:22 | INFO     | surveyor.aplicacao.experimentar | [8/60] população = 400, semente 2: R$ 2236.27 (válido), 441 s
+2026-11-18 08:58:22 | INFO     | surveyor.aplicacao.experimentar | [9/60] população = 400, semente 3: R$ 2232.62 (válido), 438 s
+2026-11-18 08:58:22 | INFO     | surveyor.aplicacao.experimentar | [10/60] cruzamento = PMX, semente 1: R$ 2213.04 (válido), 281 s
+2026-11-18 08:58:22 | INFO     | surveyor.aplicacao.experimentar | [11/60] cruzamento = PMX, semente 2: R$ 2196.11 (válido), 301 s
+2026-11-18 08:58:48 | INFO     | surveyor.aplicacao.experimentar | [12/60] cruzamento = PMX, semente 3: R$ 2173.62 (válido), 308 s
+2026-11-18 09:03:47 | INFO     | surveyor.aplicacao.experimentar | [13/60] cruzamento = ERX, semente 1: R$ 2213.18 (válido), 564 s
+2026-11-18 09:06:13 | INFO     | surveyor.aplicacao.experimentar | [14/60] cruzamento = ERX, semente 2: R$ 2202.98 (válido), 708 s
+2026-11-18 09:06:13 | INFO     | surveyor.aplicacao.experimentar | [15/60] cruzamento = ERX, semente 3: R$ 2189.60 (válido), 621 s
+2026-11-18 09:06:13 | INFO     | surveyor.aplicacao.experimentar | [16/60] mutação = 5%, semente 1: R$ 2222.07 (válido), 123 s
+2026-11-18 09:06:13 | INFO     | surveyor.aplicacao.experimentar | [17/60] mutação = 5%, semente 2: R$ 2217.09 (válido), 125 s
+2026-11-18 09:06:13 | INFO     | surveyor.aplicacao.experimentar | [18/60] mutação = 5%, semente 3: R$ 2230.31 (válido), 110 s
+2026-11-18 09:06:13 | INFO     | surveyor.aplicacao.experimentar | [19/60] mutação = 15%, semente 1: R$ 2236.91 (válido), 222 s
+2026-11-18 09:06:13 | INFO     | surveyor.aplicacao.experimentar | [20/60] mutação = 15%, semente 2: R$ 2223.87 (válido), 197 s
+2026-11-18 09:06:13 | INFO     | surveyor.aplicacao.experimentar | [21/60] mutação = 15%, semente 3: R$ 2215.56 (válido), 218 s
+2026-11-18 09:06:28 | INFO     | surveyor.aplicacao.experimentar | [22/60] seleção = torneio k = 2, semente 1: R$ 2314.60 (válido), 492 s
+2026-11-18 09:06:28 | INFO     | surveyor.aplicacao.experimentar | [23/60] seleção = torneio k = 2, semente 2: R$ 2343.76 (válido), 431 s
+2026-11-18 09:06:28 | INFO     | surveyor.aplicacao.experimentar | [24/60] seleção = torneio k = 2, semente 3: R$ 2355.04 (válido), 425 s
+2026-11-18 09:06:28 | INFO     | surveyor.aplicacao.experimentar | [25/60] seleção = torneio k = 5, semente 1: R$ 2203.22 (válido), 252 s
+2026-11-18 09:06:28 | INFO     | surveyor.aplicacao.experimentar | [26/60] seleção = torneio k = 5, semente 2: R$ 2203.02 (válido), 192 s
+2026-11-18 09:06:28 | INFO     | surveyor.aplicacao.experimentar | [27/60] seleção = torneio k = 5, semente 3: R$ 2204.89 (válido), 229 s
+2026-11-18 09:07:47 | INFO     | surveyor.aplicacao.experimentar | [28/60] seleção = rank, semente 1: R$ 2373.40 (válido), 458 s
+2026-11-18 09:09:59 | INFO     | surveyor.aplicacao.experimentar | [29/60] seleção = rank, semente 2: R$ 2294.91 (válido), 491 s
+2026-11-18 09:09:59 | INFO     | surveyor.aplicacao.experimentar | [30/60] seleção = rank, semente 3: R$ 2298.42 (válido), 426 s
+2026-11-18 09:12:10 | INFO     | surveyor.aplicacao.experimentar | [31/60] seleção = roleta, semente 1: R$ 2434.53 (válido), 568 s
+2026-11-18 09:13:00 | INFO     | surveyor.aplicacao.experimentar | [32/60] seleção = roleta, semente 2: R$ 2463.29 (válido), 558 s
+2026-11-18 09:13:01 | INFO     | surveyor.aplicacao.experimentar | [33/60] seleção = roleta, semente 3: R$ 2351.84 (válido), 553 s
+2026-11-18 09:13:01 | INFO     | surveyor.aplicacao.experimentar | [34/60] elitismo = 0%, semente 1: R$ 2465.42 (válido), 376 s
+2026-11-18 09:14:42 | INFO     | surveyor.aplicacao.experimentar | [35/60] elitismo = 0%, semente 2: R$ 2465.42 (válido), 549 s
+2026-11-18 09:15:49 | INFO     | surveyor.aplicacao.experimentar | [36/60] elitismo = 0%, semente 3: R$ 2465.42 (válido), 582 s
+2026-11-18 09:15:49 | INFO     | surveyor.aplicacao.experimentar | [37/60] elitismo = 5%, semente 1: R$ 2215.13 (válido), 244 s
+2026-11-18 09:15:49 | INFO     | surveyor.aplicacao.experimentar | [38/60] elitismo = 5%, semente 2: R$ 2200.71 (válido), 169 s
+2026-11-18 09:15:49 | INFO     | surveyor.aplicacao.experimentar | [39/60] elitismo = 5%, semente 3: R$ 2190.29 (válido), 180 s
+2026-11-18 09:17:06 | INFO     | surveyor.aplicacao.experimentar | [40/60] semeadura = 0%, semente 1: R$ 9428.87 (válido), 476 s
+2026-11-18 09:21:09 | INFO     | surveyor.aplicacao.experimentar | [41/60] semeadura = 0%, semente 2: R$ 9204.04 (válido), 709 s
+2026-11-18 09:21:09 | INFO     | surveyor.aplicacao.experimentar | [42/60] semeadura = 0%, semente 3: R$ 9336.91 (válido), 646 s
+2026-11-18 09:21:09 | INFO     | surveyor.aplicacao.experimentar | [43/60] semeadura = 10%, semente 1: R$ 2338.31 (válido), 301 s
+2026-11-18 09:21:09 | INFO     | surveyor.aplicacao.experimentar | [44/60] semeadura = 10%, semente 2: R$ 2326.42 (válido), 241 s
+2026-11-18 09:21:09 | INFO     | surveyor.aplicacao.experimentar | [45/60] semeadura = 10%, semente 3: R$ 2201.36 (válido), 387 s
+2026-11-18 09:21:09 | INFO     | surveyor.aplicacao.experimentar | [46/60] semeadura = 20%, semente 1: R$ 2197.24 (válido), 369 s
+2026-11-18 09:21:09 | INFO     | surveyor.aplicacao.experimentar | [47/60] semeadura = 20%, semente 2: R$ 2326.53 (válido), 256 s
+2026-11-18 09:21:09 | INFO     | surveyor.aplicacao.experimentar | [48/60] semeadura = 20%, semente 3: R$ 2207.62 (válido), 229 s
+2026-11-18 09:24:26 | INFO     | surveyor.aplicacao.experimentar | [49/60] inválidos = reparo, semente 1: R$ 2212.31 (válido), 582 s
+2026-11-18 09:24:26 | INFO     | surveyor.aplicacao.experimentar | [50/60] inválidos = reparo, semente 2: R$ 2170.16 (válido), 277 s
+2026-11-18 09:24:26 | INFO     | surveyor.aplicacao.experimentar | [51/60] inválidos = reparo, semente 3: R$ 2232.80 (válido), 428 s
+2026-11-18 09:24:26 | INFO     | surveyor.aplicacao.experimentar | [52/60] inválidos = pena de morte, semente 1: R$ 2216.56 (válido), 513 s
+2026-11-18 09:24:52 | INFO     | surveyor.aplicacao.experimentar | [53/60] inválidos = pena de morte, semente 2: R$ 2202.38 (válido), 479 s
+2026-11-18 09:24:57 | INFO     | surveyor.aplicacao.experimentar | [54/60] inválidos = pena de morte, semente 3: R$ 2174.00 (válido), 469 s
+2026-11-18 09:24:57 | INFO     | surveyor.aplicacao.experimentar | [55/60] valor da hora = R$ 40, semente 1: R$ 1621.16 (válido), 421 s
+2026-11-18 09:25:26 | INFO     | surveyor.aplicacao.experimentar | [56/60] valor da hora = R$ 40, semente 2: R$ 1585.52 (válido), 429 s
+2026-11-18 09:25:26 | INFO     | surveyor.aplicacao.experimentar | [57/60] valor da hora = R$ 40, semente 3: R$ 1592.88 (válido), 397 s
+2026-11-18 09:25:26 | INFO     | surveyor.aplicacao.experimentar | [58/60] valor da hora = R$ 160, semente 1: R$ 3505.69 (válido), 338 s
+2026-11-18 09:25:48 | INFO     | surveyor.aplicacao.experimentar | [59/60] valor da hora = R$ 160, semente 2: R$ 3484.98 (válido), 298 s
+2026-11-18 09:25:48 | INFO     | surveyor.aplicacao.experimentar | [60/60] valor da hora = R$ 160, semente 3: R$ 3594.44 (válido), 271 s
+2026-11-18 09:25:48 | INFO     | surveyor.interface.cli | Execuções gravadas em resultados/experimentos.csv

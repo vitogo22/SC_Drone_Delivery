@@ -165,7 +165,7 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 ## Etapa 10 — Experimentos e execução final
 **Arquivo:** `docs/experimentos.md` · **Depende de:** 8, 9
 
-- [ ] 10.1 Rodar de 3 a 5 sementes por configuração:
+- [x] 10.1 Rodar de 3 a 5 sementes por configuração:
   - população (100 / 200 / 400);
   - cruzamento (OX / PMX / ERX);
   - mutação (5 / 15 / 25%);
@@ -174,9 +174,9 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
   - semeadura (0 / 10 / 20%);
   - `valor_hora_reais` (40 / 80 / 160).
 
-  **Código pronto (18/11):** `python -m surveyor --log-arquivo resultados/experimentos.log experimentos` roda 20 configurações (um fator por vez a partir da base) × 3 sementes, todas com o mesmo orçamento de 60 mil avaliações (`--orcamento`), em paralelo (`--processos`, padrão: núcleos − 1). Grava `resultados/experimentos.csv` **só no fim** e imprime a tabela Markdown no terminal. Leva de 40 a 60 min com 11 processos e a máquina livre. Se o CSV não existir, a rodada não terminou: rode de novo. Falta: rodar até o fim e marcar o `[x]`.
-- [ ] 10.2 Comparar mecanismos para soluções inválidas (o enunciado pede): reparo do simulador × penalidade. **Código pronto:** `ParametrosGA.invalidos` = penalidade (padrão), reparo (refaz o resto da rota pelo vizinho mais próximo e liga os dias) ou pena de morte. É o fator "inválidos" da rodada da 10.1. Falta: analisar o resultado na tabela.
-- [ ] 10.3 Registrar a tabela em `docs/experimentos.md` e conferir as ordens de grandeza (abaixo).
+  **Código pronto (18/11):** `python -m surveyor --log-arquivo resultados/experimentos.log experimentos` roda 20 configurações (um fator por vez a partir da base) × 3 sementes, todas com o mesmo orçamento de 60 mil avaliações (`--orcamento`), em paralelo (`--processos`, padrão: núcleos − 1). Grava `resultados/experimentos.csv` **só no fim** e imprime a tabela Markdown no terminal. Leva de 40 a 60 min com 11 processos e a máquina livre. Se o CSV não existir, a rodada não terminou: rode de novo. **Feito (18/11):** 60 execuções, todas válidas; `resultados/experimentos.csv` e `.log`.
+- [x] 10.2 Comparar mecanismos para soluções inválidas (o enunciado pede): reparo do simulador × penalidade. **Código pronto:** `ParametrosGA.invalidos` = penalidade (padrão), reparo (refaz o resto da rota pelo vizinho mais próximo e liga os dias) ou pena de morte. É o fator "inválidos" da rodada da 10.1. **Feito:** os três empatam no custo; a penalidade ficou por ser a mais simples e rápida (análise em `docs/experimentos.md`).
+- [x] 10.3 Registrar a tabela em `docs/experimentos.md` e conferir as ordens de grandeza (abaixo).
 - [ ] 10.4 Atualizar o padrão de `ParametrosGA` para a melhor configuração. Conferir também o modo `--rapido`, que hoje termina em ~25 s, bem abaixo dos 1 a 2 min prometidos no README.
 - [ ] 10.5 Execução final com a semente fixada: plano, progresso, gráfico, mapa da rota, log e saída do validador em `resultados/`. **Código pronto:** `otimizar` grava `plano_de_voo.csv`, `progresso.csv`, `convergencia.png` e `rota.png`. Falta: rodar `python -m surveyor --log-arquivo resultados/otimizar.log otimizar` com a configuração final e guardar a saída de `python -m surveyor --log-arquivo resultados/validar.log validar`.
 - [ ] 10.6 Fechamento.
