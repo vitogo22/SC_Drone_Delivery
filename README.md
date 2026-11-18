@@ -13,7 +13,7 @@ Plano de voo de um drone que fotografa CEPs de Curitiba e volta ao campus UniBra
 
 - Linux com Python **3.10 ou superior** (`python3 --version`).
 - Módulo `venv`. No Debian/Ubuntu, se `python3 -m venv` falhar: `sudo apt install python3-venv`.
-- O programa usa só a biblioteca padrão do Python. O `pip` instala apenas as ferramentas de teste.
+- Dependências (instaladas pelo `pip`): `matplotlib`, para o gráfico de convergência e o mapa da rota, e as ferramentas de teste.
 
 ## Instalação
 
@@ -26,7 +26,7 @@ pip install -e ".[dev]"
 ## Reproduzir o resultado entregue
 
 ```bash
-python -m surveyor otimizar --semente 42    # gera resultados/plano_de_voo.csv, progresso.csv, convergencia.png e rota.png
+python -m surveyor otimizar --semente 42    # cerca de 5 min; gera resultados/plano_de_voo.csv, progresso.csv, convergencia.png e rota.png
 python -m surveyor validar                  # confere o plano sem o simulador e mostra tempo, pousos e custo
 python -m surveyor extras                   # valida as coordenadas extras e imprime a tabela de docs/coordenadas_extras.md
 python -m surveyor experimentos             # compara os parâmetros do GA (resultados/experimentos.csv e a tabela de docs/experimentos.md)
@@ -34,11 +34,12 @@ python -m surveyor experimentos             # compara os parâmetros do GA (resu
 
 - **Experimentos:** levam de 40 a 60 min. **Não é preciso rodar para avaliar**: a tabela e a análise estão em `docs/experimentos.md`, e cada execução está em `resultados/experimentos.csv`.
 - **Reprodução parcial (menos de 1 minuto):** `python -m surveyor otimizar --rapido`.
-- **Sem instalar nada:** `PYTHONPATH=src python3 -m surveyor otimizar --rapido`.
 - **Outro plano:** `python -m surveyor validar caminho/do/plano.csv` (sai com código 1 e lista cada violação, com a linha do CSV).
 - **Todas as opções:** `python -m surveyor --help` e `python -m surveyor otimizar --help`.
 
-O resultado entregue, com o log da execução, o progresso por geração, os gráficos e a saída do validador, está em `resultados/`. Cada execução também grava um log em `logs/surveyor_<data>_<hora>.log`.
+**Resultado entregue** (semente 42, `resultados/plano_de_voo.csv`): R$ 2.182,47, sendo 15,28 h de voo e 12 pousos (R$ 960,00 de taxas), nos dias 1 e 6. O validador aprova o plano. A rota do vizinho mais próximo a 36 km/h custa R$ 2.465,42.
+
+Os arquivos da execução entregue, com o log, o progresso por geração, os gráficos e a saída do validador, estão em `resultados/`. Cada execução também grava um log em `logs/surveyor_<data>_<hora>.log`.
 
 ## Testes e cobertura
 
