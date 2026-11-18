@@ -9,7 +9,7 @@ from surveyor.dominio.modelos import Coordenada
 from surveyor.dominio.regras import ParametrosOperacao, Regras
 from surveyor.dominio.simulador import Cenario
 from surveyor.otimizacao.algoritmo import Parada, evoluir
-from surveyor.otimizacao.operadores import Cruzamento, Selecao
+from surveyor.otimizacao.operadores import Cruzamento, Invalidos, Selecao
 from surveyor.otimizacao.parametros import ParametrosGA
 from surveyor.otimizacao.progresso import EstatisticasDaGeracao
 
@@ -126,3 +126,10 @@ def test_sem_elitismo_devolve_o_melhor_de_todas_as_geracoes(selecao: Selecao) ->
     resultado = evoluir(_cenario(), _parametros(proporcao_elite=0.0, selecao=selecao), observador)
 
     assert resultado.avaliacao.custo == min(e.melhor_custo for e in observador.geracoes)
+
+
+@pytest.mark.parametrize("modo", list(Invalidos))
+def test_cada_tratamento_de_invalidos_termina_com_plano_valido(modo: Invalidos) -> None:
+    resultado = evoluir(_cenario(), _parametros(invalidos=modo), Lista())
+
+    assert resultado.avaliacao.valido

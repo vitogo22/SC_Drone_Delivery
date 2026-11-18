@@ -7,7 +7,11 @@ from surveyor.dominio.modelos import Coordenada
 from surveyor.dominio.regras import ParametrosOperacao, Regras
 from surveyor.dominio.simulador import Cenario
 from surveyor.otimizacao.parametros import ParametrosGA
-from surveyor.otimizacao.populacao import populacao_inicial, vizinho_mais_proximo
+from surveyor.otimizacao.populacao import (
+    completar_guloso,
+    populacao_inicial,
+    vizinho_mais_proximo,
+)
 
 # Todos no meridiano do campus (-25.40): a distância é proporcional à diferença de latitude.
 CAMPUS = Coordenada("82821020", "-25.4000000000000", "-49.2000000000000")
@@ -65,3 +69,12 @@ def test_mesma_semente_da_a_mesma_populacao() -> None:
     segunda = populacao_inicial(_cenario(), parametros, random.Random(5))
 
     assert primeira == segunda
+
+
+def test_completar_guloso_mantem_o_inicio_e_segue_do_ultimo_ponto() -> None:
+    # Começa em D e B; do B, o mais perto é C (0,01°), depois A.
+    assert completar_guloso(_cenario(), (2, 3)) == (2, 3, 0, 1)
+
+
+def test_completar_guloso_sem_inicio_e_o_vizinho_mais_proximo() -> None:
+    assert completar_guloso(_cenario(), ()) == vizinho_mais_proximo(_cenario())

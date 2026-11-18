@@ -12,7 +12,8 @@ from surveyor.dominio.modelos import Coordenada
 from surveyor.dominio.regras import ParametrosOperacao, Regras
 from surveyor.dominio.simulador import Cenario
 from surveyor.otimizacao.cromossomo import Cromossomo
-from surveyor.otimizacao.fitness import avaliar, teto_de_custo_valido
+from surveyor.otimizacao.fitness import avaliar, teto_de_custo_valido, tratar_invalido
+from surveyor.otimizacao.operadores import Invalidos
 
 CAMPUS = Coordenada("82821020", "-25.4000000000000", "-49.2000000000000")
 A = Coordenada("80000001", "-25.3900000000000", "-49.2000000000000")
@@ -66,3 +67,61 @@ def test_valido_vence_invalido_e_invalido_que_vai_mais_longe_vence_o_outro() -> 
     nem_saiu = avaliar(nenhum_dia, cenario).custo
 
     assert valido < parou_em_a < nem_saiu
+
+
+def test_penalidade_nao_muda_nada() -> None:
+    cenario = _cenario(ParametrosOperacao(limite_operacional_s=22000))
+    avaliacao = avaliar(CERTO, cenario)
+
+    assert tratar_invalido(CERTO, avaliacao, cenario, Invalidos.PENALIDADE) == (CERTO, avaliacao)
+
+
+def test_pena_de_morte_da_a_todo_invalido_o_mesmo_pior_custo() -> None:
+    cenario = _cenario(ParametrosOperacao(limite_operacional_s=22000))
+    nenhum_dia = Cromossomo((0, 1, 2), (0, 1, 2, 0), (False,) * 7)
+    pior = 4 * teto_de_custo_valido(cenario)  # todos os trechos faltando
+
+    custos = [
+        tratar_invalido(c, avaliar(c, cenario), cenario, Invalidos.MORTE)[1].custo
+        for c in (CERTO, nenhum_dia)
+    ]
+
+    assert custos == [pytest.approx(pior), pytest.approx(pior)]
+
+
+def test_valido_passa_intacto_por_qualquer_tratamento() -> None:
+    cenario = _cenario()
+    avaliacao = avaliar(CERTO, cenario)
+
+    for modo in Invalidos:
+        assert tratar_invalido(CERTO, avaliacao, cenario, modo) == (CERTO, avaliacao)
+
+
+def test_reparo_liga_os_dias_e_refaz_o_resto_da_rota_pelo_vizinho_mais_proximo() -> None:
+    # Nenhum dia ligado: o plano nem sai do campus. O reparo liga os 7 dias e refaz a rota
+    # de forma gulosa a partir de onde o plano parou (aqui, o campus): A, B e C.
+    cenario = _cenario()
+    parado = Cromossomo((2, 0, 1), (0, 1, 2, 0), (False,) * 7)
+    avaliacao = avaliar(parado, cenario)
+    assert avaliacao.plano.trechos == ()
+
+    reparado, nova = tratar_invalido(parado, avaliacao, cenario, Invalidos.REPARO)
+
+    assert reparado.ordem == (0, 1, 2)
+    assert reparado.calendario == (True,) * 7
+    assert reparado.velocidades == parado.velocidades  # a velocidade é do ponto: não muda
+    assert nova == avaliar(reparado, cenario)
+    assert nova.valido
+
+
+def test_reparo_mantem_o_que_ja_foi_voado() -> None:
+    # Operação até 06:06:40 e só o dia 1: o plano pousa em A e para ali (inválido).
+    cenario = _cenario(ParametrosOperacao(limite_operacional_s=22000))
+    cromossomo = Cromossomo((0, 2, 1), (0, 1, 2, 0), SO_DIA_1)
+    avaliacao = avaliar(cromossomo, cenario)
+    voados = len(avaliacao.plano.trechos)
+
+    reparado, _ = tratar_invalido(cromossomo, avaliacao, cenario, Invalidos.REPARO)
+
+    assert voados == 1
+    assert reparado.ordem == (0, 1, 2)  # A fica; de A, o mais perto é B, depois C

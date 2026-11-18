@@ -1,7 +1,8 @@
 """Caso de uso: experimentos com os parâmetros do GA (Etapa 10).
 
 - `configuracoes(base, orcamento)`: a base e uma variação por fator (um fator por vez):
-  população, cruzamento, mutação, seleção, elitismo, semeadura e valor da hora.
+  população, cruzamento, mutação, seleção, elitismo, semeadura, tratamento dos inválidos
+  (penalidade, reparo ou pena de morte) e valor da hora.
 - `executar(entrada, saida_csv, config, sementes, processos, orcamento)`: roda cada
   configuração com cada semente, em paralelo, e grava uma linha por execução em `saida_csv`.
 - `tabela_markdown(execucoes)`: resumo por configuração, para `docs/experimentos.md`.
@@ -27,7 +28,7 @@ from surveyor.aplicacao.configuracao import ArquivosDeEntrada, Configuracao
 from surveyor.aplicacao.otimizar_rota import montar_cenario
 from surveyor.dominio.regras import SEGUNDOS_POR_HORA, ParametrosOperacao
 from surveyor.otimizacao.algoritmo import evoluir
-from surveyor.otimizacao.operadores import Cruzamento, Selecao
+from surveyor.otimizacao.operadores import Cruzamento, Invalidos, Selecao
 from surveyor.otimizacao.parametros import ParametrosGA
 from surveyor.otimizacao.progresso import EstatisticasDaGeracao
 
@@ -74,6 +75,10 @@ def configuracoes(base: Configuracao, orcamento: int = ORCAMENTO_AVALIACOES) -> 
         *(
             ("semeadura", f"{p:.0%}", {"proporcao_vizinho_mais_proximo": p}, {})
             for p in (0.0, 0.10, 0.20)
+        ),
+        *(
+            ("inválidos", m.value, {"invalidos": m}, {})
+            for m in (Invalidos.REPARO, Invalidos.MORTE)
         ),
         *(("valor da hora", f"R$ {v:.0f}", {}, {"valor_hora_reais": v}) for v in (40.0, 160.0)),
     ]

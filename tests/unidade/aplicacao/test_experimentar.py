@@ -47,7 +47,7 @@ def test_cada_configuracao_muda_um_fator_da_base_com_o_mesmo_orcamento() -> None
 
     experimentos = experimentar.configuracoes(base, orcamento=60_000)
 
-    assert len(experimentos) == 18
+    assert len(experimentos) == 20
     assert (experimentos[0].fator, experimentos[0].valor) == ("base", "padrão")
     orcamento_campos = {"max_geracoes", "geracoes_sem_melhora", "tempo_limite_s"}
     for experimento in experimentos:
@@ -58,7 +58,7 @@ def test_cada_configuracao_muda_um_fator_da_base_com_o_mesmo_orcamento() -> None
     fatores = {e.fator for e in experimentos}
     assert fatores == {
         "base", "população", "cruzamento", "mutação", "seleção", "elitismo", "semeadura",
-        "valor da hora",
+        "inválidos", "valor da hora",
     }  # fmt: skip
 
 
@@ -72,11 +72,11 @@ def test_executar_grava_uma_linha_por_execucao(
         entrada, saida, Configuracao(), sementes=(1, 2), processos=processos, orcamento=ORCAMENTO
     )
 
-    assert len(execucoes) == 18 * 2
+    assert len(execucoes) == 20 * 2
     assert all(execucao.valido for execucao in execucoes)
     with saida.open(encoding="utf-8") as arquivo:
         linhas = list(csv.DictReader(arquivo))
-    assert len(linhas) == 36
+    assert len(linhas) == 40
     assert {linha["semente"] for linha in linhas} == {"1", "2"}
     assert linhas[0]["fator"] == "base"
 

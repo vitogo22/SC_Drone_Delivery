@@ -10,14 +10,14 @@ a aleatoriedade sai de um `random.Random(parametros.semente)`.
 
 import random
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from enum import Enum
 from statistics import fmean
 
 from surveyor.dominio.simulador import Cenario
 from surveyor.otimizacao.cromossomo import Cromossomo
-from surveyor.otimizacao.fitness import Avaliacao, avaliar
+from surveyor.otimizacao.fitness import Avaliacao, avaliar, tratar_invalido
 from surveyor.otimizacao.operadores import cruzar, mutar, preparar_selecao
 from surveyor.otimizacao.parametros import ParametrosGA
 from surveyor.otimizacao.populacao import populacao_inicial
@@ -51,8 +51,14 @@ def evoluir(
     """Roda o GA até um critério de parada e devolve o melhor indivíduo."""
     sorteio = random.Random(parametros.semente)
     inicio_s = relogio()
-    populacao = populacao_inicial(cenario, parametros, sorteio)
-    avaliacoes = [avaliar(individuo, cenario) for individuo in populacao]
+
+    def avaliar_e_tratar(individuo: Cromossomo) -> tuple[Cromossomo, Avaliacao]:
+        avaliacao = avaliar(individuo, cenario)
+        return tratar_invalido(individuo, avaliacao, cenario, parametros.invalidos)
+
+    populacao, avaliacoes = _separar(
+        avaliar_e_tratar(individuo) for individuo in populacao_inicial(cenario, parametros, sorteio)
+    )
     tamanho_elite = round(parametros.proporcao_elite * parametros.tamanho_populacao)
     melhor: tuple[Cromossomo, Avaliacao] | None = None
     sem_melhora = 0
@@ -87,12 +93,25 @@ def evoluir(
         while len(proxima) < parametros.tamanho_populacao:
             pai1, pai2 = populacao[selecionar(sorteio)], populacao[selecionar(sorteio)]
             proxima.append(_filho(pai1, pai2, parametros, cenario, sorteio))
-        populacao = proxima
-        avaliacoes = [
-            conhecidos[individuo] if individuo in conhecidos else avaliar(individuo, cenario)
-            for individuo in populacao
-        ]
+        populacao, avaliacoes = _separar(
+            (individuo, conhecidos[individuo])
+            if individuo in conhecidos
+            else avaliar_e_tratar(individuo)
+            for individuo in proxima
+        )
         geracao += 1
+
+
+def _separar(
+    pares: Iterable[tuple[Cromossomo, Avaliacao]],
+) -> tuple[list[Cromossomo], list[Avaliacao]]:
+    """Indivíduos e avaliações em duas listas alinhadas."""
+    individuos: list[Cromossomo] = []
+    avaliacoes: list[Avaliacao] = []
+    for individuo, avaliacao in pares:
+        individuos.append(individuo)
+        avaliacoes.append(avaliacao)
+    return individuos, avaliacoes
 
 
 def _filho(

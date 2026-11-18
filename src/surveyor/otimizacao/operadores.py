@@ -34,6 +34,14 @@ class Cruzamento(Enum):
     ERX = "ERX"
 
 
+class Invalidos(Enum):
+    """O que fazer com o indivíduo cujo plano não fecha no prazo (comparado nos experimentos)."""
+
+    PENALIDADE = "penalidade"  # custo + teto por trecho que faltou (padrão)
+    REPARO = "reparo"  # liga os dias e refaz o resto da rota pelo vizinho mais próximo
+    MORTE = "pena de morte"  # todo inválido recebe o mesmo pior custo, sem gradação
+
+
 class Selecao(Enum):
     """Seleção de pais: torneio é o padrão; rank e roleta entram nos experimentos."""
 

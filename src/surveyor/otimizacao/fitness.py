@@ -2,6 +2,8 @@
 
 - `avaliar(cromossomo, cenario)`: simula e devolve a `Avaliacao` (custo da fitness e plano).
 - `teto_de_custo_valido(cenario)`: o maior custo que um plano válido pode ter.
+- `tratar_invalido(cromossomo, avaliacao, cenario, modo)`: penalidade (padrão), reparo ou
+  pena de morte para o plano que não fecha; os três são comparados nos experimentos (10.2).
 
 O custo é o da A4 (horas de voo x valor da hora + R$ dos pousos). Rotas sorteadas não fecham
 em 7 dias (Etapa 6.7), então a fitness precisa ordenar também os planos inválidos: cada
@@ -9,13 +11,15 @@ trecho que faltou custa o teto. Assim qualquer plano válido vence qualquer inv�
 dois inválidos vence o que chegou mais longe.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from surveyor.dominio.calculos.custo import custo_total
 from surveyor.dominio.modelos import PlanoDeVoo
 from surveyor.dominio.regras import SEGUNDOS_POR_HORA
 from surveyor.dominio.simulador import Cenario, simular
 from surveyor.otimizacao.cromossomo import Cromossomo, decisoes_de_voo
+from surveyor.otimizacao.operadores import Invalidos
+from surveyor.otimizacao.populacao import completar_guloso
 
 
 @dataclass(frozen=True, slots=True)
@@ -52,3 +56,27 @@ def avaliar(cromossomo: Cromossomo, cenario: Cenario) -> Avaliacao:
     return Avaliacao(
         custo + faltando * teto_de_custo_valido(cenario), plano, resultado.motivo_invalido
     )
+
+
+def tratar_invalido(
+    cromossomo: Cromossomo, avaliacao: Avaliacao, cenario: Cenario, modo: Invalidos
+) -> tuple[Cromossomo, Avaliacao]:
+    """O indivíduo e a avaliação que entram na população; o válido passa intacto.
+
+    - penalidade: nada muda (`avaliar` já cobra o teto por trecho que faltou);
+    - reparo: mantém os pontos já voados, refaz o resto da rota pelo vizinho mais próximo e
+      liga todos os dias; o reparado substitui o original (a velocidade é do ponto, não muda);
+    - pena de morte: o custo vira o de um plano sem nenhum trecho, igual para todo inválido.
+    """
+    if avaliacao.valido or modo is Invalidos.PENALIDADE:
+        return cromossomo, avaliacao
+    if modo is Invalidos.REPARO:
+        voados = cromossomo.ordem[: len(avaliacao.plano.trechos)]
+        reparado = replace(
+            cromossomo,
+            ordem=completar_guloso(cenario, voados),
+            calendario=(True,) * len(cromossomo.calendario),
+        )
+        return reparado, avaliar(reparado, cenario)
+    pior = len(cenario.pontos) * teto_de_custo_valido(cenario)
+    return cromossomo, replace(avaliacao, custo=pior)
