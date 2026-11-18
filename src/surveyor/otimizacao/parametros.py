@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 
 from surveyor.dominio.regras import Regras, exigir
+from surveyor.otimizacao.operadores import Cruzamento
 
 
 @dataclass(frozen=True)
@@ -17,6 +18,7 @@ class ParametrosGA:
     taxa_mutacao: float = 0.25
     proporcao_elite: float = 0.02
     tamanho_torneio: int = 3
+    cruzamento: Cruzamento = Cruzamento.OX  # PMX e ERX são comparados nos experimentos
     # População inicial: parte vem do vizinho mais próximo (10 a 20%), o resto é aleatório.
     proporcao_vizinho_mais_proximo: float = 0.15
     # Velocidades iniciais lentas (36 a 52 km/h): mais autonomia, menos pousos no começo.
