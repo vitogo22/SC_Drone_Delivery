@@ -26,21 +26,27 @@ ARQUIVO_PROGRESSO = "progresso.csv"
 ARQUIVO_GRAFICO = "convergencia.png"
 
 
-def executar(entrada: ArquivosDeEntrada, saida: Path, config: Configuracao) -> PlanoDeVoo:
-    """Lê as entradas, roda o GA, valida o melhor plano e grava em `saida`."""
+def montar_cenario(entrada: ArquivosDeEntrada, config: Configuracao) -> Cenario:
+    """Lê as entradas e monta o cenário: os pontos do professor (sem o campus), as extras e,
+    por último, o campus, achado pelo CEP."""
     regras = config.regras
     professor = ler_coordenadas(entrada.coordenadas, regras)
     extras = ler_extras(entrada.extras)
     vento = ler_vento(entrada.vento, regras)
     campus = next(ponto for ponto in professor if ponto.cep == regras.cep_campus)
     a_visitar = [ponto for ponto in professor if ponto is not campus] + extras
-    cenario = Cenario.montar(campus, a_visitar, vento, regras, config.operacao)
     logger.info(
         "%d pontos a visitar (%d do professor e %d extras)",
         len(a_visitar),
         len(professor) - 1,
         len(extras),
     )
+    return Cenario.montar(campus, a_visitar, vento, regras, config.operacao)
+
+
+def executar(entrada: ArquivosDeEntrada, saida: Path, config: Configuracao) -> PlanoDeVoo:
+    """Lê as entradas, roda o GA, valida o melhor plano e grava em `saida`."""
+    cenario = montar_cenario(entrada, config)
 
     progresso = saida.parent / ARQUIVO_PROGRESSO
     with MonitorDeProgresso(progresso) as monitor:
@@ -55,8 +61,9 @@ def executar(entrada: ArquivosDeEntrada, saida: Path, config: Configuracao) -> P
     )
     if avaliacao.motivo_invalido is not None:
         raise ErroPlano(f"o melhor plano encontrado é inválido: {avaliacao.motivo_invalido}")
-    pontos = [*professor, *extras]
-    violacoes = validar_plano(avaliacao.plano, pontos, vento, regras, config.operacao)
+    violacoes = validar_plano(
+        avaliacao.plano, cenario.pontos, cenario.vento, config.regras, config.operacao
+    )
     if violacoes:
         raise ErroPlano(f"o melhor plano não passou no validador: {'; '.join(violacoes)}")
     escrever_plano(avaliacao.plano, saida)

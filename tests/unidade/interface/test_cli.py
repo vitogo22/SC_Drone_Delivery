@@ -6,7 +6,7 @@ from typing import Any
 import pytest
 
 from surveyor import __version__
-from surveyor.aplicacao import conferir_extras, otimizar_rota, validar_plano
+from surveyor.aplicacao import conferir_extras, experimentar, otimizar_rota, validar_plano
 from surveyor.aplicacao.configuracao import ArquivosDeEntrada, Configuracao, Integrante
 from surveyor.dominio.erros import ErroDados
 from surveyor.dominio.modelos import Coordenada, PlanoDeVoo
@@ -184,3 +184,25 @@ def test_extras_com_violacao_retorna_erro_e_aponta_o_cep(
 
     assert cli.main(["extras"]) == cli.SAIDA_ERRO
     assert "CEP 11111111 (Ana Souza): a 99.0 m do CEP 80000000" in caplog.text
+
+
+def test_experimentos_repassa_as_opcoes_e_imprime_a_tabela(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    recebido: dict[str, Any] = {}
+
+    def executar(
+        entrada: ArquivosDeEntrada, saida: Path, config: Configuracao, **opcoes: Any
+    ) -> list[experimentar.Execucao]:
+        recebido.update(entrada=entrada, saida=saida, **opcoes)
+        return [experimentar.Execucao("base", "padrão", 1, 2400.0, True, 15, 14.5, 300, 9.0)]
+
+    monkeypatch.setattr(experimentar, "executar", executar)
+
+    argumentos = ["experimentos", "--sementes", "2", "--processos", "4", "--orcamento", "900"]
+    assert cli.main(argumentos) == cli.SAIDA_OK
+
+    assert recebido["saida"] == cli.EXPERIMENTOS_PADRAO
+    assert list(recebido["sementes"]) == [1, 2]
+    assert (recebido["processos"], recebido["orcamento"]) == (4, 900)
+    assert "| base | padrão | 1 | R$ 2.400,00 |" in capsys.readouterr().out

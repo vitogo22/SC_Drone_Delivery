@@ -6,12 +6,13 @@ uso e traduz o resultado em código de saída. Não contém regra de negócio.
 
 import argparse
 import logging
+import os
 from collections.abc import Callable, Sequence
 from datetime import datetime
 from pathlib import Path
 
 from surveyor import __version__
-from surveyor.aplicacao import conferir_extras, otimizar_rota, validar_plano
+from surveyor.aplicacao import conferir_extras, experimentar, otimizar_rota, validar_plano
 from surveyor.aplicacao.configuracao import ArquivosDeEntrada, Configuracao
 from surveyor.dominio.erros import ErroSurveyor
 from surveyor.dominio.regras import SEGUNDOS_POR_HORA
@@ -26,12 +27,13 @@ logger = logging.getLogger(__name__)
 SAIDA_OK = 0
 SAIDA_ERRO = 1
 PLANO_PADRAO = Path("resultados/plano_de_voo.csv")
+EXPERIMENTOS_PADRAO = Path("resultados/experimentos.csv")
 
 Comando = Callable[[argparse.Namespace], int]
 
 
 def criar_parser() -> argparse.ArgumentParser:
-    """Monta o parser com os comandos `otimizar`, `validar` e `extras`."""
+    """Monta o parser com os comandos `otimizar`, `validar`, `extras` e `experimentos`."""
     parser = argparse.ArgumentParser(
         prog="surveyor",
         description="UNIBRASIL Surveyor: plano de voo de drone por algoritmo genético.",
@@ -63,6 +65,28 @@ def criar_parser() -> argparse.ArgumentParser:
     extras.add_argument("--coordenadas", type=Path, default=padrao.coordenadas)
     extras.add_argument("--extras", type=Path, default=padrao.extras)
     extras.set_defaults(executar=_executar_extras)
+
+    experimentos = comandos.add_parser(
+        "experimentos", help="compara os parâmetros do GA (um fator por vez)"
+    )
+    _adicionar_entradas(experimentos)
+    experimentos.add_argument("--saida", type=Path, default=EXPERIMENTOS_PADRAO)
+    experimentos.add_argument(
+        "--sementes", type=int, default=3, help="sementes 1 a N por configuração (padrão: 3)"
+    )
+    experimentos.add_argument(
+        "--processos",
+        type=int,
+        default=max(1, (os.cpu_count() or 1) - 1),
+        help="execuções em paralelo (padrão: núcleos - 1)",
+    )
+    experimentos.add_argument(
+        "--orcamento",
+        type=int,
+        default=experimentar.ORCAMENTO_AVALIACOES,
+        help="avaliações de fitness por execução (padrão: %(default)s)",
+    )
+    experimentos.set_defaults(executar=_executar_experimentos)
 
     return parser
 
@@ -145,6 +169,20 @@ def _executar_extras(args: argparse.Namespace) -> int:
 def _decimal(valor: float) -> str:
     """Número com 2 casas e vírgula decimal, como no relatório."""
     return f"{valor:.2f}".replace(".", ",")
+
+
+def _executar_experimentos(args: argparse.Namespace) -> int:
+    execucoes = experimentar.executar(
+        _entrada(args),
+        args.saida,
+        Configuracao(),
+        sementes=range(1, args.sementes + 1),
+        processos=args.processos,
+        orcamento=args.orcamento,
+    )
+    print(experimentar.tabela_markdown(execucoes))
+    logger.info("Execuções gravadas em %s", args.saida)
+    return SAIDA_OK
 
 
 def _tabela_extras(conferencias: list[conferir_extras.ConferenciaExtra]) -> str:

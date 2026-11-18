@@ -29,6 +29,7 @@ pip install -e ".[dev]"
 python -m surveyor otimizar --semente 42    # gera resultados/plano_de_voo.csv, progresso.csv e convergencia.png
 python -m surveyor validar                  # confere o plano sem o simulador e mostra tempo, pousos e custo
 python -m surveyor extras                   # valida as coordenadas extras e imprime a tabela de docs/coordenadas_extras.md
+python -m surveyor experimentos             # compara os parâmetros do GA (resultados/experimentos.csv e a tabela de docs/experimentos.md)
 ```
 
 - **Reprodução parcial (1 a 2 minutos):** `python -m surveyor otimizar --rapido`.
