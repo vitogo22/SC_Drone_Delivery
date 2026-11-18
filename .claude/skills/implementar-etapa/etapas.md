@@ -196,8 +196,8 @@ Bastam 1 ou 2 dias de voo. Um resultado muito fora dessas faixas indica bug.
 **Skill:** `preparar-entrega` (os micro passos detalhados estão lá) · **Depende de:** todas
 
 - [ ] 12.1 Pré-requisitos: todas as etapas na `main` e enviadas (`git push`). As decisões já estão confirmadas (seção 4 de `docs/decisoes.md`).
-- [ ] 12.2 Evidências finais em `resultados/`.
-- [ ] 12.3 Documentos conferidos (README de reprodução, nomes, matrículas, extras).
-- [ ] 12.4 `make entrega` gera o ZIP só com o conteúdo permitido.
-- [ ] 12.5 ZIP testado como o professor vai usar (instalação limpa, testes, execução).
+- [x] 12.2 Evidências finais em `resultados/`.
+- [x] 12.3 Documentos conferidos (README de reprodução, nomes, matrículas, extras). **18/11:** README corrigido (matplotlib é dependência; a linha "sem instalar nada" quebrava).
+- [x] 12.4 `make entrega` gera o ZIP só com o conteúdo permitido. **18/11:** `verificar_zip.sh` corrigido (SIGPIPE com pipefail dava "FALTA" falso).
+- [x] 12.5 ZIP testado como o professor vai usar (instalação limpa, testes, execução). **18/11:** venv limpo + pip install, 503 testes, `--rapido` válido. Esta máquina não tem `python3.14-venv` (ensurepip), então a fase 3 do script foi feita com `venv --without-pip` + `pip --python`.
 - [ ] 12.6 Um só integrante envia.

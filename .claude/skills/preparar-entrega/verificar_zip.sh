@@ -10,11 +10,14 @@ set -euo pipefail
 zip="${1:?uso: verificar_zip.sh caminho/do/arquivo.zip}"
 [ -f "${zip}" ] || { echo "ERRO: arquivo não encontrado: ${zip}"; exit 1; }
 
+# Lista lida uma vez: com pipefail, `unzip | grep -q` falha por SIGPIPE quando o grep sai cedo.
+conteudo="$(unzip -Z1 "${zip}")"
+
 echo "== 1/4 Conteúdo proibido"
 # Em qualquer nível: ambientes, controle de versão, ferramentas da equipe e caches.
 # Só na raiz do projeto: logs/, build/, dist/ e venv/ (src/surveyor/infraestrutura/logs/ é código e fica).
 proibidos='(^|/)(\.venv|\.git|\.github|\.claude|__pycache__|\.pytest_cache|\.mypy_cache|\.ruff_cache|htmlcov|[^/]*\.egg-info)(/|$)|^[^/]+/(venv|logs|build|dist)/|(^|/)(CLAUDE\.md|Makefile|\.gitignore|\.gitattributes|\.editorconfig|\.coverage)$|\.(zip|pdf|pyc)$|resultados/cobertura/'
-if unzip -Z1 "${zip}" | grep -E "${proibidos}"; then
+if grep -E "${proibidos}" <<< "${conteudo}"; then
     echo "ERRO: os itens acima não podem ir na entrega."
     exit 1
 fi
@@ -29,7 +32,7 @@ obrigatorios=(
 )
 faltando=0
 for caminho in "${obrigatorios[@]}"; do
-    if ! unzip -Z1 "${zip}" | grep -q -E "^[^/]+/${caminho}$"; then
+    if ! grep -q -E "^[^/]+/${caminho}$" <<< "${conteudo}"; then
         echo "FALTA: ${caminho}"
         faltando=1
     fi
