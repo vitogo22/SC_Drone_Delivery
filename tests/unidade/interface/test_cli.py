@@ -81,11 +81,20 @@ def test_otimizar_rapido_repassa_a_semente(otimizar_falso: dict[str, Any]) -> No
     assert otimizar_falso["config"] == Configuracao.para_execucao(rapido=True, semente=7)
 
 
+def _conferencia_plano(*violacoes: str) -> validar_plano.ConferenciaPlano:
+    resumo = validar_plano.ResumoPlano(
+        trechos=4, pousos=1, tempo_total_voo_s=1044, taxas_reais=80.0, custo_reais=103.2
+    )
+    return validar_plano.ConferenciaPlano(violacoes, resumo)
+
+
 def test_validar_com_violacoes_retorna_erro_e_lista_cada_uma(
     monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
 ) -> None:
     monkeypatch.setattr(
-        validar_plano, "executar", lambda *_: ["bateria abaixo da reserva na linha 3"]
+        validar_plano,
+        "executar",
+        lambda *_: _conferencia_plano("bateria abaixo da reserva na linha 3"),
     )
 
     assert cli.main(["validar", "plano.csv"]) == cli.SAIDA_ERRO
@@ -98,15 +107,18 @@ def test_validar_sem_violacoes_retorna_ok_e_usa_o_plano_padrao(
     caplog.set_level(logging.INFO)
     recebido: list[Path] = []
 
-    def validar(plano: Path, *_: object) -> list[str]:
+    def validar(plano: Path, *_: object) -> validar_plano.ConferenciaPlano:
         recebido.append(plano)
-        return []
+        return _conferencia_plano()
 
     monkeypatch.setattr(validar_plano, "executar", validar)
 
     assert cli.main(["validar"]) == cli.SAIDA_OK
     assert recebido == [cli.PLANO_PADRAO]
     assert "Plano válido" in caplog.text
+    assert "4 trechos, 1 pousos, 1044 s de voo (0,29 h), R$ 80,00 de taxas, custo R$ 103,20" in (
+        caplog.text
+    )
 
 
 def test_erro_esperado_vira_mensagem_e_codigo_1(

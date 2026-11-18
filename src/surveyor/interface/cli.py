@@ -14,6 +14,7 @@ from surveyor import __version__
 from surveyor.aplicacao import conferir_extras, otimizar_rota, validar_plano
 from surveyor.aplicacao.configuracao import ArquivosDeEntrada, Configuracao
 from surveyor.dominio.erros import ErroSurveyor
+from surveyor.dominio.regras import SEGUNDOS_POR_HORA
 from surveyor.infraestrutura.logs.configuracao import (
     NIVEIS,
     arquivo_da_execucao,
@@ -105,10 +106,20 @@ def _executar_otimizar(args: argparse.Namespace) -> int:
 
 
 def _executar_validar(args: argparse.Namespace) -> int:
-    violacoes = validar_plano.executar(args.plano, _entrada(args), Configuracao())
-    for violacao in violacoes:
+    conferencia = validar_plano.executar(args.plano, _entrada(args), Configuracao())
+    resumo = conferencia.resumo
+    logger.info(
+        "%d trechos, %d pousos, %d s de voo (%s h), R$ %s de taxas, custo R$ %s",
+        resumo.trechos,
+        resumo.pousos,
+        resumo.tempo_total_voo_s,
+        _decimal(resumo.tempo_total_voo_s / SEGUNDOS_POR_HORA),
+        _decimal(resumo.taxas_reais),
+        _decimal(resumo.custo_reais),
+    )
+    for violacao in conferencia.violacoes:
         logger.error("Violação: %s", violacao)
-    if violacoes:
+    if conferencia.violacoes:
         return SAIDA_ERRO
     logger.info("Plano válido: %s", args.plano)
     return SAIDA_OK
@@ -129,6 +140,11 @@ def _executar_extras(args: argparse.Namespace) -> int:
         return SAIDA_ERRO
     logger.info("Coordenadas extras válidas: %s", args.extras)
     return SAIDA_OK
+
+
+def _decimal(valor: float) -> str:
+    """Número com 2 casas e vírgula decimal, como no relatório."""
+    return f"{valor:.2f}".replace(".", ",")
 
 
 def _tabela_extras(conferencias: list[conferir_extras.ConferenciaExtra]) -> str:

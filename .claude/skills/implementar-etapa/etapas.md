@@ -159,7 +159,7 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
   - bateria nunca abaixo da reserva;
   - nenhum pouso em extra;
   - todo dia termina com pouso.
-- [ ] 9.4 `validar_plano.executar`, mais um resumo (tempo total, pousos, R$, custo).
+- [x] 9.4 `validar_plano.executar`, mais um resumo (tempo total, pousos, R$, custo).
 - [ ] 9.5 Fechamento.
 
 ## Etapa 10 — Experimentos e execução final

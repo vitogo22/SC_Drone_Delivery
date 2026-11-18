@@ -1,6 +1,11 @@
 import pytest
 
-from surveyor.dominio.calculos.custo import custo_total, taxa_pouso_reais, tempo_trecho_s
+from surveyor.dominio.calculos.custo import (
+    custo_total,
+    taxa_pouso_reais,
+    taxas_pouso_reais,
+    tempo_trecho_s,
+)
 from surveyor.dominio.calculos.relogio import para_segundos
 from surveyor.dominio.modelos import Coordenada, PlanoDeVoo, Trecho
 from surveyor.dominio.regras import ParametrosOperacao, Regras
@@ -65,3 +70,8 @@ def test_custo_total_usa_o_valor_da_hora_da_operacao(plano_de_dois_trechos: Plan
     # A4: 1 h x R$ 40 + R$ 160 do pouso
     operacao = ParametrosOperacao(valor_hora_reais=40.0)
     assert custo_total(plano_de_dois_trechos, Regras(), operacao) == pytest.approx(200.0)
+
+
+def test_taxas_somam_so_os_pousos(plano_de_dois_trechos: PlanoDeVoo) -> None:
+    # A foto sem pouso não paga; o pouso às 17:30:00 paga R$ 80 + R$ 80 (A11).
+    assert taxas_pouso_reais(plano_de_dois_trechos, Regras()) == pytest.approx(160.0)

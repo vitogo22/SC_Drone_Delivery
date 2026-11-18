@@ -4,6 +4,7 @@
   `TOLERANCIA_S` impede que o ruído do float suba 1 s.
 - `taxa_pouso_reais`: R$ 80 por pouso, mais R$ 80 se a Hora final passar de 17:00:00;
   17:00:00 em ponto não paga a taxa adicional (A11).
+- `taxas_pouso_reais`: soma das taxas de todos os pousos do plano.
 - `custo_total`: horas no ar x valor da hora + R$ dos pousos (A4); a espera em solo não entra (A5).
 """
 
@@ -28,10 +29,14 @@ def taxa_pouso_reais(hora_final_s: int, regras: Regras) -> float:
     return regras.taxa_pouso_reais
 
 
+def taxas_pouso_reais(plano: PlanoDeVoo, regras: Regras) -> float:
+    """R$ de todos os pousos do plano; a parada de foto, sem pouso, não paga."""
+    return sum(
+        taxa_pouso_reais(trecho.hora_final_s, regras) for trecho in plano.trechos if trecho.pouso
+    )
+
+
 def custo_total(plano: PlanoDeVoo, regras: Regras, operacao: ParametrosOperacao) -> float:
     """Horas no ar x valor da hora + R$ dos pousos (A4); a espera em solo não entra (A5)."""
     horas_de_voo = plano.tempo_total_voo_s / SEGUNDOS_POR_HORA
-    pousos_reais = sum(
-        taxa_pouso_reais(trecho.hora_final_s, regras) for trecho in plano.trechos if trecho.pouso
-    )
-    return horas_de_voo * operacao.valor_hora_reais + pousos_reais
+    return horas_de_voo * operacao.valor_hora_reais + taxas_pouso_reais(plano, regras)
