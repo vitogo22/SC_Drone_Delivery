@@ -26,7 +26,7 @@ pip install -e ".[dev]"
 ## Reproduzir o resultado entregue
 
 ```bash
-python -m surveyor otimizar --semente 42    # gera resultados/plano_de_voo.csv e resultados/progresso.csv
+python -m surveyor otimizar --semente 42    # gera resultados/plano_de_voo.csv, progresso.csv e convergencia.png
 python -m surveyor validar                  # confere o plano sem o simulador e mostra tempo, pousos e custo
 python -m surveyor extras                   # valida as coordenadas extras e imprime a tabela de docs/coordenadas_extras.md
 ```

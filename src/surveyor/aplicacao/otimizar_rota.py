@@ -1,8 +1,9 @@
 """Caso de uso: gerar o melhor plano de voo (Etapa 8).
 
 `executar(entrada, saida, config)` lê as entradas, roda o GA gravando uma linha por geração em
-`progresso.csv` (na pasta de `saida`), confere o melhor plano com o validador independente e
-só então grava o CSV do plano em `saida`. Um melhor plano inválido vira `ErroPlano`.
+`progresso.csv` e o gráfico `convergencia.png` (na pasta de `saida`), confere o melhor plano
+com o validador independente e só então grava o CSV do plano em `saida`. Um melhor plano
+inválido vira `ErroPlano`.
 """
 
 import logging
@@ -15,12 +16,14 @@ from surveyor.dominio.simulador import Cenario
 from surveyor.dominio.validacao.plano import validar_plano
 from surveyor.infraestrutura.arquivos.escritor_csv import escrever_plano
 from surveyor.infraestrutura.arquivos.leitor_csv import ler_coordenadas, ler_extras, ler_vento
+from surveyor.infraestrutura.graficos import grafico_convergencia
 from surveyor.infraestrutura.logs.monitor_progresso import MonitorDeProgresso
 from surveyor.otimizacao.algoritmo import evoluir
 
 logger = logging.getLogger(__name__)
 
 ARQUIVO_PROGRESSO = "progresso.csv"
+ARQUIVO_GRAFICO = "convergencia.png"
 
 
 def executar(entrada: ArquivosDeEntrada, saida: Path, config: Configuracao) -> PlanoDeVoo:
@@ -39,8 +42,10 @@ def executar(entrada: ArquivosDeEntrada, saida: Path, config: Configuracao) -> P
         len(extras),
     )
 
-    with MonitorDeProgresso(saida.parent / ARQUIVO_PROGRESSO) as monitor:
+    progresso = saida.parent / ARQUIVO_PROGRESSO
+    with MonitorDeProgresso(progresso) as monitor:
         resultado = evoluir(cenario, config.ga, monitor)
+    grafico_convergencia(progresso, saida.parent / ARQUIVO_GRAFICO)
     avaliacao = resultado.avaliacao
     logger.info(
         "GA parou na geração %d (%s): melhor custo R$ %.2f",

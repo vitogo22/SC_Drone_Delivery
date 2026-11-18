@@ -62,6 +62,7 @@ def test_grava_o_plano_validado_e_o_progresso_ao_lado(tmp_path: Path) -> None:
     with (saida.parent / "progresso.csv").open(encoding="utf-8") as arquivo:
         geracoes = [int(linha["geracao"]) for linha in csv.DictReader(arquivo)]
     assert geracoes == list(range(6))  # geração 0 (população inicial) até a 5
+    assert (saida.parent / "convergencia.png").read_bytes().startswith(b"\x89PNG")
 
 
 def test_melhor_plano_invalido_nao_e_gravado(tmp_path: Path) -> None:

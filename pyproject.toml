@@ -13,8 +13,12 @@ authors = [
     { name = "Matheus Dominguez Biesek" },
 ]
 # O núcleo roda só com a biblioteca padrão. Acrescente dependências apenas quando
-# uma etapa realmente precisar delas (ex.: matplotlib no gráfico de convergência).
-dependencies = []
+# uma etapa realmente precisar delas.
+dependencies = [
+    # Etapa 8.8: gráfico de convergência (PNG) a partir de resultados/progresso.csv.
+    # 3.8 é a primeira versão com tipos, exigida pelo mypy strict.
+    "matplotlib>=3.8",
+]
 
 [project.optional-dependencies]
 dev = [
