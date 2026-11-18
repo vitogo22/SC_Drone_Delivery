@@ -52,7 +52,7 @@ def criar_parser() -> argparse.ArgumentParser:
     _adicionar_entradas(otimizar)
     otimizar.add_argument("--saida", type=Path, default=PLANO_PADRAO)
     otimizar.add_argument("--semente", type=int, default=42, help="padrão: 42")
-    otimizar.add_argument("--rapido", action="store_true", help="execução curta (1 a 2 min)")
+    otimizar.add_argument("--rapido", action="store_true", help="execução curta (menos de 1 min)")
     otimizar.set_defaults(executar=_executar_otimizar)
 
     validar = comandos.add_parser("validar", help="confere um plano de voo em CSV")

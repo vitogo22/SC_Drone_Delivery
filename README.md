@@ -32,7 +32,8 @@ python -m surveyor extras                   # valida as coordenadas extras e imp
 python -m surveyor experimentos             # compara os parâmetros do GA (resultados/experimentos.csv e a tabela de docs/experimentos.md)
 ```
 
-- **Reprodução parcial (1 a 2 minutos):** `python -m surveyor otimizar --rapido`.
+- **Experimentos:** levam de 40 a 60 min. **Não é preciso rodar para avaliar**: a tabela e a análise estão em `docs/experimentos.md`, e cada execução está em `resultados/experimentos.csv`.
+- **Reprodução parcial (menos de 1 minuto):** `python -m surveyor otimizar --rapido`.
 - **Sem instalar nada:** `PYTHONPATH=src python3 -m surveyor otimizar --rapido`.
 - **Outro plano:** `python -m surveyor validar caminho/do/plano.csv` (sai com código 1 e lista cada violação, com a linha do CSV).
 - **Todas as opções:** `python -m surveyor --help` e `python -m surveyor otimizar --help`.

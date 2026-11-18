@@ -8,6 +8,7 @@ import pytest
 
 from surveyor.aplicacao import experimentar
 from surveyor.aplicacao.configuracao import ArquivosDeEntrada, Configuracao
+from surveyor.otimizacao.operadores import Cruzamento
 from surveyor.otimizacao.parametros import ParametrosGA
 
 CABECALHO = "cep,longitude,latitude\n"
@@ -60,6 +61,18 @@ def test_cada_configuracao_muda_um_fator_da_base_com_o_mesmo_orcamento() -> None
         "base", "população", "cruzamento", "mutação", "seleção", "elitismo", "semeadura",
         "inválidos", "valor da hora",
     }  # fmt: skip
+
+
+@pytest.mark.parametrize("cruzamento_base", list(Cruzamento), ids=lambda c: c.value)
+def test_variacoes_de_cruzamento_sao_os_operadores_que_a_base_nao_usa(
+    cruzamento_base: Cruzamento,
+) -> None:
+    base = Configuracao(ga=ParametrosGA(cruzamento=cruzamento_base))
+
+    experimentos = experimentar.configuracoes(base, orcamento=60_000)
+
+    variacoes = [e.ga.cruzamento for e in experimentos if e.fator == "cruzamento"]
+    assert variacoes == [c for c in Cruzamento if c is not cruzamento_base]
 
 
 @pytest.mark.parametrize("processos", [1, 2], ids=["no-processo", "em-paralelo"])

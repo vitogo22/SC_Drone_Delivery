@@ -63,7 +63,7 @@ filho  = (0, 1 | 2, 1, 0)      pontos 0 e 1 repetidos, pontos 3 e 4 faltando
 
 O plano precisa visitar cada ponto exatamente uma vez, então esse filho não é uma rota. Por isso:
 
-- na **ordem**, usamos cruzamentos de permutação: **OX** (padrão), **PMX** e **ERX** (comparados nos experimentos, `docs/experimentos.md`);
+- na **ordem**, usamos cruzamentos de permutação: **PMX** (padrão, escolhido nos experimentos), **OX** e **ERX** (comparados em `docs/experimentos.md`);
 - nas **velocidades**, a velocidade de cada ponto vem do mesmo pai que forneceu o ponto. A da volta ao campus vem de um pai sorteado;
 - no **calendário**, o cruzamento é **uniforme**: cada dia vem de um pai sorteado. Aqui ele funciona, porque os 7 bits são independentes e qualquer combinação é válida.
 

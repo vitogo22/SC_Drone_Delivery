@@ -67,7 +67,11 @@ def configuracoes(base: Configuracao, orcamento: int = ORCAMENTO_AVALIACOES) -> 
     variacoes: list[tuple[str, str, dict[str, Any], dict[str, Any]]] = [
         ("base", "padrão", {}, {}),
         *(("população", str(n), {"tamanho_populacao": n}, {}) for n in (100, 400)),
-        *(("cruzamento", c.value, {"cruzamento": c}, {}) for c in (Cruzamento.PMX, Cruzamento.ERX)),
+        *(
+            ("cruzamento", c.value, {"cruzamento": c}, {})
+            for c in Cruzamento
+            if c is not base.ga.cruzamento
+        ),
         *(("mutação", f"{t:.0%}", {"taxa_mutacao": t}, {}) for t in (0.05, 0.15)),
         *(("seleção", f"torneio k = {k}", {"tamanho_torneio": k}, {}) for k in (2, 5)),
         *(("seleção", s.value, {"selecao": s}, {}) for s in (Selecao.RANK, Selecao.ROLETA)),

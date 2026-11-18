@@ -20,7 +20,7 @@ class ParametrosGA:
     selecao: Selecao = Selecao.TORNEIO  # rank e roleta são comparados nos experimentos
     tamanho_torneio: int = 3
     invalidos: Invalidos = Invalidos.PENALIDADE  # reparo e pena de morte: nos experimentos
-    cruzamento: Cruzamento = Cruzamento.OX  # PMX e ERX são comparados nos experimentos
+    cruzamento: Cruzamento = Cruzamento.PMX  # empata com OX no custo e é mais rápido (Etapa 10)
     # População inicial: parte vem do vizinho mais próximo (10 a 20%), o resto é aleatório.
     proporcao_vizinho_mais_proximo: float = 0.15
     # Velocidades iniciais lentas (36 a 52 km/h): mais autonomia, menos pousos no começo.
@@ -50,7 +50,7 @@ class ParametrosGA:
 
     @classmethod
     def rapido(cls, semente: int | None = 42) -> "ParametrosGA":
-        """Execução curta (1 a 2 min) para o professor reproduzir o resultado parcialmente."""
+        """Execução curta (menos de 1 min) para o professor reproduzir o resultado parcialmente."""
         return cls(
             tamanho_populacao=60,
             max_geracoes=150,
