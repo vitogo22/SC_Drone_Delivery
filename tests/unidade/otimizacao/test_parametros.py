@@ -24,6 +24,8 @@ def test_modo_rapido_e_mais_curto_e_preserva_a_semente() -> None:
         {"proporcao_elite": 1.0},
         {"tamanho_torneio": 1},
         {"tamanho_populacao": 10, "tamanho_torneio": 11},
+        {"proporcao_vizinho_mais_proximo": 1.5},
+        {"velocidade_inicial_maxima_kmh": 0},
     ],
 )
 def test_parametros_fora_da_faixa_sao_rejeitados(campos: dict[str, float]) -> None:

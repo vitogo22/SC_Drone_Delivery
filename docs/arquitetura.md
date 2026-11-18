@@ -28,7 +28,7 @@ SC_Drone_Delivery/
 │   ├── otimizacao/             ALGORITMO GENÉTICO (motor; depende só do domínio)
 │   │   ├── parametros.py       ParametrosGA
 │   │   ├── progresso.py        contrato ObservadorDeProgresso + EstatisticasDaGeracao
-│   │   └── cromossomo.py, operadores.py, fitness.py, algoritmo.py
+│   │   └── cromossomo.py, operadores.py, fitness.py, populacao.py, algoritmo.py
 │   ├── aplicacao/              CASOS DE USO (orquestram as outras camadas)
 │   │   ├── configuracao.py     ArquivosDeEntrada, Configuracao, Integrante
 │   │   ├── otimizar_rota.py    executar(): ler -> otimizar -> validar -> gravar

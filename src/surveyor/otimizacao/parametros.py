@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from surveyor.dominio.regras import exigir
+from surveyor.dominio.regras import Regras, exigir
 
 
 @dataclass(frozen=True)
@@ -17,6 +17,10 @@ class ParametrosGA:
     taxa_mutacao: float = 0.25
     proporcao_elite: float = 0.02
     tamanho_torneio: int = 3
+    # População inicial: parte vem do vizinho mais próximo (10 a 20%), o resto é aleatório.
+    proporcao_vizinho_mais_proximo: float = 0.15
+    # Velocidades iniciais lentas (36 a 52 km/h): mais autonomia, menos pousos no começo.
+    velocidade_inicial_maxima_kmh: int = 52
     semente: int | None = 42
 
     def __post_init__(self) -> None:
@@ -30,6 +34,14 @@ class ParametrosGA:
         exigir(
             2 <= self.tamanho_torneio <= self.tamanho_populacao,
             "tamanho_torneio deve estar entre 2 e tamanho_populacao",
+        )
+        exigir(
+            0 <= self.proporcao_vizinho_mais_proximo <= 1,
+            "proporcao_vizinho_mais_proximo deve estar em [0, 1]",
+        )
+        exigir(
+            self.velocidade_inicial_maxima_kmh >= Regras.velocidade_referencia_kmh,
+            f"velocidade_inicial_maxima_kmh deve ser >= {Regras.velocidade_referencia_kmh}",
         )
 
     @classmethod
