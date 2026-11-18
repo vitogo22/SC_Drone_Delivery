@@ -67,7 +67,11 @@ O plano precisa visitar cada ponto exatamente uma vez, então esse filho não é
 - nas **velocidades**, a velocidade de cada ponto vem do mesmo pai que forneceu o ponto. A da volta ao campus vem de um pai sorteado;
 - no **calendário**, o cruzamento é **uniforme**: cada dia vem de um pai sorteado. Aqui ele funciona, porque os 7 bits são independentes e qualquer combinação é válida.
 
-Mutações: troca, inversão e deslocamento na ordem; ±1 no índice de velocidade; inverter um bit do calendário.
+Mutações: troca, inversão e deslocamento na ordem; ±1 no índice de velocidade; inverter um bit do calendário. Cada mutação muda uma só das três partes, sorteada com a mesma chance.
+
+## População inicial e seleção
+
+O primeiro indivíduo é a **referência**: a rota do vizinho mais próximo saindo do campus, toda a 36 km/h. Ela é válida e custa R$ 2.465,42. Como a elite passa intacta de uma geração para a outra, o GA nunca entrega um plano pior que essa referência. Até 15% da população são rotas do vizinho mais próximo que começam num ponto sorteado. O resto são rotas aleatórias, com velocidades de 36 a 52 km/h. Todos os dias começam ligados. A seleção é por **torneio de 3**: vence o menor custo, então ela não precisa converter o custo em aptidão, como a roleta precisaria. Código: [`otimizacao/populacao.py`](../src/surveyor/otimizacao/populacao.py), [`operadores.py`](../src/surveyor/otimizacao/operadores.py) e [`algoritmo.py`](../src/surveyor/otimizacao/algoritmo.py).
 
 ## Por que existe um calendário
 

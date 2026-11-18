@@ -36,6 +36,7 @@ SC_Drone_Delivery/
 │   │   └── conferir_extras.py  executar(): validar as extras e achar o ponto mais próximo
 │   ├── infraestrutura/         DETALHES TÉCNICOS (implementam contratos internos)
 │   │   ├── arquivos/           leitor_csv.py, escritor_csv.py
+│   │   ├── graficos.py         gráfico de convergência (matplotlib)
 │   │   └── logs/               configuracao.py (política de logs), monitor_progresso.py
 │   └── interface/              ENTRADA DO USUÁRIO
 │       └── cli.py              argumentos, logs, códigos de saída

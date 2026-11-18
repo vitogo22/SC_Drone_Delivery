@@ -141,7 +141,7 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
   - a mesma semente dá o mesmo resultado;
   - integração com 8–10 pontos e poucas gerações;
   - o custo final é menor que o do vizinho mais próximo a 36 km/h.
-- [ ] 8.10 Fechamento.
+- [x] 8.10 Fechamento.
 
 ## Etapa 9 — CSV de saída e validador independente
 **Módulos:** `infraestrutura/arquivos/escritor_csv.py`, `dominio/validacao/plano.py`, `aplicacao/validar_plano.py` · **Depende de:** 1, 3, 4, 5
