@@ -3,8 +3,22 @@ from dataclasses import replace
 
 import pytest
 
+from surveyor.dominio.regras import Regras
 from surveyor.otimizacao.cromossomo import Cromossomo
-from surveyor.otimizacao.operadores import Cruzamento, cruzar, erx, ox, pmx, torneio
+from surveyor.otimizacao.operadores import (
+    Cruzamento,
+    cruzar,
+    deslocamento,
+    erx,
+    inversao,
+    inverter_dia,
+    mutar,
+    mutar_velocidade,
+    ox,
+    pmx,
+    torneio,
+    troca,
+)
 
 CUSTOS = (50.0, 10.0, 90.0, 30.0, 70.0, 20.0, 80.0, 40.0, 60.0, 100.0)  # o melhor é o índice 1
 
@@ -129,3 +143,83 @@ def test_calendario_usa_cruzamento_uniforme() -> None:
     }
 
     assert len(calendarios) > 2  # dias misturados dos dois pais, não um calendário inteiro
+
+
+SEMENTES = range(30)
+ORDEM = tuple(range(10))
+
+
+def _diferencas(antes: tuple[object, ...], depois: tuple[object, ...]) -> list[int]:
+    return [i for i, (a, d) in enumerate(zip(antes, depois, strict=True)) if a != d]
+
+
+@pytest.mark.parametrize("semente", SEMENTES)
+def test_troca_permuta_exatamente_duas_posicoes(semente: int) -> None:
+    nova = troca(ORDEM, random.Random(semente))
+
+    i, j = _diferencas(ORDEM, nova)
+    assert (nova[i], nova[j]) == (ORDEM[j], ORDEM[i])
+
+
+@pytest.mark.parametrize("semente", SEMENTES)
+def test_inversao_inverte_um_trecho_continuo(semente: int) -> None:
+    nova = inversao(ORDEM, random.Random(semente))
+
+    diferentes = _diferencas(ORDEM, nova)
+    a, b = diferentes[0], diferentes[-1]
+    assert nova[a : b + 1] == ORDEM[a : b + 1][::-1]
+    assert nova[:a] + nova[b + 1 :] == ORDEM[:a] + ORDEM[b + 1 :]
+
+
+@pytest.mark.parametrize("semente", SEMENTES)
+def test_deslocamento_move_um_ponto_e_mantem_a_ordem_dos_outros(semente: int) -> None:
+    nova = deslocamento(ORDEM, random.Random(semente))
+
+    assert nova != ORDEM
+    assert any(
+        [p for p in nova if p != movido] == [p for p in ORDEM if p != movido] for movido in ORDEM
+    )
+
+
+@pytest.mark.parametrize(
+    ("velocidades", "permitidas"),
+    [
+        pytest.param((5,) * 4, {4, 6}, id="meio"),
+        pytest.param((0,) * 4, {1}, id="minimo-so-sobe"),
+        pytest.param((11,) * 4, {10}, id="maximo-so-desce"),
+    ],
+)
+def test_velocidade_muda_um_gene_em_um_indice(
+    velocidades: tuple[int, ...], permitidas: set[int]
+) -> None:
+    for semente in SEMENTES:
+        nova = mutar_velocidade(velocidades, ultimo_indice=11, sorteio=random.Random(semente))
+
+        (i,) = _diferencas(velocidades, nova)
+        assert nova[i] in permitidas
+
+
+def test_calendario_inverte_um_dia() -> None:
+    calendario = (True, False, True, True, False, True, True)
+
+    novo = inverter_dia(calendario, random.Random(0))
+
+    (dia,) = _diferencas(calendario, novo)
+    assert novo[dia] is not calendario[dia]
+
+
+def test_mutar_altera_uma_parte_e_cobre_as_tres() -> None:
+    pai = Cromossomo(ORDEM, (5,) * 11, (True,) * 7)
+    partes_mutadas: set[str] = set()
+    for semente in SEMENTES:
+        filho = mutar(pai, Regras(), random.Random(semente))
+
+        mudou = {
+            parte
+            for parte in ("ordem", "velocidades", "calendario")
+            if getattr(filho, parte) != getattr(pai, parte)
+        }
+        assert len(mudou) == 1
+        partes_mutadas |= mudou
+    assert pai == Cromossomo(ORDEM, (5,) * 11, (True,) * 7)  # o pai não muda
+    assert partes_mutadas == {"ordem", "velocidades", "calendario"}

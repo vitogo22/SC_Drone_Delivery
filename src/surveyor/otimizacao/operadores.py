@@ -6,12 +6,18 @@
 - `cruzar(pai1, pai2, metodo, sorteio)`: um filho. A ordem usa o cruzamento escolhido; a
   velocidade de cada ponto vem do pai que forneceu o ponto; a da volta ao campus vem de um pai
   sorteado; o calendário usa cruzamento uniforme.
+- `troca`, `inversao`, `deslocamento` (ordem), `mutar_velocidade` (±1 num índice) e
+  `inverter_dia` (calendário): mutações de uma parte.
+- `mutar(cromossomo, regras, sorteio)`: sorteia a parte (ordem, velocidade ou calendário) e,
+  na ordem, o tipo de mutação.
 """
 
 import random
 from collections.abc import Sequence
+from dataclasses import replace
 from enum import Enum
 
+from surveyor.dominio.regras import Regras
 from surveyor.otimizacao.cromossomo import Cromossomo
 
 Ordem = tuple[int, ...]
@@ -125,3 +131,56 @@ def cruzar(
         sorteio.choice(dia) for dia in zip(pai1.calendario, pai2.calendario, strict=True)
     )
     return Cromossomo(ordem, velocidades, calendario)
+
+
+def troca(ordem: Ordem, sorteio: random.Random) -> Ordem:
+    """Troca dois pontos de lugar."""
+    i, j = sorteio.sample(range(len(ordem)), 2)
+    nova = list(ordem)
+    nova[i], nova[j] = nova[j], nova[i]
+    return tuple(nova)
+
+
+def inversao(ordem: Ordem, sorteio: random.Random) -> Ordem:
+    """Inverte o trecho entre duas posições (inclusive): desfaz um cruzamento de caminho."""
+    a, b = sorted(sorteio.sample(range(len(ordem)), 2))
+    return (*ordem[:a], *reversed(ordem[a : b + 1]), *ordem[b + 1 :])
+
+
+def deslocamento(ordem: Ordem, sorteio: random.Random) -> Ordem:
+    """Tira um ponto da rota e o põe em outra posição."""
+    de, para = sorteio.sample(range(len(ordem)), 2)
+    nova = list(ordem)
+    nova.insert(para, nova.pop(de))
+    return tuple(nova)
+
+
+def mutar_velocidade(
+    velocidades: tuple[int, ...], ultimo_indice: int, sorteio: random.Random
+) -> tuple[int, ...]:
+    """Soma ou subtrai 1 no índice de velocidade de um gene; nos limites, vai para o outro lado."""
+    gene = sorteio.randrange(len(velocidades))
+    passo = sorteio.choice((-1, 1))
+    novo = velocidades[gene] + passo
+    if not 0 <= novo <= ultimo_indice:
+        novo = velocidades[gene] - passo
+    return (*velocidades[:gene], novo, *velocidades[gene + 1 :])
+
+
+def inverter_dia(calendario: tuple[bool, ...], sorteio: random.Random) -> tuple[bool, ...]:
+    """Liga ou desliga um dia do calendário."""
+    dia = sorteio.randrange(len(calendario))
+    return (*calendario[:dia], not calendario[dia], *calendario[dia + 1 :])
+
+
+def mutar(cromossomo: Cromossomo, regras: Regras, sorteio: random.Random) -> Cromossomo:
+    """Um filho com uma mutação numa das três partes, sorteada com a mesma chance."""
+    parte = sorteio.randrange(3)
+    if parte == 0:
+        mutacao = sorteio.choice((troca, inversao, deslocamento))
+        return replace(cromossomo, ordem=mutacao(cromossomo.ordem, sorteio))
+    if parte == 1:
+        ultimo = len(regras.velocidades_kmh) - 1
+        velocidades = mutar_velocidade(cromossomo.velocidades, ultimo, sorteio)
+        return replace(cromossomo, velocidades=velocidades)
+    return replace(cromossomo, calendario=inverter_dia(cromossomo.calendario, sorteio))

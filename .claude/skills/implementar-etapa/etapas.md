@@ -131,7 +131,7 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 
 - [x] 8.1 Seleção por torneio (k = 3), com testes. O custo é **minimizado**: qualquer seleção proporcional (roleta) tem que converter o custo em aptidão antes (ex.: `max_custo − custo` ou rank).
 - [x] 8.2 Cruzamento OX (e PMX/ERX para os experimentos). A velocidade herda do pai que forneceu o ponto e o calendário usa cruzamento uniforme. Testes: a permutação sai válida e os pais ficam intactos.
-- [ ] 8.3 Mutações: troca, inversão e deslocamento (ordem); ±1 (velocidade); inverter um bit (calendário). Com testes.
+- [x] 8.3 Mutações: troca, inversão e deslocamento (ordem); ±1 (velocidade); inverter um bit (calendário). Com testes.
 - [ ] 8.4 Fitness = custo do simulador + penalidade se o plano for inválido.
 - [ ] 8.5 População inicial: 10–20% de vizinho mais próximo perturbado e o resto aleatório; velocidades iniciais de 36 a 52.
 - [ ] 8.6 Laço evolutivo com elitismo e critérios de parada (gerações, estagnação, tempo), chamando `ObservadorDeProgresso.registrar(...)` a cada geração. Usar `random.Random(semente)`.
