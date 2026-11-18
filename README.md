@@ -26,14 +26,13 @@ pip install -e ".[dev]"
 ## Reproduzir o resultado entregue
 
 ```bash
-python -m surveyor otimizar --semente 42    # cerca de 5 min; gera resultados/plano_de_voo.csv, progresso.csv, convergencia.png e rota.png
-python -m surveyor validar                  # confere o plano sem o simulador e mostra tempo, pousos e custo
+python -m surveyor otimizar --semente 42    # cerca de 5 min; regrava resultados/ (plano_de_voo.csv, progresso.csv, convergencia.png, rota.png)
+python -m surveyor validar                  # confere resultados/plano_de_voo.csv sem o simulador e mostra tempo, pousos e custo
 python -m surveyor extras                   # valida as coordenadas extras e imprime a tabela de docs/coordenadas_extras.md
-python -m surveyor experimentos             # compara os parâmetros do GA (resultados/experimentos.csv e a tabela de docs/experimentos.md)
 ```
 
-- **Experimentos:** levam de 40 a 60 min. **Não é preciso rodar para avaliar**: a tabela e a análise estão em `docs/experimentos.md`, e cada execução está em `resultados/experimentos.csv`.
-- **Reprodução parcial (menos de 1 minuto):** `python -m surveyor otimizar --rapido`.
+- **Reprodução parcial (menos de 1 minuto):** `python -m surveyor otimizar --rapido --saida /tmp/rapido/plano_de_voo.csv` e depois `python -m surveyor validar /tmp/rapido/plano_de_voo.csv`. Sem o `--saida`, o modo rápido sobrescreve o resultado entregue em `resultados/` com um plano pior.
+- **Experimentos** (`python -m surveyor experimentos`): levam de 40 a 60 min. **Não é preciso rodar para avaliar**: a tabela e a análise estão em `docs/experimentos.md`, e cada execução está em `resultados/experimentos.csv`.
 - **Outro plano:** `python -m surveyor validar caminho/do/plano.csv` (sai com código 1 e lista cada violação, com a linha do CSV).
 - **Todas as opções:** `python -m surveyor --help` e `python -m surveyor otimizar --help`.
 
@@ -58,8 +57,8 @@ Clean Architecture em quatro camadas. A dependência sempre aponta para o domín
 src/surveyor/
 ├── dominio/          regras de negócio: regras do enunciado, modelos, cálculos, simulador, validação
 ├── otimizacao/       algoritmo genético (parâmetros, cromossomo, operadores, fitness, laço)
-├── aplicacao/        casos de uso: otimizar_rota, validar_plano e conferir_extras
-├── infraestrutura/   arquivos CSV e logs (política de logs e monitor de progresso)
+├── aplicacao/        casos de uso: otimizar_rota, validar_plano, conferir_extras e experimentar
+├── infraestrutura/   arquivos CSV, gráficos (convergência e mapa da rota) e logs
 └── interface/        linha de comando
 tests/
 ├── unidade/          espelha src/surveyor/
