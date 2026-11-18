@@ -2,8 +2,8 @@
 
 `executar(entrada, saida, config)` lê as entradas, roda o GA gravando uma linha por geração em
 `progresso.csv` e o gráfico `convergencia.png` (na pasta de `saida`), confere o melhor plano
-com o validador independente e só então grava o CSV do plano em `saida`. Um melhor plano
-inválido vira `ErroPlano`.
+com o validador independente e só então grava o CSV do plano em `saida` e o mapa `rota.png`.
+Um melhor plano inválido vira `ErroPlano`.
 """
 
 import logging
@@ -16,7 +16,7 @@ from surveyor.dominio.simulador import Cenario
 from surveyor.dominio.validacao.plano import validar_plano
 from surveyor.infraestrutura.arquivos.escritor_csv import escrever_plano
 from surveyor.infraestrutura.arquivos.leitor_csv import ler_coordenadas, ler_extras, ler_vento
-from surveyor.infraestrutura.graficos import grafico_convergencia
+from surveyor.infraestrutura.graficos import grafico_convergencia, grafico_rota
 from surveyor.infraestrutura.logs.monitor_progresso import MonitorDeProgresso
 from surveyor.otimizacao.algoritmo import evoluir
 
@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 ARQUIVO_PROGRESSO = "progresso.csv"
 ARQUIVO_GRAFICO = "convergencia.png"
+ARQUIVO_MAPA = "rota.png"
 
 
 def montar_cenario(entrada: ArquivosDeEntrada, config: Configuracao) -> Cenario:
@@ -67,4 +68,5 @@ def executar(entrada: ArquivosDeEntrada, saida: Path, config: Configuracao) -> P
     if violacoes:
         raise ErroPlano(f"o melhor plano não passou no validador: {'; '.join(violacoes)}")
     escrever_plano(avaliacao.plano, saida)
+    grafico_rota(avaliacao.plano, saida.parent / ARQUIVO_MAPA)
     return avaliacao.plano
