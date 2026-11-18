@@ -1,4 +1,6 @@
 import random
+from collections import Counter
+from collections.abc import Callable
 from dataclasses import replace
 
 import pytest
@@ -7,6 +9,7 @@ from surveyor.dominio.regras import Regras
 from surveyor.otimizacao.cromossomo import Cromossomo
 from surveyor.otimizacao.operadores import (
     Cruzamento,
+    Selecao,
     cruzar,
     deslocamento,
     erx,
@@ -16,6 +19,7 @@ from surveyor.otimizacao.operadores import (
     mutar_velocidade,
     ox,
     pmx,
+    preparar_selecao,
     torneio,
     troca,
 )
@@ -223,3 +227,37 @@ def test_mutar_altera_uma_parte_e_cobre_as_tres() -> None:
         partes_mutadas |= mudou
     assert pai == Cromossomo(ORDEM, (5,) * 11, (True,) * 7)  # o pai não muda
     assert partes_mutadas == {"ordem", "velocidades", "calendario"}
+
+
+def _frequencias(selecionar: Callable[[random.Random], int], vezes: int = 6000) -> Counter[int]:
+    sorteio = random.Random(11)
+    return Counter(selecionar(sorteio) for _ in range(vezes))
+
+
+def test_selecao_por_torneio_usa_o_k_dos_parametros() -> None:
+    selecionar = preparar_selecao(CUSTOS, Selecao.TORNEIO, k=len(CUSTOS))
+
+    assert set(_frequencias(selecionar, 50)) == {1}  # com todos no torneio, vence o melhor
+
+
+def test_rank_da_ao_melhor_peso_n_e_ao_pior_peso_1() -> None:
+    # 10 indivíduos: pesos 10, 9, ..., 1 pela ordem do custo (soma 55).
+    frequencias = _frequencias(preparar_selecao(CUSTOS, Selecao.RANK, k=3))
+
+    assert frequencias[1] / 6000 == pytest.approx(10 / 55, abs=0.02)  # o melhor
+    assert frequencias[9] / 6000 == pytest.approx(1 / 55, abs=0.01)  # o pior
+
+
+def test_roleta_usa_a_aptidao_transformada_e_o_pior_nunca_sai() -> None:
+    # Aptidão = maior custo - custo: 20, 10 e 0. Minimização vira maximização.
+    frequencias = _frequencias(preparar_selecao((10.0, 20.0, 30.0), Selecao.ROLETA, k=3))
+
+    assert frequencias[0] / 6000 == pytest.approx(2 / 3, abs=0.02)
+    assert frequencias[1] / 6000 == pytest.approx(1 / 3, abs=0.02)
+    assert frequencias[2] == 0
+
+
+def test_roleta_com_custos_iguais_sorteia_qualquer_um() -> None:
+    frequencias = _frequencias(preparar_selecao((5.0, 5.0, 5.0), Selecao.ROLETA, k=3), 3000)
+
+    assert set(frequencias) == {0, 1, 2}

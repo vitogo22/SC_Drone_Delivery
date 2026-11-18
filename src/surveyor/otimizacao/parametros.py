@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 
 from surveyor.dominio.regras import Regras, exigir
-from surveyor.otimizacao.operadores import Cruzamento
+from surveyor.otimizacao.operadores import Cruzamento, Selecao
 
 
 @dataclass(frozen=True)
@@ -17,6 +17,7 @@ class ParametrosGA:
     taxa_cruzamento: float = 0.9
     taxa_mutacao: float = 0.25
     proporcao_elite: float = 0.02
+    selecao: Selecao = Selecao.TORNEIO  # rank e roleta são comparados nos experimentos
     tamanho_torneio: int = 3
     cruzamento: Cruzamento = Cruzamento.OX  # PMX e ERX são comparados nos experimentos
     # População inicial: parte vem do vizinho mais próximo (10 a 20%), o resto é aleatório.

@@ -2,9 +2,10 @@
 
 `evoluir(cenario, parametros, observador)` cria a população inicial e, a cada geração:
 registra as estatísticas no `ObservadorDeProgresso`, confere a parada (gerações, estagnação
-do melhor custo ou tempo) e monta a próxima geração. A elite (pelo menos 1) passa intacta,
-então o melhor custo nunca piora; o resto vem de torneio, cruzamento e mutação. Toda a
-aleatoriedade sai de um `random.Random(parametros.semente)`.
+do melhor custo ou tempo) e monta a próxima geração. A elite passa intacta, então, com
+elitismo, o melhor da geração nunca piora; o resto vem da seleção, do cruzamento e da mutação.
+Devolve o melhor indivíduo de todas as gerações (sem elitismo, ele pode ter se perdido). Toda
+a aleatoriedade sai de um `random.Random(parametros.semente)`.
 """
 
 import random
@@ -17,7 +18,7 @@ from statistics import fmean
 from surveyor.dominio.simulador import Cenario
 from surveyor.otimizacao.cromossomo import Cromossomo
 from surveyor.otimizacao.fitness import Avaliacao, avaliar
-from surveyor.otimizacao.operadores import cruzar, mutar, torneio
+from surveyor.otimizacao.operadores import cruzar, mutar, preparar_selecao
 from surveyor.otimizacao.parametros import ParametrosGA
 from surveyor.otimizacao.populacao import populacao_inicial
 from surveyor.otimizacao.progresso import EstatisticasDaGeracao, ObservadorDeProgresso
@@ -52,16 +53,16 @@ def evoluir(
     inicio_s = relogio()
     populacao = populacao_inicial(cenario, parametros, sorteio)
     avaliacoes = [avaliar(individuo, cenario) for individuo in populacao]
-    tamanho_elite = max(1, round(parametros.proporcao_elite * parametros.tamanho_populacao))
-    melhor_custo = float("inf")
+    tamanho_elite = round(parametros.proporcao_elite * parametros.tamanho_populacao)
+    melhor: tuple[Cromossomo, Avaliacao] | None = None
     sem_melhora = 0
     geracao = 0
     while True:
         custos = [avaliacao.custo for avaliacao in avaliacoes]
         ranking = sorted(range(len(populacao)), key=custos.__getitem__)
         campeao = avaliacoes[ranking[0]]
-        if campeao.custo < melhor_custo:
-            melhor_custo, sem_melhora = campeao.custo, 0
+        if melhor is None or campeao.custo < melhor[1].custo:
+            melhor, sem_melhora = (populacao[ranking[0]], campeao), 0
         else:
             sem_melhora += 1
         decorrido_s = relogio() - inicio_s
@@ -78,12 +79,14 @@ def evoluir(
         )
         parada = _parada(geracao, sem_melhora, decorrido_s, parametros)
         if parada is not None:
-            return ResultadoGA(populacao[ranking[0]], campeao, geracao, parada)
+            return ResultadoGA(*melhor, geracao, parada)
 
         conhecidos = dict(zip(populacao, avaliacoes, strict=True))
+        selecionar = preparar_selecao(custos, parametros.selecao, parametros.tamanho_torneio)
         proxima = [populacao[i] for i in ranking[:tamanho_elite]]
         while len(proxima) < parametros.tamanho_populacao:
-            proxima.append(_filho(populacao, custos, parametros, cenario, sorteio))
+            pai1, pai2 = populacao[selecionar(sorteio)], populacao[selecionar(sorteio)]
+            proxima.append(_filho(pai1, pai2, parametros, cenario, sorteio))
         populacao = proxima
         avaliacoes = [
             conhecidos[individuo] if individuo in conhecidos else avaliar(individuo, cenario)
@@ -93,15 +96,13 @@ def evoluir(
 
 
 def _filho(
-    populacao: list[Cromossomo],
-    custos: list[float],
+    pai1: Cromossomo,
+    pai2: Cromossomo,
     parametros: ParametrosGA,
     cenario: Cenario,
     sorteio: random.Random,
 ) -> Cromossomo:
-    """Dois pais por torneio; cruzamento e mutação, cada um com a sua taxa."""
-    pai1 = populacao[torneio(custos, parametros.tamanho_torneio, sorteio)]
-    pai2 = populacao[torneio(custos, parametros.tamanho_torneio, sorteio)]
+    """Cruzamento e mutação, cada um com a sua taxa."""
     filho = pai1
     if sorteio.random() < parametros.taxa_cruzamento:
         filho = cruzar(pai1, pai2, parametros.cruzamento, sorteio)

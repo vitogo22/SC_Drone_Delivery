@@ -9,7 +9,7 @@ from surveyor.dominio.modelos import Coordenada
 from surveyor.dominio.regras import ParametrosOperacao, Regras
 from surveyor.dominio.simulador import Cenario
 from surveyor.otimizacao.algoritmo import Parada, evoluir
-from surveyor.otimizacao.operadores import Cruzamento
+from surveyor.otimizacao.operadores import Cruzamento, Selecao
 from surveyor.otimizacao.parametros import ParametrosGA
 from surveyor.otimizacao.progresso import EstatisticasDaGeracao
 
@@ -49,6 +49,7 @@ def _parametros(**campos: object) -> ParametrosGA:
         "max_geracoes": 15,
         "geracoes_sem_melhora": 1000,
         "tempo_limite_s": 1000.0,
+        "proporcao_elite": 0.1,  # 1 indivíduo de elite em 12
         "semente": 3,
     }
     return ParametrosGA(**{**base, **campos})  # type: ignore[arg-type]  # campos de ParametrosGA
@@ -116,3 +117,12 @@ def test_mesma_semente_da_o_mesmo_resultado(cruzamento: Cruzamento) -> None:
 
     assert primeiro.melhor == segundo.melhor
     assert primeiro.avaliacao.custo == segundo.avaliacao.custo
+
+
+@pytest.mark.parametrize("selecao", list(Selecao))
+def test_sem_elitismo_devolve_o_melhor_de_todas_as_geracoes(selecao: Selecao) -> None:
+    observador = Lista()
+
+    resultado = evoluir(_cenario(), _parametros(proporcao_elite=0.0, selecao=selecao), observador)
+
+    assert resultado.avaliacao.custo == min(e.melhor_custo for e in observador.geracoes)

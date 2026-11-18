@@ -1,6 +1,8 @@
 """Operadores: seleção, cruzamento e mutação (Etapa 8). Nunca alteram os pais.
 
 - `torneio(custos, k, sorteio)`: índice do vencedor de um torneio de `k` indivíduos.
+- `preparar_selecao(custos, metodo, k)`: a seleção da geração (torneio, rank ou roleta sobre a
+  aptidão transformada), com os pesos calculados uma vez; devolve um sorteador de índices.
 - `ox`, `pmx` (com o corte dado) e `erx` (sorteado): cruzamentos de permutação. Devolvem a
   ordem do filho e os pontos que vieram do pai 1 (docs/codificacao.md).
 - `cruzar(pai1, pai2, metodo, sorteio)`: um filho. A ordem usa o cruzamento escolhido; a
@@ -13,9 +15,10 @@
 """
 
 import random
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import replace
 from enum import Enum
+from itertools import accumulate
 
 from surveyor.dominio.regras import Regras
 from surveyor.otimizacao.cromossomo import Cromossomo
@@ -29,6 +32,41 @@ class Cruzamento(Enum):
     OX = "OX"
     PMX = "PMX"
     ERX = "ERX"
+
+
+class Selecao(Enum):
+    """Seleção de pais: torneio é o padrão; rank e roleta entram nos experimentos."""
+
+    TORNEIO = "torneio"
+    RANK = "rank"
+    ROLETA = "roleta"
+
+
+def preparar_selecao(
+    custos: Sequence[float], metodo: Selecao, k: int
+) -> Callable[[random.Random], int]:
+    """Sorteador de pais para uma geração. O custo é minimizado:
+
+    - torneio: o menor custo entre `k` sorteados (não precisa de aptidão);
+    - rank: pesos N, N - 1, ..., 1 pela ordem do custo (o melhor tem peso N);
+    - roleta: aptidão = maior custo - custo, então o pior tem peso 0 (com todos iguais, o
+      sorteio é uniforme). Sem essa transformação, a roleta favoreceria os piores.
+    """
+    if metodo is Selecao.TORNEIO:
+        return lambda sorteio: torneio(custos, k, sorteio)
+    indices = range(len(custos))
+    if metodo is Selecao.RANK:
+        ranking = sorted(indices, key=custos.__getitem__)
+        pesos = [0.0] * len(custos)
+        for posicao, indice in enumerate(ranking):
+            pesos[indice] = len(custos) - posicao
+    else:
+        maior = max(custos)
+        pesos = [maior - custo for custo in custos]
+        if not any(pesos):
+            pesos = [1.0] * len(custos)
+    acumulados = list(accumulate(pesos))
+    return lambda sorteio: sorteio.choices(indices, cum_weights=acumulados)[0]
 
 
 def torneio(custos: Sequence[float], k: int, sorteio: random.Random) -> int:
