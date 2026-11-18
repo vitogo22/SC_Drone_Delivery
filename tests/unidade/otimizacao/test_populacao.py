@@ -44,6 +44,7 @@ def test_populacao_tem_o_tamanho_e_comeca_pelo_vizinho_mais_proximo() -> None:
 
     assert len(populacao) == 20
     assert populacao[0].ordem == (1, 3, 0, 2)
+    assert populacao[0].velocidades == (0,) * 5  # a referência: vizinho mais próximo a 36 km/h
     # 15% de 20 = 3 rotas de vizinho mais próximo: a pura e 2 que começam num ponto sorteado.
     gulosas = {vizinho_mais_proximo(_cenario(), inicio=i) for i in range(4)}
     assert all(individuo.ordem in gulosas for individuo in populacao[1:3])

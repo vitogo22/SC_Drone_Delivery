@@ -137,7 +137,7 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 - [x] 8.6 Laço evolutivo com elitismo e critérios de parada (gerações, estagnação, tempo), chamando `ObservadorDeProgresso.registrar(...)` a cada geração. Usar `random.Random(semente)`.
 - [x] 8.7 `otimizar_rota.executar`: ler as entradas → rodar o GA com `MonitorDeProgresso` (`resultados/progresso.csv`) → validar e gravar (depende da Etapa 9).
 - [x] 8.8 Gráfico de convergência a partir de `progresso.csv` (o `matplotlib` entra no `pyproject` nesta etapa).
-- [ ] 8.9 Testes:
+- [x] 8.9 Testes:
   - a mesma semente dá o mesmo resultado;
   - integração com 8–10 pontos e poucas gerações;
   - o custo final é menor que o do vizinho mais próximo a 36 km/h.

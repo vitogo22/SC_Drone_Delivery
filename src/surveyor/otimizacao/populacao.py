@@ -2,10 +2,11 @@
 
 - `vizinho_mais_proximo(cenario, inicio)`: rota gulosa, sempre para o ponto mais perto ainda
   não visitado; sai do campus ou, se `inicio` for dado, desse ponto.
-- `populacao_inicial(cenario, parametros, sorteio)`: o primeiro indivíduo é o vizinho mais
-  próximo saindo do campus; até completar `proporcao_vizinho_mais_proximo`, vizinhos mais
-  próximos a partir de um ponto sorteado (a perturbação); o resto, rotas aleatórias. As
-  velocidades são sorteadas até `velocidade_inicial_maxima_kmh` e todos os dias começam ligados.
+- `populacao_inicial(cenario, parametros, sorteio)`: o primeiro indivíduo é a referência, o
+  vizinho mais próximo saindo do campus a 36 km/h: com o elitismo, o GA nunca entrega um plano
+  pior que ela. Até completar `proporcao_vizinho_mais_proximo`, vizinhos mais próximos a partir
+  de um ponto sorteado (a perturbação); o resto, rotas aleatórias. Fora a referência, as
+  velocidades são sorteadas até `velocidade_inicial_maxima_kmh`. Todos os dias começam ligados.
 """
 
 import random
@@ -51,6 +52,9 @@ def populacao_inicial(
             ordem = vizinho_mais_proximo(cenario, inicio)
         else:
             ordem = tuple(sorteio.sample(range(n), n))
-        velocidades = tuple(sorteio.choices(lentas, k=n + 1))
+        if numero == 0 and gulosos:
+            velocidades = (lentas[0],) * (n + 1)  # a referência: tudo na menor velocidade
+        else:
+            velocidades = tuple(sorteio.choices(lentas, k=n + 1))
         populacao.append(Cromossomo(ordem, velocidades, (True,) * regras.prazo_dias))
     return populacao
