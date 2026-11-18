@@ -1,0 +1,89 @@
+============================= test session starts ==============================
+platform linux -- Python 3.14.4, pytest-9.2.0, pluggy-1.7.0
+rootdir: /home/biesek/Documentos/dev/UniBrasil/6-periodo/cognitivo/ads-2/SC_Drone_Delivery
+configfile: pyproject.toml
+testpaths: tests
+plugins: cov-7.1.0
+collected 503 items
+
+tests/integracao/test_algoritmo_genetico.py ..                           [  0%]
+tests/integracao/test_dados_de_entrada.py ..                             [  0%]
+tests/integracao/test_extras_reais.py ...                                [  1%]
+tests/integracao/test_linha_de_comando.py ...                            [  1%]
+tests/integracao/test_simulador_propriedades.py .                        [  2%]
+tests/integracao/test_validador_contra_simulador.py .                    [  2%]
+tests/test_arquitetura.py ........................................       [ 10%]
+tests/unidade/aplicacao/test_conferir_extras.py ....                     [ 11%]
+tests/unidade/aplicacao/test_configuracao.py ....                        [ 11%]
+tests/unidade/aplicacao/test_experimentar.py .........                   [ 13%]
+tests/unidade/aplicacao/test_otimizar_rota.py ...                        [ 14%]
+tests/unidade/aplicacao/test_validar_plano.py ..                         [ 14%]
+tests/unidade/dominio/calculos/test_bateria.py ..................        [ 18%]
+tests/unidade/dominio/calculos/test_custo.py ...........                 [ 20%]
+tests/unidade/dominio/calculos/test_geo.py ............                  [ 22%]
+tests/unidade/dominio/calculos/test_relogio.py ......................    [ 27%]
+tests/unidade/dominio/calculos/test_vento.py ........................... [ 32%]
+.....                                                                    [ 33%]
+tests/unidade/dominio/test_modelos.py ............                       [ 35%]
+tests/unidade/dominio/test_regras.py ..........                          [ 37%]
+tests/unidade/dominio/test_simulador.py ..................               [ 41%]
+tests/unidade/dominio/validacao/test_extras.py ................          [ 44%]
+tests/unidade/dominio/validacao/test_plano.py ......................     [ 49%]
+tests/unidade/infraestrutura/arquivos/test_escritor_csv.py ...           [ 49%]
+tests/unidade/infraestrutura/arquivos/test_leitor_csv.py ............... [ 52%]
+...........                                                              [ 54%]
+tests/unidade/infraestrutura/logs/test_configuracao.py .....             [ 55%]
+tests/unidade/infraestrutura/logs/test_monitor_progresso.py .......      [ 57%]
+tests/unidade/infraestrutura/test_graficos.py .......                    [ 58%]
+tests/unidade/interface/test_cli.py .............                        [ 61%]
+tests/unidade/otimizacao/test_algoritmo.py .............                 [ 63%]
+tests/unidade/otimizacao/test_cromossomo.py ...........                  [ 66%]
+tests/unidade/otimizacao/test_fitness.py .........                       [ 67%]
+tests/unidade/otimizacao/test_operadores.py ............................ [ 73%]
+........................................................................ [ 87%]
+...........................................                              [ 96%]
+tests/unidade/otimizacao/test_parametros.py ............                 [ 98%]
+tests/unidade/otimizacao/test_populacao.py .......                       [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.14.4-final-0 ________________
+
+Name                                                    Stmts   Miss Branch BrPart  Cover   Missing
+---------------------------------------------------------------------------------------------------
+src/surveyor/__init__.py                                    1      0      0      0   100%
+src/surveyor/aplicacao/conferir_extras.py                  20      0      4      0   100%
+src/surveyor/aplicacao/configuracao.py                     21      0      0      0   100%
+src/surveyor/aplicacao/experimentar.py                     76      0     10      0   100%
+src/surveyor/aplicacao/otimizar_rota.py                    41      0      4      0   100%
+src/surveyor/aplicacao/validar_plano.py                    18      0      0      0   100%
+src/surveyor/dominio/calculos/bateria.py                    8      0      2      0   100%
+src/surveyor/dominio/calculos/custo.py                     15      0      2      0   100%
+src/surveyor/dominio/calculos/geo.py                       21      0      0      0   100%
+src/surveyor/dominio/calculos/relogio.py                   17      0      6      0   100%
+src/surveyor/dominio/calculos/vento.py                     29      0      6      0   100%
+src/surveyor/dominio/erros.py                               4      0      0      0   100%
+src/surveyor/dominio/modelos.py                            30      0      4      0   100%
+src/surveyor/dominio/regras.py                             37      0      2      0   100%
+src/surveyor/dominio/simulador.py                         118      0     34      0   100%
+src/surveyor/dominio/validacao/extras.py                   27      0     12      0   100%
+src/surveyor/dominio/validacao/plano.py                    99      0     54      0   100%
+src/surveyor/infraestrutura/arquivos/escritor_csv.py       13      0      0      0   100%
+src/surveyor/infraestrutura/arquivos/leitor_csv.py         95      0     28      0   100%
+src/surveyor/infraestrutura/graficos.py                    86      0     16      0   100%
+src/surveyor/infraestrutura/logs/configuracao.py           30      0      6      0   100%
+src/surveyor/infraestrutura/logs/monitor_progresso.py      38      0      8      0   100%
+src/surveyor/interface/cli.py                             102      0      8      0   100%
+src/surveyor/otimizacao/algoritmo.py                       72      0     18      0   100%
+src/surveyor/otimizacao/cromossomo.py                      23      0     12      0   100%
+src/surveyor/otimizacao/fitness.py                         35      0      4      0   100%
+src/surveyor/otimizacao/operadores.py                     136      0     36      0   100%
+src/surveyor/otimizacao/parametros.py                      33      0      0      0   100%
+src/surveyor/otimizacao/populacao.py                       33      0      8      0   100%
+src/surveyor/otimizacao/progresso.py                        4      0      0      0   100%
+---------------------------------------------------------------------------------------------------
+TOTAL                                                    1282      0    284      0   100%
+
+9 empty files skipped.
+Coverage HTML written to dir resultados/cobertura
+Required test coverage of 90.0% reached. Total coverage: 100.00%
+============================= 503 passed in 33.17s =============================

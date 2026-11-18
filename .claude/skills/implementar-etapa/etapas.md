@@ -188,9 +188,9 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 Bastam 1 ou 2 dias de voo. Um resultado muito fora dessas faixas indica bug.
 
 ## Etapa 11 — Cobertura (contínua)
-- [ ] 11.1 Manter `make cobertura` ≥ 90% a cada PR (o `fail_under` reprova abaixo disso).
-- [ ] 11.2 Antes da entrega, fechar as lacunas apontadas em `term-missing`, sem testes vazios.
-- [ ] 11.3 Gravar `resultados/cobertura.txt` final (evidência exigida).
+- [x] 11.1 Manter `make cobertura` ≥ 90% a cada PR (o `fail_under` reprova abaixo disso).
+- [x] 11.2 Antes da entrega, fechar as lacunas apontadas em `term-missing`, sem testes vazios.
+- [x] 11.3 Gravar `resultados/cobertura.txt` final (evidência exigida). **Feito (18/11):** 503 testes, 100% de cobertura.
 
 ## Etapa 12 — Entrega
 **Skill:** `preparar-entrega` (os micro passos detalhados estão lá) · **Depende de:** todas
