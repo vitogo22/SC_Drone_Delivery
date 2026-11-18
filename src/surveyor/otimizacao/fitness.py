@@ -24,7 +24,12 @@ class Avaliacao:
 
     custo: float
     plano: PlanoDeVoo
-    valido: bool
+    motivo_invalido: str | None  # o do simulador; None = plano válido
+
+    @property
+    def valido(self) -> bool:
+        """O plano visita tudo e volta ao campus dentro das regras."""
+        return self.motivo_invalido is None
 
 
 def teto_de_custo_valido(cenario: Cenario) -> float:
@@ -44,4 +49,6 @@ def avaliar(cromossomo: Cromossomo, cenario: Cenario) -> Avaliacao:
     plano = resultado.plano
     faltando = len(cenario.pontos) - len(plano.trechos)
     custo = custo_total(plano, cenario.regras, cenario.operacao)
-    return Avaliacao(custo + faltando * teto_de_custo_valido(cenario), plano, resultado.valido)
+    return Avaliacao(
+        custo + faltando * teto_de_custo_valido(cenario), plano, resultado.motivo_invalido
+    )
