@@ -25,6 +25,10 @@ O cromossomo **não** diz onde pousar, quando trocar a bateria nem quando espera
 
 O cromossomo é imutável (tuplas). Os operadores sempre criam um filho novo, então os pais nunca são alterados.
 
+## Fitness
+
+A fitness é o custo da A4 (horas de voo × valor da hora + R$ dos pousos), e **menor é melhor**. Nenhuma rota sorteada termina em 7 dias (medimos 1.000 com os pontos reais: param, em média, no trecho 326 de 376). Por isso, a população inicial é quase toda inválida, e a fitness precisa dizer qual plano inválido é menos ruim. Cada trecho que ficou faltando custa o **teto**, que é o maior custo possível de um plano válido: voar das 06:00:00 às 19:00:00 nos 7 dias e pousar em todo trecho pagando a taxa adicional. Assim, qualquer plano válido vence qualquer inválido, e, entre dois inválidos, vence o que chegou mais longe. Código: [`otimizacao/fitness.py`](../src/surveyor/otimizacao/fitness.py).
+
 ## Comparação com as codificações sugeridas no enunciado
 
 | Codificação | Como seria aqui | Decisão |
