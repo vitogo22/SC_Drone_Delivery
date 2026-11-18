@@ -33,6 +33,17 @@ def test_toda_geracao_vira_uma_linha_do_csv(tmp_path: Path) -> None:
     assert [linha["melhor_custo"] for linha in linhas] == ["2000.0", "1950.5"]
 
 
+def test_csv_usa_fim_de_linha_lf_como_os_outros_csvs(tmp_path: Path) -> None:
+    arquivo = tmp_path / "progresso.csv"
+
+    with MonitorDeProgresso(arquivo) as monitor:
+        monitor.registrar(_geracao(0, 2000.0))
+
+    conteudo = arquivo.read_bytes()
+    assert b"\r" not in conteudo
+    assert conteudo.count(b"\n") == 2
+
+
 def test_log_info_so_na_geracao_zero_e_a_cada_intervalo(
     tmp_path: Path, caplog: pytest.LogCaptureFixture
 ) -> None:

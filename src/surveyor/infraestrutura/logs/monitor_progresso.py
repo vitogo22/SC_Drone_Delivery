@@ -37,7 +37,7 @@ class MonitorDeProgresso:
     def __enter__(self) -> MonitorDeProgresso:
         self._arquivo_csv.parent.mkdir(parents=True, exist_ok=True)
         self._arquivo = self._arquivo_csv.open("w", newline="", encoding="utf-8")
-        self._escritor = csv.DictWriter(self._arquivo, fieldnames=CAMPOS)
+        self._escritor = csv.DictWriter(self._arquivo, fieldnames=CAMPOS, lineterminator="\n")
         self._escritor.writeheader()
         return self
 

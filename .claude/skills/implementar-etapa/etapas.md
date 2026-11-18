@@ -179,7 +179,7 @@ Todo micro passo de código segue a mesma ordem: **teste primeiro → implementa
 - [x] 10.3 Registrar a tabela em `docs/experimentos.md` e conferir as ordens de grandeza (abaixo).
 - [x] 10.4 Atualizar o padrão de `ParametrosGA` para a melhor configuração. **Feito (18/11):** cruzamento PMX (os experimentos comparam os outros dois com a base); `--rapido` leva ~26 s (R$ 2.242,60), texto corrigido para "menos de 1 min".
 - [x] 10.5 Execução final com a semente fixada: plano, progresso, gráfico, mapa da rota, log e saída do validador em `resultados/`. **Código pronto:** `otimizar` grava `plano_de_voo.csv`, `progresso.csv`, `convergencia.png` e `rota.png`. **Feito (18/11):** semente 42, parou na geração 562 (300 sem melhora): R$ 2.182,47, 12 pousos, 15,28 h de voo, dias 1 e 6; validador: plano válido.
-- [ ] 10.6 Fechamento.
+- [x] 10.6 Fechamento. **Feito (18/11):** diff da etapa revisado com `armadilhas.md`; `progresso.csv` passou a usar LF como os outros CSVs; árvore de `docs/arquitetura.md` atualizada.
 
 **Ordens de grandeza** (rota do vizinho mais próximo, sem vento e sem extras: 340,8 km; 375 paradas de 60 s ≈ 6,25 h):
 - a 36 km/h: ≈ 15,7 h de voo e ≈ 10 baterias;

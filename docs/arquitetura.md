@@ -33,10 +33,11 @@ SC_Drone_Delivery/
 │   │   ├── configuracao.py     ArquivosDeEntrada, Configuracao, Integrante
 │   │   ├── otimizar_rota.py    executar(): ler -> otimizar -> validar -> gravar
 │   │   ├── validar_plano.py    executar(): conferir um CSV e resumir tempo, pousos e custo
-│   │   └── conferir_extras.py  executar(): validar as extras e achar o ponto mais próximo
+│   │   ├── conferir_extras.py  executar(): validar as extras e achar o ponto mais próximo
+│   │   └── experimentar.py     um fator do GA por vez, várias sementes, em paralelo -> CSV e tabela
 │   ├── infraestrutura/         DETALHES TÉCNICOS (implementam contratos internos)
 │   │   ├── arquivos/           leitor_csv.py, escritor_csv.py
-│   │   ├── graficos.py         gráfico de convergência (matplotlib)
+│   │   ├── graficos.py         gráfico de convergência e mapa da rota por dia (matplotlib)
 │   │   └── logs/               configuracao.py (política de logs), monitor_progresso.py
 │   └── interface/              ENTRADA DO USUÁRIO
 │       └── cli.py              argumentos, logs, códigos de saída
